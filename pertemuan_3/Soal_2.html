@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2373010-Steven Effendi</title>
+</head>
+<body>
+    <form action="confirm.html" method="get" enctype="multipart/form-data">
+        <table border="1" width="500" cellpadding="10">
+            <tr>
+                <th colspan="2" align="center">Edit Profile</th>
+            </tr>
+            <tr>
+                <td width="150" align="center">
+                    <a href>
+                        <img src="foto.png" align="middle"
+                        title="photo"
+                        width="75" height="100" />
+                    </a><br>
+                    <button>Upload</button>
+                </td>
+                <td>
+                    <table>
+                        <tr>
+                            <td><label>Name</label></td>
+                            <td>Tim Berners-Lee</td>
+                        </tr>
+                        <tr>
+                            <td><label>Position</label></td>
+                            <td>
+                                <select name="position">
+                                    <optgroup label="Programmer">
+                                        <option>Senior Programmer</option>
+                                        <option>Junior Programmer</option>
+                                    </optgroup>
+                                    <optgroup label="System Analyst">
+                                        <option>Senior Analyst</option>
+                                        <option>Junior Analyst</option>
+                                    </optgroup>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><label>Password</label></td>
+                            <td><input type="password" name="password"></td>
+                        </tr>
+                        <tr>
+                            <td><label>Confirm Password</label></td>
+                            <td><input type="password" name="confirm_password"></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" align="right">
+                                <button type="reset">Reset</button>
+                                <button type="submit">Update</button>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </form>
+</body>
+</html>

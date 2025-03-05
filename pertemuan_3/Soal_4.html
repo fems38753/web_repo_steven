@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2373010-Steven Effendi</title>
+</head>
+
+<body>
+    <table border="1" cellpadding="10" cellspacing="0" align="center">
+        <tr>
+            <td>
+                <form action="process.html">
+                    <h2>Form Tambah Data User</h2>
+                    <table border="0" cellpadding="5">
+                        <tr>
+                            <td>Name:</td>
+                            <td>
+                                <input type="text" name="name" required>
+                                <br><span>* Name is required!!!</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Address:</td>
+                            <td>
+                                <input type="text" name="address" required>
+                                <br><span>* Address is required!!!</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Email:</td>
+                            <td>
+                                <input type="email" name="email" required>
+                                <br><span>* Harap isi bidang ini.</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Home Page:</td>
+                            <td><input type="url" name="homepage"></td>
+                        </tr>
+                        <tr>
+                            <td>Birthday:</td>
+                            <td><input type="text" placeholder="hh/bb/tttt"></td>
+                        </tr>
+                        <tr>
+                            <td>Favorite Color:</td>
+                            <td><input type="color"></td>
+                        </tr>
+                        <tr>
+                            <td>IPK:</td>
+                            <td><input type="number" name="ipk" min="0" max="4" step="0.1" value="0"></td>
+                        </tr>
+                        <tr>
+                            <td>Phone Number:</td>
+                            <td>
+                                <input type="tel" name="phone" pattern="\d{3}-\d{7,10}" required>
+                                <br><span>* Format: 123-4567890</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" align="right">
+                                <button type="submit">Add</button>
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>
