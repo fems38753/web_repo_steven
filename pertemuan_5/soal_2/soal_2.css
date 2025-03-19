@@ -1,0 +1,43 @@
+.isi {
+    position: relative;
+    width: 350px;
+    height: 150px;
+    margin: auto;
+}
+
+.bulet {
+    position: absolute;
+    width: 100px;
+    height: 100px;
+}
+
+.buletmerah {
+    left: 30px;
+    z-index: 1;
+}
+
+.buletungu {
+    left: 85px;
+    z-index: 2;
+}
+
+.buletmerah2 {
+    left: 140px;
+    z-index: 1;
+}
+
+.buletmerahset {
+    position: absolute;
+    width: 100px;
+    height: 50px; 
+    top: 0px;
+    z-index: 3;
+}
+
+.buletmerahset2 {
+    left: 30px;
+}
+
+.buletmerahset3 {
+    left: 140px;
+}
