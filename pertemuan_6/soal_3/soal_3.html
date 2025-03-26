@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2373010-Steven Effendi</title>
+</head>
+<link rel="stylesheet" href="soal_3.css">
+<body>
+    <label for="t">Tinggi Piramida:</label>
+    <input id="t">
+
+    <button onclick="piramid()">Proses</button>
+
+    <div id="hasil"></div>
+    <script>
+        function piramid() {
+            let t = document.getElementById("t").value;
+            let hasil = document.getElementById("hasil");
+
+            if (t === "") {
+                alert("Angka belum dimasukkan.");
+                return;
+            }
+        
+            if (isNaN(t)) {
+                alert("Tolong masukkan hanya angka !");
+                return;
+            }
+
+            t=parseInt(t);
+            let tabel = "<table>";
+
+            for (let a=0; a<t; a++) {
+                let l="<tr>";
+
+                let s = t-a-1;
+                for (let b=0; b<s; b++) {
+                    l += "<td style='border: none; background: none;'></td>";
+                }
+
+                let k = 2*a+1;
+                for (let b=0; b<k; b++) {
+                    l += "<td></td>";
+                }
+
+                for (let b=0; b<s; b++) {
+                    l += "<td style='border: none; background: none;'></td>";
+                }
+
+                l += "</tr>";
+                tabel += l;
+            }
+
+            tabel += "</table>";
+            hasil.innerHTML = tabel;
+        }
+    </script>
+</body>
+</html>

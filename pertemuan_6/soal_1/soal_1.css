@@ -1,0 +1,41 @@
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+}
+
+.angka {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+label {
+    width: 150px;
+    text-align: left;
+}
+
+input {
+    width: 120px;
+    padding: 5px;
+}
+
+button {
+    display:block;
+    padding: 5px 15px;
+    margin-top: 5px;
+    align-self: flex-start;
+}
+
+table {
+    margin-top: 10px;
+    border-collapse: collapse;
+    width: 350px;
+}
+
+td {
+    border: 1px solid black;
+    padding: 10px;
+    text-align: center;
+    width: 60px;
+}

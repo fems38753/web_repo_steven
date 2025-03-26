@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2373010-Steven Effendi</title>
+</head>
+<link rel="stylesheet" href="soal_4.css">
+<body>
+<div class="box">
+        <table>
+            <tr>
+                <td><label for="input">Input :</label></td>
+                <td><input type="number" id="input"></td>
+            </tr>
+            <tr>
+                <td><label for="output">Output :</label></td>
+                <td><input type="number" id="output" readonly></td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <select id="konversi">
+                        <option value="decimal-biner">decimal-biner</option>
+                        <option value="biner-decimal">biner-decimal</option>
+                    </select>
+                </td>
+            </tr>
+            <table>
+                <tr>
+                    <td colspan="2" class="btnbox">
+                        <button class="btn proses" onclick="convert()">PROSES</button>
+                        <button class="btn reset" onclick="resetFields()">RESET</button>
+                    </td>
+                </tr>
+            </table>
+        </table>
+    </div>
+
+    <script>
+        function convert() {
+            let input = document.getElementById("input").value;
+            let konversi = document.getElementById("konversi").value;
+            let output = "";
+
+            if (konversi === "decimal-biner") {
+                let decimal = parseInt(input);
+                if (isNaN(decimal) || decimal < 0 || decimal > 255) {
+                    alert("Masukkan angka antara 0-255");
+                    return;
+                }
+                output = decimal.toString(2).padStart(8, '0');
+            } else if (konversi === "biner-decimal") {
+                if (!/^[01]{1,8}$/.test(input)) {
+                    alert("Masukkan angka biner 8 digit (hanya 0 dan 1)");
+                    return;
+                }
+                output = parseInt(input, 2);
+            }
+
+            document.getElementById("output").value = output;
+        }
+
+        function resetFields() {
+            document.getElementById("input").value = "";
+            document.getElementById("output").value = "";
+        }
+    </script>
+</body>
+</html>
