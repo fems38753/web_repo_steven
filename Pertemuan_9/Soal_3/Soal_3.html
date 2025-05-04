@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2373010-Steven Effendi</title>
+</head>
+<link rel="stylesheet" href="Soal_3.css">
+<body>
+
+<div class="kotak">
+  <div class="baris">
+    <label>Data</label>
+    <input type="text" id="dataInput">
+  </div>
+  <div class="barisbutton">
+    <button onclick="tambahData()">Add</button>
+    <select id="o" onchange="pilihOperasi()">
+      <option>Pilih Operasi</option>
+      <option>Display</option>
+      <option>Count</option>
+      <option>Sum</option>
+      <option>Average</option>
+      <option>Max</option>
+      <option>Min</option>
+      <option>Ganjil</option>
+      <option>Genap</option>
+      <option>Hapus</option>
+    </select>
+  </div>
+  <div class="baris">
+    <label>Hasil</label>
+    <input type="text" id="h" readonly>
+  </div>
+</div>
+
+<script>
+  let arr = [];
+
+  function tambahData() {
+    const input = document.getElementById("dataInput");
+    const value = input.value.trim();
+    if (value !== "") {
+      arr.push(Number(value));
+      input.value = "";
+    }
+  }
+
+  function pilihOperasi() {
+    const o = document.getElementById("o").value;
+    let h = "";
+
+    switch (o) {
+      case "Display":
+        h = arr.join(", ");
+        break;
+      case "Count":
+        h = arr.length;
+        break;
+      case "Sum":
+        h = arr.reduce((a, b) => a + b, 0);
+        break;
+      case "Average":
+        h = arr.length ? (arr.reduce((a, b) => a + b, 0) / arr.length).toFixed(2) : 0;
+        break;
+      case "Max":
+        h = arr.length ? Math.max(...arr) : "";
+        break;
+      case "Min":
+        h = arr.length ? Math.min(...arr) : "";
+        break;
+      case "Ganjil":
+        h = arr.filter(x => x % 2 !== 0).join(", ");
+        break;
+      case "Genap":
+        h = arr.filter(x => x % 2 === 0).join(", ");
+        break;
+      case "Hapus":
+        arr = [];
+        h = "Data dihapus";
+        break;
+    }
+    document.getElementById("h").value = h;
+  }
+</script>
+</body>
+</html>
