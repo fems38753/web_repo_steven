@@ -1,0 +1,22 @@
+body {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+  }
+
+#box {
+    border: 1px solid black;
+    width: 235px;
+    padding: 10px;
+  }
+
+#namaInput {
+    width: 120px;
+  }
+
+.nama {
+    margin: 1px;
+  }
+
+.garisbawah {
+    text-decoration: underline;
+  }
