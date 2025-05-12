@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2373010 - Steven Effendi</title>
+</head>
+<link rel="stylesheet" href="Soal_5.css">
+<body>
+    <input type="text" id="searchBox">
+    
+    <ul class="company-list" id="companyList">
+        <li>Sun Microsystem</li>
+        <li>Apache Software Foundation</li>
+        <li>Oracle Corporation</li>
+        <li>International Bussiness Machines</li>
+        <li>Microsoft Corporation</li>
+        <li>Apple Inc</li>
+        <li>Sap Ag</li>
+        <li>Accenture</li>
+        <li>Computer Sciences Corporation</li>
+        <li>Google</li>
+        <li>Softbank</li>
+        <li>Yahoo</li>
+    </ul>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#searchBox').on('input', function() {
+                const searchText = $(this).val().toLowerCase();
+                
+                if (searchText === '') {
+                    $('#companyList li').each(function() {
+                        $(this).html($(this).text());
+                    });
+                    return;
+                }
+                
+                $('#companyList li').each(function() {
+                    const companyText = $(this).text();
+                    const lowerCompanyText = companyText.toLowerCase();
+                    
+                    if (lowerCompanyText.includes(searchText)) {
+                        const startIndex = lowerCompanyText.indexOf(searchText);
+                        const endIndex = startIndex + searchText.length;
+                        
+                        const highlightedText = 
+                            companyText.substring(0, startIndex) +
+                            '<span class="highlight">' + 
+                            companyText.substring(startIndex, endIndex) + 
+                            '</span>' +
+                            companyText.substring(endIndex);
+                            
+                        $(this).html(highlightedText);
+                    } else {
+                        $(this).html(companyText);
+                    }
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>

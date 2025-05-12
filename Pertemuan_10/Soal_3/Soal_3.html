@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2373010 - Steven Effendi</title>
+</head>
+<link rel="stylesheet" href="Soal_3.css">
+<body>
+    <button id="gantiwarna">Change colors</button><br><br>
+    
+      <div class="kotak"></div>
+      <div class="kotak"></div>
+      <div class="kotak"></div>
+      <div class="kotak"></div>
+      <div class="kotak"></div>
+      <div class="kotak"></div>
+      <div class="kotak"></div>
+      <div class="kotak"></div>
+      <div class="kotak"></div>
+      <div class="kotak"></div>
+    
+      <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+      <script>
+        $(".kotak").click(function () {
+          $(this).addClass("merah");
+          $(this).attr("id", "donMerah"); 
+        });
+
+        $("#gantiwarna").click(function () {
+          $(".kotak").each(function () {
+            if ($(this).attr("id") === "donMerah") {
+              return false;
+            }
+            $(this).addClass("kuning");
+          });
+        });
+      </script>   
+</body>
+</html>
