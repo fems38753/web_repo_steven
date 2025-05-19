@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 .kotak {
     width: 40px;
     height: 40px;
@@ -13,4 +14,21 @@
 
 .kuning {
     background-color: yellow;
+=======
+.kotak {
+    width: 40px;
+    height: 40px;
+    margin: 5px;
+    float: left;
+    border: 2px solid blue;
+    text-align: center;
+  }
+
+.merah {
+    background-color: red;
+  }
+
+.kuning {
+    background-color: yellow;
+>>>>>>> c6bda02b741e0b0871c72e71cc1d9f48af1ea5c4
   }

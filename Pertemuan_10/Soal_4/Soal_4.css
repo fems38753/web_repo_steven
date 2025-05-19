@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 table {
     margin: 20px;
     border-collapse: collapse;
@@ -11,4 +12,19 @@ td {
     border-top: 2px solid black;
     width: 100%;
     margin: 8px auto;
+=======
+table {
+    margin: 20px;
+    border-collapse: collapse;
+}
+td {
+    padding: 10px;
+    text-align: center;
+    border: 1px solid black;
+}
+.garis {
+    border-top: 2px solid black;
+    width: 100%;
+    margin: 8px auto;
+>>>>>>> c6bda02b741e0b0871c72e71cc1d9f48af1ea5c4
 }

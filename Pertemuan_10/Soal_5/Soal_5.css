@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 body {
     font-family: Arial, sans-serif;
     max-width: 600px;
@@ -21,4 +22,29 @@ body {
 .highlight {
     color: red;
     font-weight: bold;
+=======
+body {
+    font-family: Arial, sans-serif;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+}
+#searchBox {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    font-size: 16px;
+}
+.company-list {
+    list-style-type: none;
+    padding: 0;
+}
+.company-list li {
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+}
+.highlight {
+    color: red;
+    font-weight: bold;
+>>>>>>> c6bda02b741e0b0871c72e71cc1d9f48af1ea5c4
 }
