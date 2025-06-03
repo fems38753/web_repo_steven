@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jackarmyofficial</title>
+  <link rel="stylesheet" href="pbl02.css" />
+</head>
+<body>
+ <header>
+    <nav class="navbar">
+        <div class="logo">JACK<span>ARMY</span></div>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li class="dropdown">
+                <a href="#">Products ▼</a>
+                <ul class="dropdown-menu">
+                    <li><a href="baju.html">T-Shirt</a></li>
+                    <li><a href="jaket.html">Jacket</a></li>
+                    <li><a href="topi.html">Hat</a></li>
+                </ul>
+            </li>
+            <li><a href="cart.html">Cart</a></li>
+            <li><a href="account.html">Account</a></li>
+            <li class="dropdown">
+                <a href="#">Help Center ▼</a>
+                <ul class="dropdown-menu">
+                <li><a href="shopping.html">How To Order</a></li>
+                <li><a href="shipping.html">Shipping Information</a></li>
+                <li><a href="payment.html">Payment Methods</a></li>
+                <li><a href="refund.html">Refund & Return Policy</a></li>
+                <li><a href="size.html">Size Chart</a></li>
+                </ul>
+            </li>
+        </ul>
+
+        <!-- Search Bar -->
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="Search...">
+            <button onclick="searchProducts()">Search</button>
+        </div>
+    </nav>
+</header>
+
+
+  <!-- Login Popup -->
+  <div class="overlay" id="login-popup">
+    <div class="popup">
+      <span class="close" onclick="closePopup('login-popup')">&times;</span>
+      <h2>Login</h2>
+      <form>
+        <div class="form-group">
+          <label for="login-username">Username or Email</label>
+          <input type="text" id="login-username" placeholder="Enter your username or email">
+        </div>
+        <div class="form-group password-group">
+          <label for="login-password">Password</label>
+          <input type="password" id="login-password" placeholder="Enter your password">
+          <button type="button" class="toggle-password" onclick="togglePassword('login-password')">Show</button>
+        </div>
+        <div class="form-group">
+          <button type="submit" class="button">Login</button>
+        </div>
+        <div class="form-footer">
+          Don't have an account? <a href="#" onclick="switchPopup('register-popup')">Register here</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Register Popup -->
+  <div class="overlay" id="register-popup" style="display: none;">
+    <div class="popup">
+      <span class="close" onclick="closePopup('register-popup')">&times;</span>
+      <h2>Register</h2>
+      <form>
+        <div class="form-group">
+          <label for="register-username">Username</label>
+          <input type="text" id="register-username" placeholder="Enter your username">
+        </div>
+        <div class="form-group">
+          <label for="register-email">Email</label>
+          <input type="email" id="register-email" placeholder="Enter your email">
+        </div>
+        <div class="form-group password-group">
+          <label for="register-password">Password</label>
+          <input type="password" id="register-password" placeholder="Enter your password">
+          <button type="button" class="toggle-password" onclick="togglePassword('register-password')">Show</button>
+        </div>
+        <div class="form-group">
+          <button type="submit" class="button">Register</button>
+        </div>
+        <div class="form-footer">
+          Already have an account? <a href="#" onclick="switchPopup('login-popup')">Login here</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    function closePopup(id) {
+      document.getElementById(id).style.display = 'none';
+    }
+
+    function switchPopup(id) {
+      document.getElementById('login-popup').style.display = 'none';
+      document.getElementById('register-popup').style.display = 'none';
+      document.getElementById(id).style.display = 'flex';
+    }
+
+    function togglePassword(fieldId) {
+      const field = document.getElementById(fieldId);
+      const toggleBtn = field.nextElementSibling;
+      if (field.type === 'password') {
+        field.type = 'text';
+        toggleBtn.textContent = 'Hide';
+      } else {
+        field.type = 'password';
+        toggleBtn.textContent = 'Show';
+      }
+    }
+
+    // Auto show login popup on page load
+    window.onload = function() {
+      document.getElementById('login-popup').style.display = 'flex';
+    };
+  </script>
+  <script src="account.js"></script>
+</body>
+</html>
