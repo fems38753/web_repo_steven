@@ -36,24 +36,30 @@
         </ul>
 
         <!-- Search Bar -->
-        <div class="search-bar">
-            <input type="text" id="searchInput" placeholder="Search...">
-            <button onclick="searchProducts()">Search</button>
-        </div>
+<div class="search-bar">
+    <input type="text" id="searchInput" placeholder="Search...">
+    <button onclick="searchProducts()">Search</button>
+</div>
     </nav>
 </header>
 
 
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="hero-text">
-            <h1>Give a new <span>Style!</span></h1>
-            <a href="products.html" class="btn">Explore Now →</a>
-        </div>
-        <div class="hero-image">
-            <img src="images/pp.jpg" alt="Hero">
-        </div>
-    </section>
+<!-- Hero Section -->
+<section class="hero-carousel">
+  <div class="carousel">
+    <!-- Navigation Buttons -->
+    <button class="prev" aria-label="Previous Slide">&#10094;</button>
+
+    <!-- Carousel Slides -->
+    <img src="Images/hero1.jpg" class="slide active" alt="Hero 1">
+    <img src="Images/hero2.jpg" class="slide" alt="Hero 2">
+    <img src="Images/hero3.jpg" class="slide" alt="Hero 3">
+    <img src="Images/hero4.jpg" class="slide" alt="Hero 4">
+
+    <button class="next" aria-label="Next Slide">&#10095;</button>
+  </div>
+</section>
+
 
     <!-- Produk Kaos -->
     <section class="produk-kaos">
@@ -89,18 +95,6 @@
             <h3>T-Shirt Love Hurts</h3>
             <p class="price"><del>Rp199.000</del> <strong>Rp79.900</strong></p>
         </div>
-        <div class="kaos-item" onclick="openPopup('images/baju6.jpg', 'T-Shirt screen', 'Rp69.000')">
-            <span class="discount">65% OFF</span>
-            <img src="images/baju6.jpg" alt="T-Shirt screen">
-            <h3>T-Shirt screen</h3>
-            <p class="price"><del>Rp199.000</del> <strong>Rp69.000</strong></p>
-        </div>
-        <div class="kaos-item" onclick="openPopup('images/baju7.jpg', 'T-Shirt Light Bottle', 'Rp89.000')">
-            <span class="discount">55% OFF</span>
-            <img src="images/baju7.jpg" alt="T-Shirt Light Bottle">
-            <h3>T-Shirt Light Bottle </h3>
-            <p class="price"><del>Rp199.000</del> <strong>Rp89.000</strong></p>
-        </div>
         </div>
     </section>
 
@@ -109,47 +103,40 @@
         <h2>JACKET COLLECTION</h2>
         <div class="jaket-container">
 <div class="jaket-item">
-                <span class="discount">50% OFF</span>
-                <img src="images/jaket1.jpg" alt="Jacket Hoodie Starboy">
-                <h3>Jacket Hoodie Starboy</h3>
-                <p class="price"><del>Rp399.000</del> <strong>Rp199.000</strong></p>
-            </div>
-            <div class="jaket-item">
-                <span class="discount">45% OFF</span>
-                <img src="images/jaket2.jpg" alt="Jacket Hoodie X">
-                <h3>Jacket Hoodie X</h3>
-                <p class="price"><del>Rp359.000</del> <strong>Rp197.450</strong></p>
-            </div>
-            <div class="jaket-item">
-                <span class="discount">50% OFF</span>
-                <img src="images/jaket3.jpg" alt="Jacket Hoodie Star">
-                <h3>Jacket Hoodie Star</h3>
-                <p class="price"><del>Rp399.000</del> <strong>Rp199.000</strong></p>
-            </div>
-            <div class="jaket-item">
-                <span class="discount">45% OFF</span>
-                <img src="images/jaket4.jpg" alt="Jacket Cardigan">
-                <h3>Jacket Cardigan</h3>
-                <p class="price"><del>Rp359.000</del> <strong>Rp197.450</strong></p>
-            </div>
-            <div class="jaket-item">
-                <span class="discount">50% OFF</span>
-                <img src="images/jaket5.jpg" alt="Jacket Canvas">
-                <h3>Jacket Canvas</h3>
-                <p class="price"><del>Rp399.000</del> <strong>Rp199.000</strong></p>
-            </div>
-            <div class="jaket-item">
-                <span class="discount">45% OFF</span>
-                <img src="images/jaket6.jpg" alt="Jacket Cardigan Lightning">
-                <h3>Jacket Cardigan Lightning</h3>
-                <p class="price"><del>Rp359.000</del> <strong>Rp197.450</strong></p>
-            </div>
-            <div class="jaket-item">
-                <span class="discount">50% OFF</span>
-                <img src="images/jaket7.jpg" alt="Jacket Crewneck">
-                <h3>Jacket Crewneck</h3>
-                <p class="price"><del>Rp399.000</del> <strong>Rp199.000</strong></p>
-            </div>
+    <span class="discount">50% OFF</span>
+    <img src="images/jaket1.jpg" alt="Jacket Hoodie Starboy"
+         onclick="openPopup('images/jaket1.jpg', 'Jacket Hoodie Starboy', 'Rp199.000')">
+    <h3>Jacket Hoodie Starboy</h3>
+    <p class="price"><del>Rp399.000</del> <strong>Rp199.000</strong></p>
+</div>
+<div class="jaket-item">
+    <span class="discount">45% OFF</span>
+    <img src="images/jaket2.jpg" alt="Jacket Hoodie X"
+         onclick="openPopup('images/jaket2.jpg', 'Jacket Hoodie X', 'Rp197.450')">
+    <h3>Jacket Hoodie X</h3>
+    <p class="price"><del>Rp359.000</del> <strong>Rp197.450</strong></p>
+</div>
+<div class="jaket-item">
+    <span class="discount">50% OFF</span>
+    <img src="images/jaket3.jpg" alt="Jacket Hoodie Star"
+         onclick="openPopup('images/jaket3.jpg', 'Jacket Hoodie Star', 'Rp199.000')">
+    <h3>Jacket Hoodie Star</h3>
+    <p class="price"><del>Rp399.000</del> <strong>Rp199.000</strong></p>
+</div>
+<div class="jaket-item">
+    <span class="discount">45% OFF</span>
+    <img src="images/jaket4.jpg" alt="Jacket Cardigan"
+         onclick="openPopup('images/jaket4.jpg', 'Jacket Cardigan', 'Rp197.450')">
+    <h3>Jacket Cardigan</h3>
+    <p class="price"><del>Rp359.000</del> <strong>Rp197.450</strong></p>
+</div>
+<div class="jaket-item">
+    <span class="discount">50% OFF</span>
+    <img src="images/jaket5.jpg" alt="Jacket Canvas"
+         onclick="openPopup('images/jaket5.jpg', 'Jacket Canvas', 'Rp199.000')">
+    <h3>Jacket Canvas</h3>
+    <p class="price"><del>Rp399.000</del> <strong>Rp199.000</strong></p>
+</div>
         </div>
     </section>
 
@@ -157,48 +144,41 @@
     <section class="produk-topi">
         <h2>HAT COLLECTION</h2>
         <div class="topi-container">
+  <div class="topi-item">
+    <span class="discount">40% OFF</span>
+    <img src="images/topi1.jpg" alt="Bucket Hat Nylon Black"
+         onclick="openPopup('images/topi1.jpg', 'Bucket Hat Nylon Black', 'Rp95.400')">
+    <h3>Bucket Hat Nylon Black</h3>
+    <p class="price"><del>Rp159.000</del> <strong>Rp95.400</strong></p>
+</div>
 <div class="topi-item">
-                <span class="discount">40% OFF</span>
-                <img src="images/topi1.jpg" alt="Bucket Hat Nylon Black">
-                <h3>Bucket Hat Nylon Black</h3>
-                <p class="price"><del>Rp159.000</del> <strong>Rp95.400</strong></p>
-            </div>
-            <div class="topi-item">
-                <span class="discount">35% OFF</span>
-                <img src="images/topi2.jpg" alt="Bucket Hat Nusantara">
-                <h3>Bucket Hat Nusantara</h3>
-                <p class="price"><del>Rp129.000</del> <strong>Rp83.850</strong></p>
-            </div>
-            <div class="topi-item">
-                <span class="discount">40% OFF</span>
-                <img src="images/topi3.jpg" alt="Hat Nusantara Bold">
-                <h3>Hat Nusantara Bold</h3>
-                <p class="price"><del>Rp159.000</del> <strong>Rp95.400</strong></p>
-            </div>
-            <div class="topi-item">
-                <span class="discount">35% OFF</span>
-                <img src="images/topi4.jpg" alt="Hat Nocturn">
-                <h3>Hat Nocturn</h3>
-                <p class="price"><del>Rp129.000</del> <strong>Rp83.850</strong></p>
-            </div>
-            <div class="topi-item">
-                <span class="discount">40% OFF</span>
-                <img src="images/topi5.jpg" alt="Hat Freedom">
-                <h3>Hat Freedom</h3>
-                <p class="price"><del>Rp159.000</del> <strong>Rp95.400</strong></p>
-            </div>
-            <div class="topi-item">
-                <span class="discount">35% OFF</span>
-                <img src="images/topi6.jpg" alt="Bucket Hat Green">
-                <h3>Bucket Hat Green</h3>
-                <p class="price"><del>Rp129.000</del> <strong>Rp83.850</strong></p>
-            </div>
-            <div class="topi-item">
-                <span class="discount">40% OFF</span>
-                <img src="images/topi7.jpg" alt="Bucket Hat Classic">
-                <h3>Bucket Hat Classic</h3>
-                <p class="price"><del>Rp159.000</del> <strong>Rp95.400</strong></p>
-            </div>
+    <span class="discount">35% OFF</span>
+    <img src="images/topi2.jpg" alt="Bucket Hat Nusantara"
+         onclick="openPopup('images/topi2.jpg', 'Bucket Hat Nusantara', 'Rp83.850')">
+    <h3>Bucket Hat Nusantara</h3>
+    <p class="price"><del>Rp129.000</del> <strong>Rp83.850</strong></p>
+</div>
+<div class="topi-item">
+    <span class="discount">40% OFF</span>
+    <img src="images/topi3.jpg" alt="Hat Nusantara Bold"
+         onclick="openPopup('images/topi3.jpg', 'Hat Nusantara Bold', 'Rp95.400')">
+    <h3>Hat Nusantara Bold</h3>
+    <p class="price"><del>Rp159.000</del> <strong>Rp95.400</strong></p>
+</div>
+<div class="topi-item">
+    <span class="discount">35% OFF</span>
+    <img src="images/topi4.jpg" alt="Hat Nocturn"
+         onclick="openPopup('images/topi4.jpg', 'Hat Nocturn', 'Rp83.850')">
+    <h3>Hat Nocturn</h3>
+    <p class="price"><del>Rp129.000</del> <strong>Rp83.850</strong></p>
+</div>
+<div class="topi-item">
+    <span class="discount">40% OFF</span>
+    <img src="images/topi5.jpg" alt="Hat Freedom"
+         onclick="openPopup('images/topi5.jpg', 'Hat Freedom', 'Rp95.400')">
+    <h3>Hat Freedom</h3>
+    <p class="price"><del>Rp159.000</del> <strong>Rp95.400</strong></p>
+</div>
         </div>
     </section>
 
@@ -269,13 +249,13 @@
             </ul>
         </div>
 
-        <div class="footer-section">
-            <h4>Newsletter</h4>
-            <form>
-                <input type="email" placeholder="Insert your email">
-                <button type="submit">Send</button>
-            </form>
-        </div>
+ <div class="footer-section">
+    <h4>Newsletter</h4>
+    <form id="newsletterForm">
+        <input type="email" id="emailInput" placeholder="Insert your email" required>
+        <button type="submit">Send</button>
+    </form>
+</div>
     </div>
 
     <div class="footer-bottom">
@@ -283,20 +263,9 @@
     </div>
 </footer>
 
-<script>
-function searchProducts() {
-    let input = document.getElementById("searchInput").value.toLowerCase();
-    let items = document.querySelectorAll(".kaos-item, .jaket-item, .topi-item");
-    items.forEach(item => {
-        let text = item.innerText.toLowerCase();
-        if (text.includes(input)) {
-            item.style.display = "block";
-        } else {
-            item.style.display = "none";
-        }
-    });
-}
-</script>
+<script src="search.js"></script>
 <script src="cart.js"></script>
+<script src="news.js"></script>
+<script src="heroscrl.js"></script>
 </body>
 </html>
