@@ -1,0 +1,85 @@
+<section class="produk-topi">
+        <h2>HAT COLLECTION</h2>
+        <div class="topi-container">
+            <div class="topi-item">
+                <span class="discount">40% OFF</span>
+                <img src="images/topi1.jpg" alt="Bucket Hat Nylon Black">
+                <h3>Bucket Hat Nylon Black</h3>
+                <p class="price"><del>Rp159.000</del> <strong>Rp95.400</strong></p>
+            </div>
+            <div class="topi-item">
+                <span class="discount">35% OFF</span>
+                <img src="images/topi2.jpg" alt="Bucket Hat Nusantara">
+                <h3>Bucket Hat Nusantara</h3>
+                <p class="price"><del>Rp129.000</del> <strong>Rp83.850</strong></p>
+            </div>
+            <div class="topi-item">
+                <span class="discount">40% OFF</span>
+                <img src="images/topi3.jpg" alt="Hat Nusantara Bold">
+                <h3>Hat Nusantara Bold</h3>
+                <p class="price"><del>Rp159.000</del> <strong>Rp95.400</strong></p>
+            </div>
+            <div class="topi-item">
+                <span class="discount">35% OFF</span>
+                <img src="images/topi4.jpg" alt="Hat Nocturn">
+                <h3>Hat Nocturn</h3>
+                <p class="price"><del>Rp129.000</del> <strong>Rp83.850</strong></p>
+            </div>
+            <div class="topi-item">
+                <span class="discount">40% OFF</span>
+                <img src="images/topi5.jpg" alt="Hat Freedom">
+                <h3>Hat Freedom</h3>
+                <p class="price"><del>Rp159.000</del> <strong>Rp95.400</strong></p>
+            </div>
+            <div class="topi-item">
+                <span class="discount">35% OFF</span>
+                <img src="images/topi6.jpg" alt="Bucket Hat Green">
+                <h3>Bucket Hat Green</h3>
+                <p class="price"><del>Rp129.000</del> <strong>Rp83.850</strong></p>
+            </div>
+            <div class="topi-item">
+                <span class="discount">40% OFF</span>
+                <img src="images/topi7.jpg" alt="Bucket Hat Classic">
+                <h3>Bucket Hat Classic</h3>
+                <p class="price"><del>Rp159.000</del> <strong>Rp95.400</strong></p>
+            </div>
+            <div class="topi-item">
+                <span class="discount">35% OFF</span>
+                <img src="images/topi8.jpg" alt="Bucket Hat Puzzle">
+                <h3>Bucket Hat Puzzle</h3>
+                <p class="price"><del>Rp129.000</del> <strong>Rp83.850</strong></p>
+            </div>
+            <div class="topi-item">
+                <span class="discount">40% OFF</span>
+                <img src="images/topi9.jpg" alt="Hat Square">
+                <h3>Hat Square</h3>
+                <p class="price"><del>Rp159.000</del> <strong>Rp95.400</strong></p>
+            </div>
+        </div>
+    </section>
+
+<script>
+fetch("php/products.php?category=3")
+  .then(res => res.json())
+  .then(products => {
+    const container = document.getElementById("productContainer");
+    container.innerHTML = "";
+
+    products.forEach(p => {
+      const diskon = p.discount > 0 ? `<span class="discount">${p.discount}% OFF</span>` : "";
+      const hargaAwal = p.discount > 0 ? `<del>Rp${p.price}</del>` : "";
+      const hargaAkhir = `Rp${p.final_price.toLocaleString("id-ID")}`;
+
+      const item = document.createElement("div");
+      item.className = "kaos-item";
+      item.setAttribute("onclick", `openPopup('${p.image}', '${p.name}', '${hargaAkhir}')`);
+      item.innerHTML = `
+        ${diskon}
+        <img src="${p.image}" alt="${p.name}">
+        <h3>${p.name}</h3>
+        <p class="price">${hargaAwal} <strong>${hargaAkhir}</strong></p>
+      `;
+      container.appendChild(item);
+    });
+  });
+</script>
