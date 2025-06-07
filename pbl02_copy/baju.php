@@ -36,8 +36,6 @@
                 </ul>
             </li>
         </ul>
-
-        <!-- Search Bar -->
         <div class="search-bar">
             <input type="text" id="searchInput" placeholder="Search...">
             <button onclick="searchProducts()">Search</button>
@@ -45,7 +43,7 @@
     </nav>
 </header>
 
-<!-- BAJU -->   
+<!-- Baju -->
 <section class="produk-kaos">
   <h2>T-SHIRT COLLECTION</h2>
   <div class="kaos-container">
@@ -56,7 +54,7 @@
       $diskon = [50, 53, 55, 60, 65][array_rand([50, 53, 55, 60, 65])];
       $hargaAwal = 199000; // default untuk tampilan coret
     ?>
-      <div class="kaos-item" onclick="openPopup(<?= $p['id'] ?>)">
+      <div class="kaos-item" onclick="openPopup('<?= $p['image'] ?>', '<?= $p['name'] ?>', 'Rp<?= number_format($p['price']) ?>')">
         <span class="discount"><?= $diskon ?>% OFF</span>
         <img src="<?= $p['image'] ?>" alt="<?= $p['name'] ?>">
         <h3><?= $p['name'] ?></h3>
@@ -65,44 +63,6 @@
     <?php endwhile; ?>
   </div>
 </section>
-
-<!-- JAKET -->   
-<section class="produk-jaket">
-        <h2>JACKET COLLECTION</h2>
-        <div class="jaket-container">
-        <?php
-    $products = $conn->query("SELECT * FROM products WHERE category = 'Jacket'");
-    while ($p = $products->fetch_assoc()):
-        $hargaAwal = $p['price'] * 2; // estimasi harga awal sebelum diskon
-      ?>
-        <div class="kaos-item" onclick="openPopup(<?= $p['id'] ?>)">
-          <span class="discount">Diskon!</span>
-          <img src="<?= $p['image'] ?>" alt="<?= $p['name'] ?>">
-          <h3><?= $p['name'] ?></h3>
-          <p class="price"><del>Rp<?= number_format($hargaAwal) ?></del> <strong>Rp<?= number_format($p['price']) ?></strong></p>
-        </div>
-      <?php endwhile; ?>
-    </div>
-    </section>
-
-<!-- TOPI --> 
-<section class="produk-topi">
-        <h2>HAT COLLECTION</h2>
-        <div class="topi-container">
-        <?php
-      $products = $conn->query("SELECT * FROM products WHERE LOWER(category) = 'Hat'");
-      while ($p = $products->fetch_assoc()):
-        $hargaAwal = $p['price'] * 1.6;
-      ?>
-        <div class="kaos-item" onclick="openPopup(<?= $p['id'] ?>)">
-          <span class="discount">Diskon!</span>
-          <img src="<?= $p['image'] ?>" alt="<?= $p['name'] ?>">
-          <h3><?= $p['name'] ?></h3>
-          <p class="price"><del>Rp<?= number_format($hargaAwal) ?></del> <strong>Rp<?= number_format($p['price']) ?></strong></p>
-        </div>
-      <?php endwhile; ?>
-    </div>
-  </section>
 
 <!-- Popup Product Detail -->
 <div class="popup-overlay" id="popupOverlay">

@@ -17,10 +17,10 @@
             <li class="dropdown">
                 <a href="#">Products ▼</a>
                 <ul class="dropdown-menu">
-                    <li><a href="products.php">All Product</a></li>
-                    <li><a href="baju.php">T-Shirt</a></li>
-                    <li><a href="jaket.php">Jacket</a></li>
-                    <li><a href="topi.php">Hat</a></li>
+                    <li><a href="products.html">All Product</a></li>
+                    <li><a href="baju.html">T-Shirt</a></li>
+                    <li><a href="jaket.html">Jacket</a></li>
+                    <li><a href="topi.html">Hat</a></li>
                 </ul>
             </li>
             <li><a href="cart.html">Cart</a></li>
@@ -45,48 +45,8 @@
     </nav>
 </header>
 
-<!-- BAJU -->   
-<section class="produk-kaos">
-  <h2>T-SHIRT COLLECTION</h2>
-  <div class="kaos-container">
-    <?php
-    $products = $conn->query("SELECT * FROM products WHERE category = 'T-Shirt'");
-    while ($p = $products->fetch_assoc()):
-      // Contoh diskon acak saja jika belum ada di DB
-      $diskon = [50, 53, 55, 60, 65][array_rand([50, 53, 55, 60, 65])];
-      $hargaAwal = 199000; // default untuk tampilan coret
-    ?>
-      <div class="kaos-item" onclick="openPopup(<?= $p['id'] ?>)">
-        <span class="discount"><?= $diskon ?>% OFF</span>
-        <img src="<?= $p['image'] ?>" alt="<?= $p['name'] ?>">
-        <h3><?= $p['name'] ?></h3>
-        <p class="price"><del>Rp<?= number_format($hargaAwal) ?></del> <strong>Rp<?= number_format($p['price']) ?></strong></p>
-      </div>
-    <?php endwhile; ?>
-  </div>
-</section>
-
-<!-- JAKET -->   
-<section class="produk-jaket">
-        <h2>JACKET COLLECTION</h2>
-        <div class="jaket-container">
-        <?php
-    $products = $conn->query("SELECT * FROM products WHERE category = 'Jacket'");
-    while ($p = $products->fetch_assoc()):
-        $hargaAwal = $p['price'] * 2; // estimasi harga awal sebelum diskon
-      ?>
-        <div class="kaos-item" onclick="openPopup(<?= $p['id'] ?>)">
-          <span class="discount">Diskon!</span>
-          <img src="<?= $p['image'] ?>" alt="<?= $p['name'] ?>">
-          <h3><?= $p['name'] ?></h3>
-          <p class="price"><del>Rp<?= number_format($hargaAwal) ?></del> <strong>Rp<?= number_format($p['price']) ?></strong></p>
-        </div>
-      <?php endwhile; ?>
-    </div>
-    </section>
-
-<!-- TOPI --> 
-<section class="produk-topi">
+    <!-- Topi -->
+    <section class="produk-topi">
         <h2>HAT COLLECTION</h2>
         <div class="topi-container">
         <?php
@@ -94,7 +54,7 @@
       while ($p = $products->fetch_assoc()):
         $hargaAwal = $p['price'] * 1.6;
       ?>
-        <div class="kaos-item" onclick="openPopup(<?= $p['id'] ?>)">
+        <div class="kaos-item" onclick="openPopup('<?= $p['image'] ?>', '<?= $p['name'] ?>', 'Rp<?= number_format($p['price']) ?>')">
           <span class="discount">Diskon!</span>
           <img src="<?= $p['image'] ?>" alt="<?= $p['name'] ?>">
           <h3><?= $p['name'] ?></h3>
@@ -105,12 +65,12 @@
   </section>
 
 <!-- Popup Product Detail -->
-<div class="popup-overlay" id="popupOverlay">
+<div class="popup-overlay" id="popupOverlay" style="display: none;">
   <div class="popup-content">
     <span class="close-btn" onclick="closePopup()">&times;</span>
     <img id="popupImage" src="" alt="Produk">
     <h3 id="popupTitle">Product Name</h3>
-    <p class="popupPrice" id="popupPrice">Product Name</p>
+    <p class="popupPrice" id="popupPrice">Rp0</p>
 
     <div class="popupSize">
       <label>Size Choice:</label>
@@ -129,10 +89,12 @@
         <span id="quantityDisplay">1</span>
         <button onclick="increaseQuantity()">+</button>
       </div>
-    </div>
-<a href="" class="addToCartBtn" onclick="addToCart()">Add To Cart</a>
+    </div><br>
+
+    <a href="#" class="addToCartBtn" onclick="addToCart()">Add To Cart</a>
   </div>
 </div>
+
 
     <footer>
     <div class="footer-container">
@@ -186,6 +148,5 @@
 <script src="cart.js"></script>
 <script src="news.js"></script>
 <script src="account.js"></script>
-<script src="popup.js"></script>
 </body>
 </html>

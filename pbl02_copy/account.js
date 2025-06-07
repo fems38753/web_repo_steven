@@ -1,83 +1,81 @@
-function closePopup(id) {
-      document.getElementById(id).style.display = 'none';
+console.log("✅ account.js berhasil dimuat!");
+
+document.addEventListener("DOMContentLoaded", function () {
+
+  // Fungsi ganti popup antara login ↔ register
+  window.switchPopup = function (popupIdToShow) {
+    const popups = document.querySelectorAll(".overlay");
+    popups.forEach(popup => popup.style.display = "none");
+
+    const target = document.getElementById(popupIdToShow);
+    if (target) {
+      target.style.display = "block";
     }
+  };
 
-    function switchPopup(id) {
-      document.getElementById('login-popup').style.display = 'none';
-      document.getElementById('register-popup').style.display = 'none';
-      document.getElementById(id).style.display = 'flex';
-    }
-
-    function togglePassword(fieldId) {
-      const field = document.getElementById(fieldId);
-      const toggleBtn = field.nextElementSibling;
-      if (field.type === 'password') {
-        field.type = 'text';
-        toggleBtn.textContent = 'Hide';
-      } else {
-        field.type = 'password';
-        toggleBtn.textContent = 'Show';
-      }
-    }
-
-    // Tampilkan popup login saat halaman dimuat
-    window.onload = function () {
-      document.getElementById('login-popup').style.display = 'flex';
-    };
-
-    // Proses Register
-    document.getElementById("registerForm").addEventListener("submit", function (e) {
+  // Fungsi register
+  const registerForm = document.getElementById("registerForm");
+  if (registerForm) {
+    registerForm.addEventListener("submit", function (e) {
       e.preventDefault();
       const username = document.getElementById("register-username").value.trim();
       const email = document.getElementById("register-email").value.trim();
       const password = document.getElementById("register-password").value.trim();
 
-      if (username && email && password) {
-        const userData = {
-          username: username,
-          email: email,
-          password: password
-        };
-        localStorage.setItem("jackarmyUser", JSON.stringify(userData));
-        alert("Successfully registered!");
-        closePopup('register-popup');
-        document.getElementById("login-popup").style.display = "flex";
-      } else {
-        alert("Please fill in all fields.");
-      }
+      fetch("php/register.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: `username=${encodeURIComponent(username)}&email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`
+      })
+        .then(res => res.json())
+        .then(data => {
+          alert(data.message);
+          if (data.status === "success") {
+            switchPopup("login-popup");
+            registerForm.reset();
+          }
+        })
+        .catch(err => {
+          alert("Gagal koneksi ke server: " + err);
+        });
     });
+  }
 
-    // Proses Login
-    document.getElementById("loginForm").addEventListener("submit", function (e) {
+  // Fungsi login
+  const loginForm = document.getElementById("loginForm");
+  if (loginForm) {
+    loginForm.addEventListener("submit", function (e) {
       e.preventDefault();
-      const emailOrUsername = document.getElementById("login-username").value.trim();
+      const email = document.getElementById("login-username").value.trim();
       const password = document.getElementById("login-password").value.trim();
-      const storedUser = JSON.parse(localStorage.getItem("jackarmyUser"));
 
-      if (!storedUser) {
-        alert("You must register first!");
-        closePopup("login-popup");
-        document.getElementById("register-popup").style.display = "flex";
-        return;
-      }
-
-      if (
-        (emailOrUsername === storedUser.username || emailOrUsername === storedUser.email) &&
-        password === storedUser.password
-      ) {
-        alert("Successfully logged in!");
-        closePopup("login-popup");
-      } else {
-        alert("Invalid login credentials.");
-      }
+      fetch("php/login.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: `email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`
+      })
+        .then(res => res.json())
+        .then(data => {
+          alert(data.message);
+          if (data.status === "success") {
+            const urlParams = new URLSearchParams(window.location.search);
+            const redirect = urlParams.get("redirect");
+            if (redirect === "checkout") {
+              window.location.href = "checkout.php";
+            } else {
+              window.location.href = "php/dashboard.php";
+            }
+          }
+        })
+        .catch(err => {
+          alert("Gagal login: " + err);
+        });
     });
+  }
 
-    // Fungsi pencarian (jika ada elemen produk di halaman)
-    function searchProducts() {
-      let input = document.getElementById("searchInput").value.toLowerCase();
-      let items = document.querySelectorAll(".kaos-item, .jaket-item, .topi-item");
-      items.forEach(item => {
-        let text = item.innerText.toLowerCase();
-        item.style.display = text.includes(input) ? "block" : "none";
-      });
-    }
+});
+
+
+
+
+
