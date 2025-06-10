@@ -1,5 +1,5 @@
 function openPopup(productId) {
-    fetch('php/popup.php?id=' + productId)
+    fetch(`popup.php?id=${productId}`)
     .then(res => res.json())
     .then(data => {
       // Set gambar dan info dasar

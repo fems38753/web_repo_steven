@@ -3,10 +3,12 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Jackarmyofficial</title>
-    <link rel="stylesheet" href="pbl02.css">
+    <link rel="stylesheet" href="pbl02.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body>
 <header>
@@ -25,7 +27,6 @@
             </li>
             <li><a href="cart.php">Cart</a></li>
             <li><a href="account.php">Account</a></li>
-            <li><a href="loginout.php">Login</a></li>
             <li class="dropdown">
                 <a href="#">Help Center ▼</a>
                 <ul class="dropdown-menu">
@@ -46,56 +47,31 @@
     </nav>
 </header>
 
-    <!-- Jaket -->
-    <section class="produk-jaket">
-        <h2>JACKET COLLECTION</h2>
-        <div class="jaket-container">
-        <?php
-    $products = $conn->query("SELECT * FROM products WHERE category = 'Jacket'");
-    while ($p = $products->fetch_assoc()):
-        $hargaAwal = $p['price'] * 2; // estimasi harga awal sebelum diskon
-      ?>
-        <div class="kaos-item" onclick="openPopup('<?= $p['image'] ?>', '<?= $p['name'] ?>', 'Rp<?= number_format($p['price']) ?>')">
-          <span class="discount">Diskon!</span>
-          <img src="<?= $p['image'] ?>" alt="<?= $p['name'] ?>">
-          <h3><?= $p['name'] ?></h3>
-          <p class="price"><del>Rp<?= number_format($hargaAwal) ?></del> <strong>Rp<?= number_format($p['price']) ?></strong></p>
-        </div>
-      <?php endwhile; ?>
-    </div>
-    </section>
+    <main class="payment-container">
+        <section class="payment-methods">
+            <div class="method-card">
+                <i class="fas fa-university"></i>
+                <h3>Bank Transfer</h3>
+                <p>BCA, Mandiri</p>
+            </div>
+            <div class="method-card">
+                <i class="fas fa-credit-card"></i>
+                <h3>Credit Card</h3>
+                <p>Visa, Mastercard</p>
+            </div>
+            <div class="method-card">
+                <i class="fas fa-wallet"></i>
+                <h3>E-Wallet</h3>
+                <p>Gopay, OVO</p>
+            </div>
+        </section>
 
-<!-- Popup Product Detail -->
-<div class="popup-overlay" id="popupOverlay" style="display: none;">
-  <div class="popup-content">
-    <span class="close-btn" onclick="closePopup()">&times;</span>
-    <img id="popupImage" src="" alt="Produk">
-    <h3 id="popupTitle">Product Name</h3>
-    <p class="popupPrice" id="popupPrice">Rp0</p>
+        <section class="payment-info">
+            <p>Payment is due by <strong>1x24 jam</strong> after purchase.</p>
+        </section>
 
-    <div class="popupSize">
-      <label>Size Choice:</label>
-      <div class="size-buttons">
-        <button onclick="selectSize('S')">S</button>
-        <button onclick="selectSize('M')">M</button>
-        <button onclick="selectSize('L')">L</button>
-        <button onclick="selectSize('XL')">XL</button>
-      </div>
-    </div>
-
-    <div class="popupQuantity">
-      <label>Quantity:</label>
-      <div class="quantity-wrapper">
-        <button onclick="decreaseQuantity()">-</button>
-        <span id="quantityDisplay">1</span>
-        <button onclick="increaseQuantity()">+</button>
-      </div>
-    </div><br>
-
-    <a href="#" class="addToCartBtn" onclick="addToCart()">Add To Cart</a>
-  </div>
-</div>
-
+        <a href="index.php" class="btn-back">back to home</a>
+    </main>
 
     <footer>
     <div class="footer-container">
@@ -146,8 +122,6 @@
         <p>Copyright &copy; 2025 <strong>JACKARMY</strong></p>
     </div>
 </footer>
-<script src="cart.js"></script>
 <script src="news.js"></script>
-<script src="account.js"></script>
 </body>
 </html>

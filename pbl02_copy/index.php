@@ -1,4 +1,7 @@
-<?php include 'php/connect.php'; ?>
+<?php
+session_start();
+include 'php/connect.php';
+?>
 
 <!DOCTYPE html>
 <html lang="id">
@@ -25,6 +28,7 @@
             </li>
             <li><a href="cart.php">Cart</a></li>
             <li><a href="account.php">Account</a></li>
+            <li><a href="loginout.php">Login</a></li>
             <li class="dropdown">
                 <a href="#">Help Center ▼</a>
                 <ul class="dropdown-menu">
@@ -43,60 +47,130 @@
     </nav>
 </header>
 
-<!-- BAJU -->   
+<!-- Hero Section -->
+<section class="hero-carousel">
+  <div class="carousel">
+    <!-- Navigation Buttons -->
+    <button class="prev" aria-label="Previous Slide" onclick="moveSlide(-1)">&#10094;</button>
+
+    <!-- Carousel Slides -->
+    <img src="Images/hero1.jpg" class="slide active" alt="Hero 1">
+    <img src="Images/hero2.jpg" class="slide" alt="Hero 2">
+    <img src="Images/hero3.jpg" class="slide" alt="Hero 3">
+    <img src="Images/hero4.jpg" class="slide" alt="Hero 4">
+
+    <button class="next" aria-label="Next Slide" onclick="moveSlide(1)">&#10095;</button>
+  </div>
+</section>
+
+<!-- Produk Kaos -->
 <section class="produk-kaos">
   <h2>T-SHIRT COLLECTION</h2>
   <div class="kaos-container">
-    <?php
-    $products = $conn->query("SELECT * FROM products WHERE category = 'T-Shirt'");
-    while ($p = $products->fetch_assoc()):
-      $hargaAwal = $p['price'] * 2; // estimasi harga awal sebelum diskon
-    ?>
-      <div class="kaos-item" onclick="openPopup('<?= $p['image'] ?>', '<?= $p['name'] ?>', 'Rp<?= number_format($p['price']) ?>')">
-        <span class="discount">Diskon!</span>
-        <img src="<?= $p['image'] ?>" alt="<?= $p['name'] ?>">
-        <h3><?= $p['name'] ?></h3>
-        <p class="price"><del>Rp<?= number_format($hargaAwal) ?></del> <strong>Rp<?= number_format($p['price']) ?></strong></p>
-      </div>
-    <?php endwhile; ?>
+    <div class="kaos-item" onclick="openPopup('images/baju1.jpg', 'Kaos Origami Navy', 'Rp79.900')">
+      <span class="discount">60% OFF</span>
+      <img src="images/baju1.jpg" alt="Kaos Origami Navy">
+      <h3>T-Shirt Angel Demon</h3>
+      <p class="price"><del>Rp199.000</del> <strong>Rp79.900</strong></p>
+    </div>
+    <div class="kaos-item" onclick="openPopup('images/baju2.jpg', 'T-Shirt Wolf', 'Rp69.000')">
+      <span class="discount">65% OFF</span>
+      <img src="images/baju2.jpg" alt="T-Shirt Wolf">
+      <h3>T-Shirt Wolf</h3>
+      <p class="price"><del>Rp199.000</del> <strong>Rp69.000</strong></p>
+    </div>
+    <div class="kaos-item" onclick="openPopup('images/baju3.jpg', 'T-Shirt Breath', 'Rp89.000')">
+      <span class="discount">55% OFF</span>
+      <img src="images/baju3.jpg" alt="T-Shirt Breath">
+      <h3>T-Shirt Breath</h3>
+      <p class="price"><del>Rp199.000</del> <strong>Rp89.000</strong></p>
+    </div>
+    <div class="kaos-item" onclick="openPopup('images/baju4.jpg', 'T-Shirt Creates', 'Rp93.000')">
+      <span class="discount">53% OFF</span>
+      <img src="images/baju4.jpg" alt="T-Shirt Creates">
+      <h3>T-Shirt Creates</h3>
+      <p class="price"><del>Rp199.000</del> <strong>Rp93.000</strong></p>
+    </div>
+    <div class="kaos-item" onclick="openPopup('images/baju5.jpg', 'T-Shirt Love Hurts', 'Rp79.900')">
+      <span class="discount">60% OFF</span>
+      <img src="images/baju5.jpg" alt="T-Shirt Love Hurts">
+      <h3>T-Shirt Love Hurts</h3>
+      <p class="price"><del>Rp199.000</del> <strong>Rp79.900</strong></p>
+    </div>
   </div>
 </section>
 
-<!-- JAKET -->   
+<!-- Produk Jaket -->
 <section class="produk-jaket">
   <h2>JACKET COLLECTION</h2>
   <div class="jaket-container">
-    <?php
-    $products = $conn->query("SELECT * FROM products WHERE category = 'Jacket'");
-    while ($p = $products->fetch_assoc()):
-      $hargaAwal = $p['price'] * 2; // estimasi harga awal sebelum diskon
-    ?>
-      <div class="kaos-item" onclick="openPopup('<?= $p['image'] ?>', '<?= $p['name'] ?>', 'Rp<?= number_format($p['price']) ?>')">
-        <span class="discount">Diskon!</span>
-        <img src="<?= $p['image'] ?>" alt="<?= $p['name'] ?>">
-        <h3><?= $p['name'] ?></h3>
-        <p class="price"><del>Rp<?= number_format($hargaAwal) ?></del> <strong>Rp<?= number_format($p['price']) ?></strong></p>
-      </div>
-    <?php endwhile; ?>
+    <div class="kaos-item" onclick="openPopup('images/jaket1.jpg', 'Jacket Hoodie Starboy', 'Rp199.000')">
+      <span class="discount">50% OFF</span>
+      <img src="images/jaket1.jpg" alt="Jacket Hoodie Starboy">
+      <h3>Jacket Hoodie Starboy</h3>
+      <p class="price"><del>Rp399.000</del> <strong>Rp199.000</strong></p>
+    </div>
+    <div class="kaos-item" onclick="openPopup('images/jaket2.jpg', 'Jacket Hoodie X', 'Rp197.450')">
+      <span class="discount">45% OFF</span>
+      <img src="images/jaket2.jpg" alt="Jacket Hoodie X">
+      <h3>Jacket Hoodie X</h3>
+      <p class="price"><del>Rp359.000</del> <strong>Rp197.450</strong></p>
+    </div>
+    <div class="kaos-item" onclick="openPopup('images/jaket3.jpg', 'Jacket Hoodie Star', 'Rp199.000')">
+      <span class="discount">50% OFF</span>
+      <img src="images/jaket3.jpg" alt="Jacket Hoodie Star">
+      <h3>Jacket Hoodie Star</h3>
+      <p class="price"><del>Rp399.000</del> <strong>Rp199.000</strong></p>
+    </div>
+    <div class="kaos-item" onclick="openPopup('images/jaket4.jpg', 'Jacket Cardigan', 'Rp197.450')">
+      <span class="discount">45% OFF</span>
+      <img src="images/jaket4.jpg" alt="Jacket Cardigan">
+      <h3>Jacket Cardigan</h3>
+      <p class="price"><del>Rp359.000</del> <strong>Rp197.450</strong></p>
+    </div>
+    <div class="kaos-item" onclick="openPopup('images/jaket5.jpg', 'Jacket Canvas', 'Rp199.000')">
+      <span class="discount">50% OFF</span>
+      <img src="images/jaket5.jpg" alt="Jacket Canvas">
+      <h3>Jacket Canvas</h3>
+      <p class="price"><del>Rp399.000</del> <strong>Rp199.000</strong></p>
+    </div>
   </div>
 </section>
 
-<!-- TOPI --> 
+<!-- Produk Topi -->
 <section class="produk-topi">
   <h2>HAT COLLECTION</h2>
   <div class="topi-container">
-    <?php
-    $products = $conn->query("SELECT * FROM products WHERE LOWER(category) = 'Hat'");
-    while ($p = $products->fetch_assoc()):
-      $hargaAwal = $p['price'] * 1.6;
-    ?>
-      <div class="kaos-item" onclick="openPopup('<?= $p['image'] ?>', '<?= $p['name'] ?>', 'Rp<?= number_format($p['price']) ?>')">
-        <span class="discount">Diskon!</span>
-        <img src="<?= $p['image'] ?>" alt="<?= $p['name'] ?>">
-        <h3><?= $p['name'] ?></h3>
-        <p class="price"><del>Rp<?= number_format($hargaAwal) ?></del> <strong>Rp<?= number_format($p['price']) ?></strong></p>
-      </div>
-    <?php endwhile; ?>
+    <div class="kaos-item" onclick="openPopup('images/topi1.jpg', 'Bucket Hat Nylon Black', 'Rp95.400')">
+      <span class="discount">40% OFF</span>
+      <img src="images/topi1.jpg" alt="Bucket Hat Nylon Black">
+      <h3>Bucket Hat Nylon Black</h3>
+      <p class="price"><del>Rp159.000</del> <strong>Rp95.400</strong></p>
+    </div>
+    <div class="kaos-item" onclick="openPopup('images/topi2.jpg', 'Bucket Hat Nusantara', 'Rp83.850')">
+      <span class="discount">35% OFF</span>
+      <img src="images/topi2.jpg" alt="Bucket Hat Nusantara">
+      <h3>Bucket Hat Nusantara</h3>
+      <p class="price"><del>Rp129.000</del> <strong>Rp83.850</strong></p>
+    </div>
+    <div class="kaos-item" onclick="openPopup('images/topi3.jpg', 'Hat Nusantara Bold', 'Rp95.400')">
+      <span class="discount">40% OFF</span>
+      <img src="images/topi3.jpg" alt="Hat Nusantara Bold">
+      <h3>Hat Nusantara Bold</h3>
+      <p class="price"><del>Rp159.000</del> <strong>Rp95.400</strong></p>
+    </div>
+    <div class="kaos-item" onclick="openPopup('images/topi4.jpg', 'Hat Nocturn', 'Rp83.850')">
+      <span class="discount">35% OFF</span>
+      <img src="images/topi4.jpg" alt="Hat Nocturn">
+      <h3>Hat Nocturn</h3>
+      <p class="price"><del>Rp129.000</del> <strong>Rp83.850</strong></p>
+    </div>
+    <div class="kaos-item" onclick="openPopup('images/topi5.jpg', 'Hat Freedom', 'Rp95.400')">
+      <span class="discount">40% OFF</span>
+      <img src="images/topi5.jpg" alt="Hat Freedom">
+      <h3>Hat Freedom</h3>
+      <p class="price"><del>Rp159.000</del> <strong>Rp95.400</strong></p>
+    </div>
   </div>
 </section>
 
@@ -182,6 +256,23 @@
 </footer>
 
 <script>
+// Carousel functionality
+let currentSlide = 0;
+const slides = document.querySelectorAll('.slide');
+
+function showSlide(n) {
+    slides.forEach(slide => slide.classList.remove('active'));
+    currentSlide = (n + slides.length) % slides.length;
+    slides[currentSlide].classList.add('active');
+}
+
+function moveSlide(n) {
+    showSlide(currentSlide + n);
+}
+
+// Auto-advance slides every 5 seconds
+setInterval(() => moveSlide(1), 5000);
+
 // Popup functionality
 let currentQuantity = 1;
 let selectedSize = '';

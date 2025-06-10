@@ -3,10 +3,13 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Jackarmyofficial</title>
-    <link rel="stylesheet" href="pbl02.css">
+    <link rel="stylesheet" href="pbl02.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body>
 <header>
@@ -25,7 +28,6 @@
             </li>
             <li><a href="cart.php">Cart</a></li>
             <li><a href="account.php">Account</a></li>
-            <li><a href="loginout.php">Login</a></li>
             <li class="dropdown">
                 <a href="#">Help Center ▼</a>
                 <ul class="dropdown-menu">
@@ -46,56 +48,33 @@
     </nav>
 </header>
 
-    <!-- Jaket -->
-    <section class="produk-jaket">
-        <h2>JACKET COLLECTION</h2>
-        <div class="jaket-container">
-        <?php
-    $products = $conn->query("SELECT * FROM products WHERE category = 'Jacket'");
-    while ($p = $products->fetch_assoc()):
-        $hargaAwal = $p['price'] * 2; // estimasi harga awal sebelum diskon
-      ?>
-        <div class="kaos-item" onclick="openPopup('<?= $p['image'] ?>', '<?= $p['name'] ?>', 'Rp<?= number_format($p['price']) ?>')">
-          <span class="discount">Diskon!</span>
-          <img src="<?= $p['image'] ?>" alt="<?= $p['name'] ?>">
-          <h3><?= $p['name'] ?></h3>
-          <p class="price"><del>Rp<?= number_format($hargaAwal) ?></del> <strong>Rp<?= number_format($p['price']) ?></strong></p>
+    <section class="refund-container">
+        <div class="refund-content">
+            <h3>Easy & Save Refund</h3>
+            <p>Refund is allegible for <strong>14 hari</strong> after product is recieved with conditions:</p>
+            <ul class="refund-list">
+                <li>Product is unused</li>
+                <li>Tag is connected</li>
+                <li>Packaging is still intact</li>
+                <li>Invoice must be included</li>
+            </ul>
+
+            <h4>Refund step by step:</h4>
+            <ol class="refund-steps">
+                <li>Call customer service via WhatsApp</li>
+                <li>Send product and invoice picture</li>
+                <li>Follow the step by step from the customer service</li>
+            </ol>
+
+            <p><strong>money will be transfered back to you after the conditions is fulfilled.</strong></p>
+
+            <a href="index.php" class="btn-back">Back to Home</a>
         </div>
-      <?php endwhile; ?>
-    </div>
+
+        <div class="refund-image">
+            <img src="images/refund.png" alt="Ilustrasi Pengembalian Barang" />
+        </div>
     </section>
-
-<!-- Popup Product Detail -->
-<div class="popup-overlay" id="popupOverlay" style="display: none;">
-  <div class="popup-content">
-    <span class="close-btn" onclick="closePopup()">&times;</span>
-    <img id="popupImage" src="" alt="Produk">
-    <h3 id="popupTitle">Product Name</h3>
-    <p class="popupPrice" id="popupPrice">Rp0</p>
-
-    <div class="popupSize">
-      <label>Size Choice:</label>
-      <div class="size-buttons">
-        <button onclick="selectSize('S')">S</button>
-        <button onclick="selectSize('M')">M</button>
-        <button onclick="selectSize('L')">L</button>
-        <button onclick="selectSize('XL')">XL</button>
-      </div>
-    </div>
-
-    <div class="popupQuantity">
-      <label>Quantity:</label>
-      <div class="quantity-wrapper">
-        <button onclick="decreaseQuantity()">-</button>
-        <span id="quantityDisplay">1</span>
-        <button onclick="increaseQuantity()">+</button>
-      </div>
-    </div><br>
-
-    <a href="#" class="addToCartBtn" onclick="addToCart()">Add To Cart</a>
-  </div>
-</div>
-
 
     <footer>
     <div class="footer-container">
@@ -112,7 +91,7 @@
         </div>
         </div>
 
-           <div class="footer-section">
+        <div class="footer-section">
             <h4>Products</h4>
                 <ul>
                     <li><a href="products.php">All Product</a></li>
@@ -133,21 +112,20 @@
             </ul>
         </div>
 
- <div class="footer-section">
-    <h4>Newsletter</h4>
-    <form id="newsletterForm">
-        <input type="email" id="emailInput" placeholder="Insert your email" required>
-        <button type="submit">Send</button>
-    </form>
-</div>
+        <div class="footer-section">
+            <h4>Newsletter</h4>
+            <form id="newsletterForm">
+                <input type="email" id="emailInput" placeholder="Insert your email" required>
+                <button type="submit">Send</button>
+            </form>
+        </div>
     </div>
 
     <div class="footer-bottom">
         <p>Copyright &copy; 2025 <strong>JACKARMY</strong></p>
     </div>
 </footer>
-<script src="cart.js"></script>
+
 <script src="news.js"></script>
-<script src="account.js"></script>
 </body>
 </html>
