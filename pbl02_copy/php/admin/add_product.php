@@ -1,55 +1,432 @@
 <?php
-// ===== FILE: add_product.php =====
 include 'layout_admin.php';
 include '../connect.php';
+
+// Check if sidebar should be minimized
+$sidebarMinimized = isset($_COOKIE['sidebar_minimized']) && $_COOKIE['sidebar_minimized'] === 'true';
 
 $categories = $conn->query("SELECT * FROM categories");
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-  $name = $_POST['name'];
-  $category = $_POST['category_id'];
-  $price = $_POST['price'];
-  $discount = $_POST['discount'];
+    $name = $conn->real_escape_string($_POST['name']);
+    $category_id = (int)$_POST['category_id'];
+    $price = (int)$_POST['price'];
+    $discount = (int)$_POST['discount'];
+    $stock = (int)$_POST['stock'];
+    $size_available = $conn->real_escape_string($_POST['size_available']);
 
-  $imagePath = '';
-  if (!empty($_FILES['image_upload']['name'])) {
-    $filename = time() . '_' . basename($_FILES['image_upload']['name']);
-    $targetPath = '../uploads/' . $filename;
-    if (move_uploaded_file($_FILES['image_upload']['tmp_name'], $targetPath)) {
-      $imagePath = 'uploads/' . $filename;
+    // File upload handling
+    $image = '';
+    if ($_FILES['image']['name']) {
+        $target_dir = "../uploads/products/";
+        if (!is_dir($target_dir)) {
+            mkdir($target_dir, 0777, true);
+        }
+        
+        $file_ext = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
+        $filename = uniqid() . '.' . $file_ext;
+        $target_file = $target_dir . $filename;
+        
+        if (move_uploaded_file($_FILES['image']['tmp_name'], $target_file)) {
+            $image = "uploads/products/" . $filename;
+        }
     }
-  }
 
-  $stmt = $conn->prepare("INSERT INTO products (name, category_id, price, discount, image) VALUES (?, ?, ?, ?, ?)");
-  $stmt->bind_param("siiis", $name, $category, $price, $discount, $imagePath);
-  $stmt->execute();
-  header("Location: products.php");
-  exit;
+    $stmt = $conn->prepare("INSERT INTO products 
+                          (name, category_id, price, discount, image, stock, size_available) 
+                          VALUES (?, ?, ?, ?, ?, ?, ?)");
+    $stmt->bind_param("siiissi", $name, $category_id, $price, $discount, $image, $stock, $size_available);
+    
+    if ($stmt->execute()) {
+        $_SESSION['message'] = "Product added successfully";
+        header('Location: products.php');
+        exit();
+    } else {
+        $error = "Failed to add product: " . $conn->error;
+    }
 }
 ?>
 
-<h2 style="text-align:center;">Tambah Produk</h2>
-<form method="post" enctype="multipart/form-data" style="max-width:500px; margin:0 auto;">
-  <label>Nama Produk:</label><br>
-  <input type="text" name="name" required style="width:100%; padding:8px;"><br><br>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Product - Admin Panel</title>
+    <style>
+    :root {
+        --sidebar-width: 250px;
+        --sidebar-minimized-width: 80px;
+        --primary-color: #2c3e50;
+        --secondary-color: #3498db;
+        --success-color: #2ecc71;
+        --danger-color: #e74c3c;
+        --light-gray: #f8f9fa;
+        --dark-gray: #343a40;
+        --transition-speed: 0.3s;
+    }
 
-  <label>Kategori:</label><br>
-  <select name="category_id" style="width:100%; padding:8px;">
-    <?php while ($cat = $categories->fetch_assoc()): ?>
-      <option value="<?= $cat['id'] ?>"><?= $cat['name'] ?></option>
-    <?php endwhile ?>
-  </select><br><br>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f5f7fa;
+        transition: margin-left var(--transition-speed);
+    }
 
-  <label>Harga:</label><br>
-  <input type="number" name="price" required style="width:100%; padding:8px;"><br><br>
+    .main-container {
+        display: flex;
+        min-height: 100vh;
+    }
 
-  <label>Diskon (%):</label><br>
-  <input type="number" name="discount" value="0" style="width:100%; padding:8px;"><br><br>
+    .sidebar {
+        width: var(--sidebar-width);
+        background: var(--primary-color);
+        color: white;
+        transition: width var(--transition-speed);
+        overflow: hidden;
+        position: fixed;
+        height: 100vh;
+        z-index: 1000;
+    }
 
-  <label>Upload Gambar:</label><br>
-  <input type="file" name="image_upload" required><br><br>
+    .sidebar.minimized {
+        width: var(--sidebar-minimized-width);
+    }
 
-  <button type="submit" style="padding:10px 20px;">Simpan</button>
-</form>
+    .sidebar-header {
+        padding: 20px;
+        background: rgba(0, 0, 0, 0.1);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
 
-<hr>
+    .sidebar-header h3 {
+        margin: 0;
+        white-space: nowrap;
+    }
+
+    .toggle-sidebar {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 1.2rem;
+        cursor: pointer;
+        padding: 5px;
+    }
+
+    .sidebar-menu {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .sidebar-menu li a {
+        display: flex;
+        align-items: center;
+        padding: 12px 20px;
+        color: white;
+        text-decoration: none;
+        transition: background 0.2s;
+        white-space: nowrap;
+    }
+
+    .sidebar-menu li a:hover {
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    .sidebar-menu li a i {
+        margin-right: 10px;
+        font-size: 1.1rem;
+        min-width: 20px;
+    }
+
+    .sidebar.minimized .sidebar-menu li a span {
+        display: none;
+    }
+
+    .sidebar.minimized .sidebar-menu li a i {
+        margin-right: 0;
+        font-size: 1.3rem;
+    }
+
+    .sidebar.minimized .sidebar-header h3 {
+        display: none;
+    }
+
+    .main-content {
+        flex: 1;
+        margin-left: var(--sidebar-width);
+        padding: 25px;
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 0 15px rgba(0,0,0,0.05);
+        transition: margin-left var(--transition-speed);
+        min-height: calc(100vh - 50px);
+    }
+
+    .sidebar.minimized ~ .main-content {
+        margin-left: var(--sidebar-minimized-width);
+    }
+
+    h2 {
+        color: var(--primary-color);
+        margin-bottom: 25px;
+        font-size: 24px;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 10px;
+    }
+
+    .alert {
+        padding: 12px 15px;
+        margin-bottom: 20px;
+        border-radius: 4px;
+        font-size: 14px;
+    }
+
+    .alert-error {
+        background-color: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+    }
+
+    .product-form {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .form-group label {
+        font-weight: 600;
+        color: var(--primary-color);
+        font-size: 14px;
+    }
+
+    .form-group input[type="text"],
+    .form-group input[type="number"],
+    .form-group select,
+    .form-group input[type="file"],
+    .form-group textarea {
+        padding: 10px 12px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 14px;
+        transition: border 0.3s ease;
+    }
+
+    .form-group input[type="text"]:focus,
+    .form-group input[type="number"]:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+        border-color: var(--secondary-color);
+        outline: none;
+        box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+    }
+
+    .form-row {
+        display: flex;
+        gap: 20px;
+    }
+
+    .form-row .form-group {
+        flex: 1;
+    }
+
+    .form-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 15px;
+        margin-top: 20px;
+        padding-top: 15px;
+        border-top: 1px solid #eee;
+    }
+
+    .btn {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 14px;
+    }
+
+    .btn-submit {
+        background: var(--success-color);
+        color: white;
+    }
+
+    .btn-submit:hover {
+        background: #27ae60;
+        transform: translateY(-1px);
+    }
+
+    .btn-cancel {
+        background: #95a5a6;
+        color: white;
+        text-decoration: none;
+        text-align: center;
+        line-height: normal;
+    }
+
+    .btn-cancel:hover {
+        background: #7f8c8d;
+        transform: translateY(-1px);
+    }
+
+    .size-format-hint {
+        font-size: 12px;
+        color: #7f8c8d;
+        margin-top: 4px;
+    }
+
+    .file-upload-wrapper {
+        border: 1px dashed #ddd;
+        padding: 15px;
+        border-radius: 4px;
+        text-align: center;
+        background: #f9f9f9;
+    }
+
+    .file-upload-wrapper:hover {
+        border-color: var(--secondary-color);
+        background: #f1f9ff;
+    }
+
+    @media (max-width: 768px) {
+        .sidebar {
+            width: var(--sidebar-minimized-width);
+        }
+        
+        .sidebar:not(.minimized) {
+            width: var(--sidebar-width);
+        }
+        
+        .main-content {
+            margin-left: var(--sidebar-minimized-width);
+        }
+        
+        .sidebar:not(.minimized) ~ .main-content {
+            margin-left: var(--sidebar-width);
+        }
+    }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="main-container">
+        <aside class="sidebar <?php echo $sidebarMinimized ? 'minimized' : ''; ?>">
+            <div class="sidebar-header">
+                <h3>Admin Panel</h3>
+                <button class="toggle-sidebar">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="dashboard.php"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a></li>
+                <li><a href="products.php"><i class="fas fa-box-open"></i> <span>Kelola Produk</span></a></li>
+                <li><a href="add_product.php"><i class="fas fa-plus-circle"></i> <span>Tambah Produk</span></a></li>
+                <li><a href="categories.php"><i class="fas fa-tags"></i> <span>Kategori</span></a></li>
+                <li><a href="admins.php"><i class="fas fa-users-cog"></i> <span>Admin</span></a></li>
+                <li><a href="logout.php"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a></li>
+            </ul>
+        </aside>
+
+        <div class="main-content">
+            <h2>Add New Product</h2>
+            
+            <?php if (isset($error)): ?>
+                <div class="alert alert-error"><?= $error ?></div>
+            <?php endif; ?>
+            
+            <form method="POST" enctype="multipart/form-data" class="product-form">
+                <div class="form-group">
+                    <label for="name">Product Name</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="category_id">Category</label>
+                    <select id="category_id" name="category_id" required>
+                        <?php if ($categories->num_rows > 0): ?>
+                            <?php while ($cat = $categories->fetch_assoc()): ?>
+                                <option value="<?= $cat['id'] ?>"><?= htmlspecialchars($cat['name']) ?></option>
+                            <?php endwhile; ?>
+                        <?php else: ?>
+                            <option value="">No categories available</option>
+                        <?php endif; ?>
+                    </select>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="price">Price (Rp)</label>
+                        <input type="number" id="price" name="price" min="0" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="discount">Discount (%)</label>
+                        <input type="number" id="discount" name="discount" min="0" max="100" value="0">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="stock">Stock</label>
+                        <input type="number" id="stock" name="stock" min="0" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="size_available">Sizes Available</label>
+                        <input type="text" id="size_available" name="size_available" placeholder="S.2,M.3,L.4,XL.5" required>
+                        <span class="size-format-hint">Format: Size.Quantity (e.g., S.2,M.3,L.4,XL.5)</span>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Product Image</label>
+                    <div class="file-upload-wrapper">
+                        <input type="file" name="image" accept="image/*" required>
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-submit">Save Product</button>
+                    <a href="products.php" class="btn btn-cancel">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const toggleSidebar = document.querySelector('.toggle-sidebar');
+        const sidebar = document.querySelector('.sidebar');
+        
+        // Check for saved preference
+        const isMinimized = localStorage.getItem('sidebarMinimized') === 'true';
+        if (isMinimized) {
+            sidebar.classList.add('minimized');
+        }
+        
+        toggleSidebar.addEventListener('click', function() {
+            sidebar.classList.toggle('minimized');
+            
+            // Save preference
+            const isNowMinimized = sidebar.classList.contains('minimized');
+            localStorage.setItem('sidebarMinimized', isNowMinimized);
+            
+            // Set cookie for PHP to read on page reload
+            document.cookie = `sidebar_minimized=${isNowMinimized}; path=/`;
+        });
+    });
+    </script>
+</body>
+</html>

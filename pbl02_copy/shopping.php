@@ -3,10 +3,13 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Jackarmyofficial</title>
-    <link rel="stylesheet" href="pbl02.css">
+    <link rel="stylesheet" href="pbl02.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body>
 <header>
@@ -45,56 +48,25 @@
     </nav>
 </header>
 
-    <!-- Topi -->
-    <section class="produk-topi">
-        <h2>HAT COLLECTION</h2>
-        <div class="topi-container">
-        <?php
-      $products = $conn->query("SELECT * FROM products WHERE LOWER(category) = 'Hat'");
-      while ($p = $products->fetch_assoc()):
-        $hargaAwal = $p['price'] * 1.6;
-      ?>
-        <div class="kaos-item" onclick="openPopup('<?= $p['image'] ?>', '<?= $p['name'] ?>', 'Rp<?= number_format($p['price']) ?>')">
-          <span class="discount">Diskon!</span>
-          <img src="<?= $p['image'] ?>" alt="<?= $p['name'] ?>">
-          <h3><?= $p['name'] ?></h3>
-          <p class="price"><del>Rp<?= number_format($hargaAwal) ?></del> <strong>Rp<?= number_format($p['price']) ?></strong></p>
+    <section class="shopping-container">
+        <div class="shopping-steps">
+            <h3>How to buy</h3>
+            <ol>
+                <li>Choose product category (T-shirt, Jacket, or Hat)</li>
+                <li>Click product to see price dan detail</li>
+                <li>Click <strong>"Add to Cart"</strong> to add to cart</li>
+                <li>Open cart to check chosen item</li>
+                <li>Click <strong>"Continue to Payment"</strong> to finish order</li>
+                <li>Login or sign up if you don't have an account</li>
+                <li>Choose payment method and finish your transaction</li>
+            </ol>
+            <a href="products.php" class="btn-shop-now">Start Shopping</a>
         </div>
-      <?php endwhile; ?>
-    </div>
-  </section>
 
-<!-- Popup Product Detail -->
-<div class="popup-overlay" id="popupOverlay" style="display: none;">
-  <div class="popup-content">
-    <span class="close-btn" onclick="closePopup()">&times;</span>
-    <img id="popupImage" src="" alt="Produk">
-    <h3 id="popupTitle">Product Name</h3>
-    <p class="popupPrice" id="popupPrice">Rp0</p>
-
-    <div class="popupSize">
-      <label>Size Choice:</label>
-      <div class="size-buttons">
-        <button onclick="selectSize('S')">S</button>
-        <button onclick="selectSize('M')">M</button>
-        <button onclick="selectSize('L')">L</button>
-        <button onclick="selectSize('XL')">XL</button>
-      </div>
-    </div>
-
-    <div class="popupQuantity">
-      <label>Quantity:</label>
-      <div class="quantity-wrapper">
-        <button onclick="decreaseQuantity()">-</button>
-        <span id="quantityDisplay">1</span>
-        <button onclick="increaseQuantity()">+</button>
-      </div>
-    </div><br>
-
-    <a href="#" class="addToCartBtn" onclick="addToCart()">Add To Cart</a>
-  </div>
-</div>
-
+        <div class="shopping-image">
+            <img src="images/shopping.png" alt="Belanja Illustration" />
+        </div>
+    </section>
 
     <footer>
     <div class="footer-container">
@@ -111,7 +83,7 @@
         </div>
         </div>
 
-           <div class="footer-section">
+        <div class="footer-section">
             <h4>Products</h4>
                 <ul>
                     <li><a href="products.php">All Product</a></li>
@@ -132,21 +104,20 @@
             </ul>
         </div>
 
- <div class="footer-section">
-    <h4>Newsletter</h4>
-    <form id="newsletterForm">
-        <input type="email" id="emailInput" placeholder="Insert your email" required>
-        <button type="submit">Send</button>
-    </form>
-</div>
+        <div class="footer-section">
+            <h4>Newsletter</h4>
+            <form id="newsletterForm">
+                <input type="email" id="emailInput" placeholder="Insert your email" required>
+                <button type="submit">Send</button>
+            </form>
+        </div>
     </div>
 
     <div class="footer-bottom">
         <p>Copyright &copy; 2025 <strong>JACKARMY</strong></p>
     </div>
 </footer>
-<script src="cart.js"></script>
+
 <script src="news.js"></script>
-<script src="account.js"></script>
 </body>
 </html>

@@ -1,9 +1,12 @@
 <?php
+session_start();
+if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] != 'admin') {
+    header("Location: ../login.php");
+    exit();
+}
+echo "Halo Admin, " . $_SESSION['user_email'];
 include 'user_auth.php';
 include 'connect.php';
-
-$user_id = $_SESSION['user_id'];
-$username = $_SESSION['username'];
 
 $orders = $conn->query("SELECT * FROM orders WHERE user_id = $user_id ORDER BY order_date DESC");
 ?>
