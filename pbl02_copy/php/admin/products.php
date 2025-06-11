@@ -19,7 +19,7 @@ $result = $conn->query("
     SELECT p.*, c.name AS category_name 
     FROM products p 
     LEFT JOIN categories c ON p.category_id = c.id
-    ORDER BY p.id DESC
+    ORDER BY p.id ASC
     LIMIT $limit OFFSET $offset
 ");
 
@@ -35,16 +35,40 @@ $total_pages = ceil($total_products / $limit);
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    min-height: 100vh;
+}
+
+/* Sidebar fix di kiri */
+.sidebar {
+    width: var(--sidebar-width);
+    background: var(--primary-color);
+    color: white;
+    overflow: hidden;
+    position: fixed;
+    height: 100vh;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+}
+
+/* Konten utama di kanan sidebar */
 .main-content {
-    padding: 20px;
+    margin-left: var(--sidebar-width);
+    padding: 30px;
+    flex: 1;
     background: #fff;
-    border-radius: 8px;
-    box-shadow: 0 0 15px rgba(0,0,0,0.05);
-    margin: 20px;
+    min-height: 100vh;
+    box-shadow: inset 0 0 8px rgba(0,0,0,0.03);
 }
 
 h2 {
-    color: #2c3e50;
+    color: var(--primary-color);
     margin-bottom: 25px;
     font-size: 24px;
     border-bottom: 1px solid #eee;
@@ -108,7 +132,7 @@ h2 {
 }
 
 .product-table td {
-    padding: 12px 15px;
+    padding: 12px 10px;
     border-bottom: 1px solid #eee;
     vertical-align: middle;
 }
@@ -129,25 +153,26 @@ h2 {
 
 .btn-edit, .btn-delete {
     display: inline-flex;
-    padding: 5px;
-    border-radius: 4px;
+    padding: 30px 15px ;
+    border-radius: 0px;
     transition: all 0.3s ease;
+    color: #000;
 }
 
 .btn-edit {
-    background: #f39c12;
+    background:rgb(255, 255, 255);
 }
 
 .btn-edit:hover {
-    background: #e67e22;
+    background: #3498db;
 }
 
 .btn-delete {
-    background: #e74c3c;
+    background:rgb(255, 255, 255);
 }
 
 .btn-delete:hover {
-    background: #c0392b;
+    background:rgb(255, 0, 0);
 }
 
 .pagination {
@@ -240,6 +265,7 @@ h2 {
       font-size: 1.1rem;
       min-width: 20px;
     }
+    
 
 @media (max-width: 768px) {
       .sidebar {
@@ -263,7 +289,7 @@ h2 {
       }
     }
 </style>
-
+</head>
 <body>
   <aside class="sidebar">
     <div class="sidebar-header">
@@ -274,81 +300,84 @@ h2 {
       <li><a href="products.php"><i class="fas fa-box-open"></i> <span>Kelola Produk</span></a></li>
       <li><a href="add_product.php"><i class="fas fa-plus-circle"></i> <span>Tambah Produk</span></a></li>
       <li><a href="orders.php"><i class="fas fa-shopping-cart"></i> <span>Pesanan</span></a></li>
-      <li><a href="logout.php"><i class="fas fa-users"></i> <span>Pengguna</span></a></li>
-      <li><a href="lihat_user.php"><i class="fas fa-tags"></i> <span>Kategori</span></a></li>
-      <li><a href="/prog_web/web_repo_steven/pbl02_copy/logout.php">Logout</a></li>
+      <li><a href="pengguna.php"><i class="fas fa-users"></i> <span>Pengguna</span></a></li>
+      <li><a href="kategori.php"><i class="fas fa-tags"></i> <span>Kategori</span></a></li>
+      <li><a href="/prog_web/web_repo_steven/pbl02_copy/logout.php"><i class="fas fa-sign-out-alt"></i>Logout</a></li>
     </ul>
   </aside>
 
     <div class="main-content">
-        <h2>Product Management</h2>
-        
-        <?php if (isset($_SESSION['message'])): ?>
-            <div class="alert alert-success">
-                <?= $_SESSION['message']; unset($_SESSION['message']); ?>
-            </div>
-        <?php endif; ?>
-        
-        <a href="add_product.php" class="btn btn-primary mb-3">
-            <img src="images/logo_add.png" alt="Add" width="16"> Add New Product
-        </a>
-        
-        <div class="table-responsive">
-            <table class="product-table">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Image</th>
-                        <th>Name</th>
-                        <th>Category</th>
-                        <th>Price</th>
-                        <th>Discount</th>
-                        <th>Stock</th>
-                        <th>Sizes</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php while ($product = $result->fetch_assoc()): ?>
+    <h2>Manajemen Produk</h2>
+
+    <?php if (isset($_SESSION['message'])): ?>
+        <div class="alert alert-success">
+            <?= htmlspecialchars($_SESSION['message']); unset($_SESSION['message']); ?>
+        </div>
+    <?php endif; ?>
+
+    <a href="add_product.php" class="btn btn-primary mb-3">
+        <i class="fas fa-plus-circle"></i>&emsp; Add New Product
+    </a>
+
+    <div class="table-responsive">
+        <table class="product-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Image</th>
+                    <th>Name</th>
+                    <th>Category</th>
+                    <th>Price</th>
+                    <th>Discount</th>
+                    <th>Stock</th>
+                    <th>Sizes</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php while ($product = $result->fetch_assoc()): ?>
                     <tr>
                         <td><?= $product['id'] ?></td>
-                        <td><img src="../<?= $product['image'] ?>" width="50" height="50" class="product-thumbnail" style="object-fit: cover;"></td>
+                        <td>
+                            <img src="../<?= htmlspecialchars($product['image']) ?>" 
+                                 alt="<?= htmlspecialchars($product['name']) ?>" 
+                                 width="50" height="50" 
+                                 class="product-thumbnail" 
+                                 style="object-fit: cover;">
+                        </td>
                         <td><?= htmlspecialchars($product['name']) ?></td>
                         <td><?= htmlspecialchars($product['category_name']) ?></td>
                         <td>Rp<?= number_format($product['price'], 0, ',', '.') ?></td>
-                        <td><?= $product['discount'] ?>%</td>
-                        <td><?= $product['stock'] ?></td>
-                        <td><?= str_replace(',', '<br>', htmlspecialchars($product['size_available'])) ?></td>
+                        <td><?= htmlspecialchars($product['discount']) ?>%</td>
+                        <td><?= htmlspecialchars($product['stock']) ?></td>
+                        <td><?= nl2br(htmlspecialchars(str_replace(',', "\n", $product['size_available']))) ?></td>
                         <td class="actions">
                             <a href="edit_product.php?id=<?= $product['id'] ?>" class="btn-edit" title="Edit">
-                                <img src="images/logo_edit.png" alt="Edit" width="16">
+                                <i class="fa-solid fa-pen"></i>
                             </a>
-                            <a href="products.php?delete=<?= $product['id'] ?>" 
-                            class="btn-delete" 
-                            title="Delete"
-                            onclick="return confirmDelete(event)">
-                                <img src="images/logo_delete.png" alt="Delete" width="16">
+                            <a href="products.php?delete=<?= $product['id'] ?>"
+                                class="btn-delete"
+                                title="Delete"
+                                onclick="return confirmDelete(event)">
+                                <i class="fa-solid fa-trash"></i>
                             </a>
                         </td>
                     </tr>
-                    <?php endwhile; ?>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- Pagination -->
-        <div class="pagination">
-            <?php for ($i = 1; $i <= $total_pages; $i++): ?>
-                <a href="products.php?page=<?= $i ?>" <?= $i == $page ? 'class="active"' : '' ?>>
-                    <?= $i ?>
-                </a>
-            <?php endfor; ?>
-        </div>
+                <?php endwhile; ?>
+            </tbody>
+        </table>
     </div>
 
+    <!-- Pagination -->
+    <div class="pagination">
+        <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+            <a href="products.php?page=<?= $i ?>" class="<?= $i == $page ? 'active' : '' ?>">
+                <?= $i ?>
+            </a>
+        <?php endfor; ?>
+    </div>
+</div>
 
-</body>
-</html>
 <script>
 function confirmDelete(e) {
     e.preventDefault();

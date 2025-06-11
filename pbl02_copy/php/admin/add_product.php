@@ -67,7 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     body {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        font-family: 'Inter', sans-serif;
         margin: 0;
         padding: 0;
         background-color: #f5f7fa;
@@ -282,24 +282,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     </style>
 </head>
-    <aside class="sidebar">
+<body>
+  <aside class="sidebar">
     <div class="sidebar-header">
-      <h3>Add Product</h3>
+      <h3>Admin Panel</h3>
     </div>
     <ul class="sidebar-menu">
       <li><a href="dashboard.php"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a></li>
       <li><a href="products.php"><i class="fas fa-box-open"></i> <span>Kelola Produk</span></a></li>
       <li><a href="add_product.php"><i class="fas fa-plus-circle"></i> <span>Tambah Produk</span></a></li>
       <li><a href="orders.php"><i class="fas fa-shopping-cart"></i> <span>Pesanan</span></a></li>
-      <li><a href="logout.php"><i class="fas fa-users"></i> <span>Pengguna</span></a></li>
-      <li><a href="lihat_user.php"><i class="fas fa-tags"></i> <span>Kategori</span></a></li>
-      <li><a href="/prog_web/web_repo_steven/pbl02_copy/logout.php">Logout</a></li>
+      <li><a href="pengguna.php"><i class="fas fa-users"></i> <span>Pengguna</span></a></li>
+      <li><a href="kategori.php"><i class="fas fa-tags"></i> <span>Kategori</span></a></li>
+      <li><a href="/prog_web/web_repo_steven/pbl02_copy/logout.php"><i class="fas fa-sign-out-alt"></i>Logout</a></li>
     </ul>
   </aside>
 <body>
     <div class="main-container">
         <div class="main-content">
-            <h2>Add New Product</h2>
+            <h2>Tambah Produk</h2>
             
             <?php if (isset($error)): ?>
                 <div class="alert alert-error"><?= $error ?></div>
@@ -364,6 +365,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
     </div>
 
-    
 </body>
 </html>

@@ -1,5 +1,4 @@
 <?php
-include 'layout_admin.php';
 include '../connect.php';
 
 if (!isset($_GET['id'])) {
@@ -64,32 +63,104 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 ?>
 
-<style>
-/* Admin Panel Styles */
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard Admin</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+:root {
+    --sidebar-width: 250px;
+    --primary-color: #2c3e50;
+    --secondary-color: #3498db;
+    --success-color: #2ecc71;
+    --danger-color: #e74c3c;
+    --light-gray: #f8f9fa;
+    --dark-gray: #343a40;
+}
+
+/* Base */
 body {
-    margin: 0;
     font-family: 'Inter', sans-serif;
     background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    min-height: 100vh;
     color: #333;
 }
 
+/* Sidebar */
+.sidebar {
+    width: var(--sidebar-width);
+    background: var(--primary-color);
+    color: white;
+    overflow: hidden;
+    position: fixed;
+    height: 100vh;
+    z-index: 1000;
+}
+
+.sidebar-header {
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.sidebar-header h3 {
+    margin: 0;
+    white-space: nowrap;
+}
+
+.sidebar-menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar-menu li a {
+    display: flex;
+    align-items: center;
+    padding: 12px 20px;
+    color: white;
+    text-decoration: none;
+    transition: background 0.2s;
+    white-space: nowrap;
+}
+
+.sidebar-menu li a:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-menu li a i {
+    margin-right: 10px;
+    font-size: 1.1rem;
+    min-width: 20px;
+}
+
+
+/* Main Content */
 .main-content {
+    flex: 1;
+    margin-left: var(--sidebar-width);
     padding: 30px;
-    margin-left: 250px;
     background: #fff;
     border-radius: 8px;
     box-shadow: 0 0 15px rgba(0,0,0,0.05);
-    max-width: 800px;
 }
 
+/* Title */
 h2 {
-    color: crimson;
+    color: var(--primary-color);
     margin-bottom: 25px;
     font-size: 24px;
     border-bottom: 1px solid #eee;
     padding-bottom: 10px;
 }
 
+/* Alert */
 .alert {
     padding: 12px 15px;
     margin-bottom: 20px;
@@ -103,6 +174,7 @@ h2 {
     border: 1px solid #f5c6cb;
 }
 
+/* Form */
 .product-form {
     display: flex;
     flex-direction: column;
@@ -160,6 +232,7 @@ h2 {
     border-top: 1px solid #eee;
 }
 
+/* Buttons */
 .btn {
     display: inline-flex;
     align-items: center;
@@ -175,7 +248,7 @@ h2 {
 }
 
 .btn-submit {
-    background: #2ecc71;
+    background: var(--success-color);
     color: white;
 }
 
@@ -200,6 +273,7 @@ h2 {
     margin-top: 4px;
 }
 
+/* Image upload */
 .file-upload-wrapper {
     border: 1px dashed #ddd;
     padding: 15px;
@@ -242,7 +316,7 @@ h2 {
 }
 
 .change-image-btn {
-    background: #3498db;
+    background: var(--secondary-color);
     color: white;
 }
 
@@ -251,14 +325,50 @@ h2 {
 }
 
 .remove-image-btn {
-    background: #e74c3c;
+    background: var(--danger-color);
     color: white;
 }
 
 .remove-image-btn:hover {
     background: #c0392b;
 }
+
+/* Responsive */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+    }
+    .main-content {
+        margin-left: 0;
+    }
+    .sidebar-menu {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    .sidebar-menu li {
+        flex: 1 1 auto;
+    }
+}
 </style>
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <h3>Admin Panel</h3>
+    </div>
+    <ul class="sidebar-menu">
+      <li><a href="dashboard.php"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a></li>
+      <li><a href="products.php"><i class="fas fa-box-open"></i> <span>Kelola Produk</span></a></li>
+      <li><a href="add_product.php"><i class="fas fa-plus-circle"></i> <span>Tambah Produk</span></a></li>
+      <li><a href="orders.php"><i class="fas fa-shopping-cart"></i> <span>Pesanan</span></a></li>
+      <li><a href="pengguna.php"><i class="fas fa-users"></i> <span>Pengguna</span></a></li>
+      <li><a href="kategori.php"><i class="fas fa-tags"></i> <span>Kategori</span></a></li>
+      <li><a href="/prog_web/web_repo_steven/pbl02_copy/logout.php"><i class="fas fa-sign-out-alt"></i>Logout</a></li>
+    </ul>
+  </aside>
 
 <div class="main-content">
     <h2>Edit Product</h2>
@@ -341,5 +451,7 @@ function confirmRemoveImage() {
     }
 }
 </script>
+</body>
+</html>
 
 <?php include 'footer_admin.php'; ?>

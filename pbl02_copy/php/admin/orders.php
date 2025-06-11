@@ -120,9 +120,11 @@ $result = $conn->query($sql);
     }
 
     .box h2 {
-      margin: 0;
-      font-size: 28px;
-      color: #333;
+      color: #2c3e50;
+        margin-bottom: 25px;
+        font-size: 24px;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 10px;
     }
 
     .box p {
@@ -202,6 +204,124 @@ $result = $conn->query($sql);
         flex: 1 1 auto;
       }
     }
+
+    /* Filter & action buttons */
+.order-filters {
+  margin-bottom: 20px;
+  background: #f8f9fa;
+  padding: 15px 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 8px rgba(0,0,0,0.03);
+}
+
+.filter-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  align-items: flex-end;
+}
+
+.filter-form .form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.filter-form label {
+  font-size: 14px;
+  margin-bottom: 6px;
+  color: #333;
+}
+
+.filter-form select {
+  padding: 8px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.btn-filter, .btn-reset {
+  padding: 8px 16px;
+  border-radius: 5px;
+  background: var(--secondary-color);
+  color: white;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 14px;
+}
+
+.btn-filter:hover {
+  background: #2980b9;
+}
+
+.btn-reset {
+  background: #7f8c8d;
+}
+
+.btn-reset:hover {
+  background: #636e72;
+}
+
+/* Table style */
+.table-responsive {
+  background: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.03);
+  overflow-x: auto;
+}
+
+.order-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  color: #333;
+}
+
+.order-table th {
+  background: #2c3e50;
+  color: white;
+  padding: 12px 16px;
+  text-align: left;
+}
+
+.order-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid #eee;
+}
+
+.order-table tr:hover {
+  background-color: #f9f9f9;
+}
+
+/* Status badge */
+.status-badge {
+  padding: 6px 10px;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.status-pending { background: #f39c12; color: white; }
+.status-processing { background: #2980b9; color: white; }
+.status-shipped { background: #8e44ad; color: white; }
+.status-completed { background: #2ecc71; color: white; }
+.status-cancelled { background: #e74c3c; color: white; }
+
+/* View button */
+.btn-view {
+  padding: 6px 12px;
+  background: #3498db;
+  color: white;
+  border-radius: 4px;
+  text-decoration: none;
+  font-size: 13px;
+}
+
+.btn-view:hover {
+  background: #2980b9;
+}
   </style>
 </head>
 <body>
@@ -214,13 +334,13 @@ $result = $conn->query($sql);
       <li><a href="products.php"><i class="fas fa-box-open"></i> <span>Kelola Produk</span></a></li>
       <li><a href="add_product.php"><i class="fas fa-plus-circle"></i> <span>Tambah Produk</span></a></li>
       <li><a href="orders.php"><i class="fas fa-shopping-cart"></i> <span>Pesanan</span></a></li>
-      <li><a href="logout.php"><i class="fas fa-users"></i> <span>Pengguna</span></a></li>
-      <li><a href="lihat_user.php"><i class="fas fa-tags"></i> <span>Kategori</span></a></li>
-      <li><a href="/prog_web/web_repo_steven/pbl02_copy/logout.php">Logout</a></li>
+      <li><a href="pengguna.php"><i class="fas fa-users"></i> <span>Pengguna</span></a></li>
+      <li><a href="kategori.php"><i class="fas fa-tags"></i> <span>Kategori</span></a></li>
+      <li><a href="/prog_web/web_repo_steven/pbl02_copy/logout.php"><i class="fas fa-sign-out-alt"></i>Logout</a></li>
     </ul>
   </aside>
 <div class="main-content">
-    <h2>Order Management</h2>
+    <h2>Manajemen Pesanan</h2>
     
     <div class="order-filters">
         <form method="get" class="filter-form">

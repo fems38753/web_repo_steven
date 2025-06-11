@@ -166,10 +166,11 @@ $total_items = $conn->query("SELECT SUM(quantity) AS i FROM order_items")->fetch
 
     .quick-actions a.logout {
       background: var(--danger-color);
+      background:rgb(255, 0, 0);
     }
 
     .quick-actions a.logout:hover {
-      background: #c0392b;
+      background:rgb(255, 25, 0);
     }
 
     .admin-info {
@@ -219,9 +220,9 @@ $total_items = $conn->query("SELECT SUM(quantity) AS i FROM order_items")->fetch
       <li><a href="products.php"><i class="fas fa-box-open"></i> <span>Kelola Produk</span></a></li>
       <li><a href="add_product.php"><i class="fas fa-plus-circle"></i> <span>Tambah Produk</span></a></li>
       <li><a href="orders.php"><i class="fas fa-shopping-cart"></i> <span>Pesanan</span></a></li>
-      <li><a href="logout.php"><i class="fas fa-users"></i> <span>Pengguna</span></a></li>
-      <li><a href="lihat_user.php"><i class="fas fa-tags"></i> <span>Kategori</span></a></li>
-      <li><a href="/prog_web/web_repo_steven/pbl02_copy/logout.php">Logout</a></li>
+      <li><a href="pengguna.php"><i class="fas fa-users"></i> <span>Pengguna</span></a></li>
+      <li><a href="kategori.php"><i class="fas fa-tags"></i> <span>Kategori</span></a></li>
+      <li><a href="/prog_web/web_repo_steven/pbl02_copy/logout.php"><i class="fas fa-sign-out-alt"></i>Logout</a></li>
     </ul>
   </aside>
 
@@ -249,8 +250,8 @@ $total_items = $conn->query("SELECT SUM(quantity) AS i FROM order_items")->fetch
     <div class="quick-actions">
       <a href="products.php"><i class="fas fa-box-open"></i> Kelola Produk</a>
       <a href="orders.php"><i class="fas fa-shopping-cart"></i> Lihat Pesanan</a>
-      <a href="users.php"><i class="fas fa-users"></i> Kelola Pengguna</a>
-      <a href="/prog_web/web_repo_steven/pbl02_copy/logout.php">Logout</a>
+      <a href="pengguna.php"><i class="fas fa-users"></i> Kelola Pengguna</a>
+      <a href="/prog_web/web_repo_steven/pbl02_copy/logout.php"><i class="fas fa-sign-out-alt"></i>Logout</a>
     </div>
   </div>
 </body>
