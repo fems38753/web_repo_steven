@@ -16,7 +16,7 @@ $sidebarMinimized = isset($_COOKIE['sidebar_minimized']) && $_COOKIE['sidebar_mi
         <li><a href="categories.php"><i class="fas fa-tags"></i> <span>Kategori</span></a></li>
         <li><a href="orders.php"><i class="fas fa-shopping-cart"></i> <span>Orders</span></a></li>
         <li><a href="insert_admin.php"><i class="fas fa-users-cog"></i> <span>Admin</span></a></li>
-        <li><a href="logout.php"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a></li>
+        <li><a href="../logout.php"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a></li>
     </ul>
 </aside>
 

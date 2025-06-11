@@ -1,10 +1,5 @@
 <?php 
 session_start();
-if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] != 'user') {
-    header("Location: login.php");
-    exit();
-}
-echo "Selamat datang, " . $_SESSION['user_email'];
 include 'php/connect.php';
 
 // Check if user is logged in
@@ -234,42 +229,55 @@ if ($isLoggedIn) {
     }
   </style>
 </head>
+<?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+?>
 <body>
-  <header>
+<header>
     <nav class="navbar">
-      <div class="logo">JACK<span>ARMY</span></div>
-      <ul class="nav-links">
-        <li><a href="index.php">Home</a></li>
-        <li class="dropdown">
-          <a href="#">Products ▼</a>
-          <ul class="dropdown-menu">
-            <li><a href="baju.php">T-Shirt</a></li>
-            <li><a href="jaket.php">Jacket</a></li>
-            <li><a href="topi.php">Hat</a></li>
-          </ul>
-        </li>
-        <li><a href="cart.php">Cart</a></li>
-        <li><a href="account.php">Account</a></li>
-        <li><a href="loginout.php">Login</a></li>
-        <li class="dropdown">
-          <a href="#">Help Center ▼</a>
-          <ul class="dropdown-menu">
-            <li><a href="shopping.php">How To Order</a></li>
-            <li><a href="shipping.php">Shipping Information</a></li>
-            <li><a href="payment.php">Payment Methods</a></li>
-            <li><a href="refund.php">Refund & Return Policy</a></li>
-            <li><a href="size.php">Size Chart</a></li>
-          </ul>
-        </li>
-      </ul>
+        <div class="logo">JACK<span>ARMY</span></div>
+        <ul class="nav-links">
+            <li><a href="index.php">Home</a></li>
+            <li class="dropdown">
+                <a href="#">Products ▼</a>
+                <ul class="dropdown-menu">
+                    <li><a href="products.php">All Product</a></li>
+                    <li><a href="baju.php">T-Shirt</a></li>
+                    <li><a href="jaket.php">Jacket</a></li>
+                    <li><a href="topi.php">Hat</a></li>
+                </ul>
+            </li>
+            <li><a href="cart.php">Cart</a></li>
 
-      <!-- Search Bar -->
-      <div class="search-bar">
-        <input type="text" id="searchInput" placeholder="Search...">
-        <button onclick="searchProducts()">Search</button>
-      </div>
+            <?php if (isset($_SESSION['user_id']) && $_SESSION['role'] === 'user'): ?>
+                <li><a href="account.php">Account</a></li>
+                <li><a href="logout.php">Logout</a></li>
+            <?php elseif (isset($_SESSION['admin_id']) && $_SESSION['role'] === 'admin'): ?>
+                <li><a href="php/admin/dashboard.php">Admin Panel</a></li>
+                <li><a href="logout.php">Logout</a></li>
+            <?php else: ?>
+                <li><a href="loginout.php">Login</a></li>
+            <?php endif; ?>
+
+            <li class="dropdown">
+                <a href="#">Help Center ▼</a>
+                <ul class="dropdown-menu">
+                    <li><a href="shopping.php">How To Order</a></li>
+                    <li><a href="shipping.php">Shipping Information</a></li>
+                    <li><a href="payment.php">Payment Methods</a></li>
+                    <li><a href="refund.php">Refund & Return Policy</a></li>
+                    <li><a href="size.php">Size Chart</a></li>
+                </ul>
+            </li>
+        </ul>
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="Search...">
+            <button onclick="searchProducts()">Search</button>
+        </div>
     </nav>
-  </header>
+</header>
 
   <main class="account-container">
     <?php if ($isLoggedIn): ?>
@@ -296,7 +304,7 @@ if ($isLoggedIn) {
           <li><a href="addresses.php">Addresses</a></li>
           <li><a href="wishlist.php">Wishlist</a></li>
           <li><a href="settings.php">Account Settings</a></li>
-          <li><a href="php/logout.php">Logout</a></li>
+          <li><a href="logout.php">Logout</a></li>
         </ul>
       </aside>
       
@@ -376,60 +384,6 @@ if ($isLoggedIn) {
       </div>
     <?php endif; ?>
   </main>
-
-  <!-- Login Popup -->
-  <div class="overlay" id="login-popup">
-    <div class="popup">
-      <span class="close" onclick="closePopup('login-popup')">&times;</span>
-      <h2>Login</h2>
-      <form id="loginForm" action="php/login.php" method="POST">
-        <div class="form-group">
-          <label for="login-username">Username or Email</label>
-          <input type="text" id="login-username" name="username" placeholder="Enter your username or email" required>
-        </div>
-        <div class="form-group password-group">
-          <label for="login-password">Password</label>
-          <input type="password" id="login-password" name="password" placeholder="Enter your password" required>
-          <button type="button" class="toggle-password" onclick="togglePassword('login-password')">Show</button>
-        </div>
-        <div class="form-group">
-          <button type="submit" class="button">Login</button>
-        </div>
-        <div class="form-footer">
-          Don't have an account? <a href="#" onclick="switchPopup('register-popup')">Register here</a>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- Register Popup -->
-  <div class="overlay" id="register-popup" style="display: none;">
-    <div class="popup">
-      <span class="close" onclick="closePopup('register-popup')">&times;</span>
-      <h2>Register</h2>
-      <form id="registerForm" action="php/register.php" method="POST">
-        <div class="form-group">
-          <label for="register-username">Username</label>
-          <input type="text" id="register-username" name="username" placeholder="Enter your username" required>
-        </div>
-        <div class="form-group">
-          <label for="register-email">Email</label>
-          <input type="email" id="register-email" name="email" placeholder="Enter your email" required>
-        </div>
-        <div class="form-group password-group">
-          <label for="register-password">Password</label>
-          <input type="password" id="register-password" name="password" placeholder="Enter your password" required>
-          <button type="button" class="toggle-password" onclick="togglePassword('register-password')">Show</button>
-        </div>
-        <div class="form-group">
-          <button type="submit" class="button">Register</button>
-        </div>
-        <div class="form-footer">
-          Already have an account? <a href="#" onclick="switchPopup('login-popup')">Login here</a>
-        </div>
-      </form>
-    </div>
-  </div>
 
   <footer>
     <div class="footer-container">

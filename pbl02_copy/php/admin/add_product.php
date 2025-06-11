@@ -1,5 +1,4 @@
 <?php
-include 'layout_admin.php';
 include '../connect.php';
 
 // Check if sidebar should be minimized
@@ -51,8 +50,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Product - Admin Panel</title>
+    <title>Dashboard Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
     :root {
         --sidebar-width: 250px;
@@ -77,82 +77,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     .main-container {
         display: flex;
         min-height: 100vh;
-    }
-
-    .sidebar {
-        width: var(--sidebar-width);
-        background: var(--primary-color);
-        color: white;
-        transition: width var(--transition-speed);
-        overflow: hidden;
-        position: fixed;
-        height: 100vh;
-        z-index: 1000;
-    }
-
-    .sidebar.minimized {
-        width: var(--sidebar-minimized-width);
-    }
-
-    .sidebar-header {
-        padding: 20px;
-        background: rgba(0, 0, 0, 0.1);
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    .sidebar-header h3 {
-        margin: 0;
-        white-space: nowrap;
-    }
-
-    .toggle-sidebar {
-        background: none;
-        border: none;
-        color: white;
-        font-size: 1.2rem;
-        cursor: pointer;
-        padding: 5px;
-    }
-
-    .sidebar-menu {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-    }
-
-    .sidebar-menu li a {
-        display: flex;
-        align-items: center;
-        padding: 12px 20px;
-        color: white;
-        text-decoration: none;
-        transition: background 0.2s;
-        white-space: nowrap;
-    }
-
-    .sidebar-menu li a:hover {
-        background: rgba(255, 255, 255, 0.1);
-    }
-
-    .sidebar-menu li a i {
-        margin-right: 10px;
-        font-size: 1.1rem;
-        min-width: 20px;
-    }
-
-    .sidebar.minimized .sidebar-menu li a span {
-        display: none;
-    }
-
-    .sidebar.minimized .sidebar-menu li a i {
-        margin-right: 0;
-        font-size: 1.3rem;
-    }
-
-    .sidebar.minimized .sidebar-header h3 {
-        display: none;
     }
 
     .main-content {
@@ -301,14 +225,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     @media (max-width: 768px) {
-        .sidebar {
-            width: var(--sidebar-minimized-width);
-        }
-        
-        .sidebar:not(.minimized) {
-            width: var(--sidebar-width);
-        }
-        
         .main-content {
             margin-left: var(--sidebar-minimized-width);
         }
@@ -317,28 +233,71 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             margin-left: var(--sidebar-width);
         }
     }
+
+    .sidebar {
+      width: var(--sidebar-width);
+      background: var(--primary-color);
+      color: white;
+      overflow: hidden;
+      position: fixed;
+      height: 100vh;
+      z-index: 1000;
+    }
+
+    .sidebar-header {
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+
+    .sidebar-header h3 {
+      margin: 0;
+      white-space: nowrap;
+    }
+
+    .sidebar-menu {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .sidebar-menu li a {
+      display: flex;
+      align-items: center;
+      padding: 12px 20px;
+      color: white;
+      text-decoration: none;
+      transition: background 0.2s;
+      white-space: nowrap;
+    }
+
+    .sidebar-menu li a:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .sidebar-menu li a i {
+      margin-right: 10px;
+      font-size: 1.1rem;
+      min-width: 20px;
+    }
     </style>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
+    <aside class="sidebar">
+    <div class="sidebar-header">
+      <h3>Add Product</h3>
+    </div>
+    <ul class="sidebar-menu">
+      <li><a href="dashboard.php"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a></li>
+      <li><a href="products.php"><i class="fas fa-box-open"></i> <span>Kelola Produk</span></a></li>
+      <li><a href="add_product.php"><i class="fas fa-plus-circle"></i> <span>Tambah Produk</span></a></li>
+      <li><a href="orders.php"><i class="fas fa-shopping-cart"></i> <span>Pesanan</span></a></li>
+      <li><a href="logout.php"><i class="fas fa-users"></i> <span>Pengguna</span></a></li>
+      <li><a href="lihat_user.php"><i class="fas fa-tags"></i> <span>Kategori</span></a></li>
+      <li><a href="/prog_web/web_repo_steven/pbl02_copy/logout.php">Logout</a></li>
+    </ul>
+  </aside>
 <body>
     <div class="main-container">
-        <aside class="sidebar <?php echo $sidebarMinimized ? 'minimized' : ''; ?>">
-            <div class="sidebar-header">
-                <h3>Admin Panel</h3>
-                <button class="toggle-sidebar">
-                    <i class="fas fa-bars"></i>
-                </button>
-            </div>
-            <ul class="sidebar-menu">
-                <li><a href="dashboard.php"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a></li>
-                <li><a href="products.php"><i class="fas fa-box-open"></i> <span>Kelola Produk</span></a></li>
-                <li><a href="add_product.php"><i class="fas fa-plus-circle"></i> <span>Tambah Produk</span></a></li>
-                <li><a href="categories.php"><i class="fas fa-tags"></i> <span>Kategori</span></a></li>
-                <li><a href="admins.php"><i class="fas fa-users-cog"></i> <span>Admin</span></a></li>
-                <li><a href="logout.php"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a></li>
-            </ul>
-        </aside>
-
         <div class="main-content">
             <h2>Add New Product</h2>
             
@@ -405,28 +364,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
     </div>
 
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const toggleSidebar = document.querySelector('.toggle-sidebar');
-        const sidebar = document.querySelector('.sidebar');
-        
-        // Check for saved preference
-        const isMinimized = localStorage.getItem('sidebarMinimized') === 'true';
-        if (isMinimized) {
-            sidebar.classList.add('minimized');
-        }
-        
-        toggleSidebar.addEventListener('click', function() {
-            sidebar.classList.toggle('minimized');
-            
-            // Save preference
-            const isNowMinimized = sidebar.classList.contains('minimized');
-            localStorage.setItem('sidebarMinimized', isNowMinimized);
-            
-            // Set cookie for PHP to read on page reload
-            document.cookie = `sidebar_minimized=${isNowMinimized}; path=/`;
-        });
-    });
-    </script>
+    
 </body>
 </html>

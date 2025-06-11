@@ -7,7 +7,41 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jackarmyofficial</title>
     <link rel="stylesheet" href="pbl02.css">
+    <style>
+    /* Updated notification style - smaller and more subtle */
+    .notification {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background-color: rgba(76, 175, 80, 0.9); /* Slightly transparent */
+        color: white;
+        padding: 8px 12px;
+        border-radius: 4px;
+        font-size: 14px;
+        z-index: 1000;
+        animation: slideIn 0.3s, fadeOut 0.3s 2s;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        width: 250px;
+        height: 50px;
+        border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    @keyframes slideIn {
+        from {transform: translateX(100%); opacity: 0;}
+        to {transform: translateX(0); opacity: 1;}
+    }
+
+    @keyframes fadeOut {
+        from {opacity: 1;}
+        to {opacity: 0;}
+    }
+    </style>
 </head>
+<?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+?>
 <body>
 <header>
     <nav class="navbar">
@@ -24,15 +58,25 @@
                 </ul>
             </li>
             <li><a href="cart.php">Cart</a></li>
-            <li><a href="account.php">Account</a></li>
+
+            <?php if (isset($_SESSION['user_id']) && $_SESSION['role'] === 'user'): ?>
+                <li><a href="account.php">Account</a></li>
+                <li><a href="logout.php">Logout</a></li>
+            <?php elseif (isset($_SESSION['admin_id']) && $_SESSION['role'] === 'admin'): ?>
+                <li><a href="php/admin/dashboard.php">Admin Panel</a></li>
+                <li><a href="logout.php">Logout</a></li>
+            <?php else: ?>
+                <li><a href="loginout.php">Login</a></li>
+            <?php endif; ?>
+
             <li class="dropdown">
                 <a href="#">Help Center ▼</a>
                 <ul class="dropdown-menu">
-                <li><a href="shopping.php">How To Order</a></li>
-                <li><a href="shipping.php">Shipping Information</a></li>
-                <li><a href="payment.php">Payment Methods</a></li>
-                <li><a href="refund.php">Refund & Return Policy</a></li>
-                <li><a href="size.php">Size Chart</a></li>
+                    <li><a href="shopping.php">How To Order</a></li>
+                    <li><a href="shipping.php">Shipping Information</a></li>
+                    <li><a href="payment.php">Payment Methods</a></li>
+                    <li><a href="refund.php">Refund & Return Policy</a></li>
+                    <li><a href="size.php">Size Chart</a></li>
                 </ul>
             </li>
         </ul>
@@ -51,12 +95,13 @@
     $products = $conn->query("SELECT * FROM products WHERE category = 'T-Shirt'");
     while ($p = $products->fetch_assoc()):
       $hargaAwal = $p['price'] * 2; // estimasi harga awal sebelum diskon
+      $discountPercent = round(($hargaAwal - $p['price']) / $hargaAwal * 100);
     ?>
-      <div class="kaos-item" onclick="openPopup('<?= $p['image'] ?>', '<?= $p['name'] ?>', 'Rp<?= number_format($p['price']) ?>')">
-        <span class="discount">Diskon!</span>
+      <div class="kaos-item" onclick="openPopup('<?= $p['image'] ?>', '<?= $p['name'] ?>', 'Rp<?= number_format($p['price'], 0, ',', '.') ?>', '<?= $p['id'] ?>')">
+        <span class="discount"><?= $discountPercent ?>% OFF</span>
         <img src="<?= $p['image'] ?>" alt="<?= $p['name'] ?>">
         <h3><?= $p['name'] ?></h3>
-        <p class="price"><del>Rp<?= number_format($hargaAwal) ?></del> <strong>Rp<?= number_format($p['price']) ?></strong></p>
+        <p class="price"><del>Rp<?= number_format($hargaAwal, 0, ',', '.') ?></del> <strong>Rp<?= number_format($p['price'], 0, ',', '.') ?></strong></p>
       </div>
     <?php endwhile; ?>
   </div>
@@ -70,12 +115,13 @@
     $products = $conn->query("SELECT * FROM products WHERE category = 'Jacket'");
     while ($p = $products->fetch_assoc()):
       $hargaAwal = $p['price'] * 2; // estimasi harga awal sebelum diskon
+      $discountPercent = round(($hargaAwal - $p['price']) / $hargaAwal * 100);
     ?>
-      <div class="kaos-item" onclick="openPopup('<?= $p['image'] ?>', '<?= $p['name'] ?>', 'Rp<?= number_format($p['price']) ?>')">
-        <span class="discount">Diskon!</span>
+      <div class="kaos-item" onclick="openPopup('<?= $p['image'] ?>', '<?= $p['name'] ?>', 'Rp<?= number_format($p['price'], 0, ',', '.') ?>', '<?= $p['id'] ?>')">
+        <span class="discount"><?= $discountPercent ?>% OFF</span>
         <img src="<?= $p['image'] ?>" alt="<?= $p['name'] ?>">
         <h3><?= $p['name'] ?></h3>
-        <p class="price"><del>Rp<?= number_format($hargaAwal) ?></del> <strong>Rp<?= number_format($p['price']) ?></strong></p>
+        <p class="price"><del>Rp<?= number_format($hargaAwal, 0, ',', '.') ?></del> <strong>Rp<?= number_format($p['price'], 0, ',', '.') ?></strong></p>
       </div>
     <?php endwhile; ?>
   </div>
@@ -89,24 +135,26 @@
     $products = $conn->query("SELECT * FROM products WHERE LOWER(category) = 'Hat'");
     while ($p = $products->fetch_assoc()):
       $hargaAwal = $p['price'] * 1.6;
+      $discountPercent = round(($hargaAwal - $p['price']) / $hargaAwal * 100);
     ?>
-      <div class="kaos-item" onclick="openPopup('<?= $p['image'] ?>', '<?= $p['name'] ?>', 'Rp<?= number_format($p['price']) ?>')">
-        <span class="discount">Diskon!</span>
+      <div class="kaos-item" onclick="openHatPopup('<?= $p['image'] ?>', '<?= $p['name'] ?>', 'Rp<?= number_format($p['price'], 0, ',', '.') ?>', '<?= $p['id'] ?>')">
+        <span class="discount"><?= $discountPercent ?>% OFF</span>
         <img src="<?= $p['image'] ?>" alt="<?= $p['name'] ?>">
         <h3><?= $p['name'] ?></h3>
-        <p class="price"><del>Rp<?= number_format($hargaAwal) ?></del> <strong>Rp<?= number_format($p['price']) ?></strong></p>
+        <p class="price"><del>Rp<?= number_format($hargaAwal, 0, ',', '.') ?></del> <strong>Rp<?= number_format($p['price'], 0, ',', '.') ?></strong></p>
       </div>
     <?php endwhile; ?>
   </div>
 </section>
 
-<!-- Popup Product Detail -->
+<!-- Popup Product Detail for T-Shirt and Jacket -->
 <div class="popup-overlay" id="popupOverlay" style="display: none;">
   <div class="popup-content">
     <span class="close-btn" onclick="closePopup()">&times;</span>
     <img id="popupImage" src="" alt="Produk">
     <h3 id="popupTitle">Product Name</h3>
     <p class="popupPrice" id="popupPrice">Rp0</p>
+    <input type="hidden" id="popupProductId">
 
     <div class="popupSize">
       <label>Size Choice:</label>
@@ -128,6 +176,35 @@
     </div><br>
 
     <a href="#" class="addToCartBtn" onclick="addToCart()">Add To Cart</a>
+  </div>
+</div>
+
+<!-- Popup Product Detail for Hat -->
+<div class="popup-overlay" id="hatPopupOverlay" style="display: none;">
+  <div class="popup-content">
+    <span class="close-btn" onclick="closeHatPopup()">&times;</span>
+    <img id="hatPopupImage" src="" alt="Hat Produk">
+    <h3 id="hatPopupTitle">Product Name</h3>
+    <p class="popupPrice" id="hatPopupPrice">Rp0</p>
+    <input type="hidden" id="hatPopupProductId">
+
+    <div class="popupSize">
+      <label>Size:</label>
+      <div class="size-buttons">
+        <button class="size-selected">All Size</button>
+      </div>
+    </div>
+
+    <div class="popupQuantity">
+      <label>Quantity:</label>
+      <div class="quantity-wrapper">
+        <button onclick="decreaseHatQuantity()">-</button>
+        <span id="hatQuantityDisplay">1</span>
+        <button onclick="increaseHatQuantity()">+</button>
+      </div>
+    </div><br>
+
+    <a href="#" class="addToCartBtn" onclick="addHatToCart()">Add To Cart</a>
   </div>
 </div>
 
@@ -182,21 +259,22 @@
 </footer>
 
 <script>
-// Popup functionality
+// Popup functionality for T-Shirt and Jacket
 let currentQuantity = 1;
 let selectedSize = '';
 
-function openPopup(imageSrc, productName, productPrice) {
+function openPopup(imageSrc, productName, productPrice, productId) {
     document.getElementById('popupImage').src = imageSrc;
     document.getElementById('popupTitle').textContent = productName;
     document.getElementById('popupPrice').textContent = productPrice;
+    document.getElementById('popupProductId').value = productId;
     document.getElementById('popupOverlay').style.display = 'flex';
     document.getElementById('quantityDisplay').textContent = '1';
     currentQuantity = 1;
     selectedSize = '';
     
     // Reset size buttons
-    const buttons = document.querySelectorAll('.size-buttons button');
+    const buttons = document.querySelectorAll('#popupOverlay .size-buttons button');
     buttons.forEach(button => {
         button.style.backgroundColor = '#f1f1f1';
         button.style.color = 'black';
@@ -209,7 +287,7 @@ function closePopup() {
 
 function selectSize(size) {
     selectedSize = size;
-    const buttons = document.querySelectorAll('.size-buttons button');
+    const buttons = document.querySelectorAll('#popupOverlay .size-buttons button');
     buttons.forEach(button => {
         button.style.backgroundColor = button.textContent === size ? '#333' : '#f1f1f1';
         button.style.color = button.textContent === size ? 'white' : 'black';
@@ -235,10 +313,108 @@ function addToCart() {
     }
     
     const productName = document.getElementById('popupTitle').textContent;
-    const productPrice = document.getElementById('popupPrice').textContent;
+    const productPriceText = document.getElementById('popupPrice').textContent;
+    const productImage = document.getElementById('popupImage').src;
+    const productId = document.getElementById('popupProductId').value;
     
-    alert(`Added to cart: ${productName} (Size: ${selectedSize}, Quantity: ${currentQuantity})`);
+    // Extract numeric price from text (e.g., "Rp79.900" -> 79900)
+    const productPrice = parseInt(productPriceText.replace(/\D/g, ''));
+    
+    // Get or initialize cart from localStorage
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+    
+    // Add new item to cart
+    cart.push({
+        id: productId,
+        name: productName,
+        price: productPrice,
+        image: productImage,
+        size: selectedSize,
+        quantity: currentQuantity
+    });
+    
+    // Save back to localStorage
+    localStorage.setItem('cart', JSON.stringify(cart));
+    
+    // Show success notification
+    showNotification(`${productName} added to cart!`);
+    
+    // Close popup
     closePopup();
+}
+
+// Popup functionality for Hat
+let currentHatQuantity = 1;
+
+function openHatPopup(imageSrc, productName, productPrice, productId) {
+    document.getElementById('hatPopupImage').src = imageSrc;
+    document.getElementById('hatPopupTitle').textContent = productName;
+    document.getElementById('hatPopupPrice').textContent = productPrice;
+    document.getElementById('hatPopupProductId').value = productId;
+    document.getElementById('hatPopupOverlay').style.display = 'flex';
+    document.getElementById('hatQuantityDisplay').textContent = '1';
+    currentHatQuantity = 1;
+}
+
+function closeHatPopup() {
+    document.getElementById('hatPopupOverlay').style.display = 'none';
+}
+
+function increaseHatQuantity() {
+    currentHatQuantity++;
+    document.getElementById('hatQuantityDisplay').textContent = currentHatQuantity;
+}
+
+function decreaseHatQuantity() {
+    if (currentHatQuantity > 1) {
+        currentHatQuantity--;
+        document.getElementById('hatQuantityDisplay').textContent = currentHatQuantity;
+    }
+}
+
+function addHatToCart() {
+    const productName = document.getElementById('hatPopupTitle').textContent;
+    const productPriceText = document.getElementById('hatPopupPrice').textContent;
+    const productImage = document.getElementById('hatPopupImage').src;
+    const productId = document.getElementById('hatPopupProductId').value;
+    
+    // Extract numeric price from text (e.g., "Rp79.900" -> 79900)
+    const productPrice = parseInt(productPriceText.replace(/\D/g, ''));
+    
+    // Get or initialize cart from localStorage
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+    
+    // Add new item to cart
+    cart.push({
+        id: productId,
+        name: productName,
+        price: productPrice,
+        image: productImage,
+        size: 'All Size',
+        quantity: currentHatQuantity
+    });
+    
+    // Save back to localStorage
+    localStorage.setItem('cart', JSON.stringify(cart));
+    
+    // Show success notification
+    showNotification(`${productName} added to cart!`);
+    
+    // Close popup
+    closeHatPopup();
+}
+
+// Function to show notification
+function showNotification(message) {
+    const notification = document.createElement('div');
+    notification.className = 'notification';
+    notification.textContent = message;
+    document.body.appendChild(notification);
+    
+    // Remove after 3 seconds
+    setTimeout(() => {
+        notification.remove();
+    }, 3000);
 }
 
 function searchProducts() {

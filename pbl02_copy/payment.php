@@ -10,6 +10,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 </head>
+<?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+?>
 <body>
 <header>
     <nav class="navbar">
@@ -26,20 +31,28 @@
                 </ul>
             </li>
             <li><a href="cart.php">Cart</a></li>
-            <li><a href="account.php">Account</a></li>
+
+            <?php if (isset($_SESSION['user_id']) && $_SESSION['role'] === 'user'): ?>
+                <li><a href="account.php">Account</a></li>
+                <li><a href="logout.php">Logout</a></li>
+            <?php elseif (isset($_SESSION['admin_id']) && $_SESSION['role'] === 'admin'): ?>
+                <li><a href="php/admin/dashboard.php">Admin Panel</a></li>
+                <li><a href="logout.php">Logout</a></li>
+            <?php else: ?>
+                <li><a href="loginout.php">Login</a></li>
+            <?php endif; ?>
+
             <li class="dropdown">
                 <a href="#">Help Center ▼</a>
                 <ul class="dropdown-menu">
-                <li><a href="shopping.php">How To Order</a></li>
-                <li><a href="shipping.php">Shipping Information</a></li>
-                <li><a href="payment.php">Payment Methods</a></li>
-                <li><a href="refund.php">Refund & Return Policy</a></li>
-                <li><a href="size.php">Size Chart</a></li>
+                    <li><a href="shopping.php">How To Order</a></li>
+                    <li><a href="shipping.php">Shipping Information</a></li>
+                    <li><a href="payment.php">Payment Methods</a></li>
+                    <li><a href="refund.php">Refund & Return Policy</a></li>
+                    <li><a href="size.php">Size Chart</a></li>
                 </ul>
             </li>
         </ul>
-
-        <!-- Search Bar -->
         <div class="search-bar">
             <input type="text" id="searchInput" placeholder="Search...">
             <button onclick="searchProducts()">Search</button>

@@ -109,7 +109,7 @@ include 'auth_check.php';
     </div>
 
     <div class="dropdown">
-      <a href="../logout_admin.php">Logout</a>
+      <a href="../logout.php">Logout</a>
     </div>
   </div>
 

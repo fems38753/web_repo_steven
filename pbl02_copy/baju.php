@@ -7,7 +7,41 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jackarmyofficial</title>
     <link rel="stylesheet" href="pbl02.css">
+    <style>
+    /* Updated notification style - smaller and more subtle */
+    .notification {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background-color: rgba(76, 175, 80, 0.9); /* Slightly transparent */
+        color: white;
+        padding: 8px 12px;
+        border-radius: 4px;
+        font-size: 14px;
+        z-index: 1000;
+        animation: slideIn 0.3s, fadeOut 0.3s 2s;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        width: 250px;
+        height: 50px;
+        border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    @keyframes slideIn {
+        from {transform: translateX(100%); opacity: 0;}
+        to {transform: translateX(0); opacity: 1;}
+    }
+
+    @keyframes fadeOut {
+        from {opacity: 1;}
+        to {opacity: 0;}
+    }
+    </style>
 </head>
+<?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+?>
 <body>
 <header>
     <nav class="navbar">
@@ -24,15 +58,25 @@
                 </ul>
             </li>
             <li><a href="cart.php">Cart</a></li>
-            <li><a href="account.php">Account</a></li>
+
+            <?php if (isset($_SESSION['user_id']) && $_SESSION['role'] === 'user'): ?>
+                <li><a href="account.php">Account</a></li>
+                <li><a href="logout.php">Logout</a></li>
+            <?php elseif (isset($_SESSION['admin_id']) && $_SESSION['role'] === 'admin'): ?>
+                <li><a href="php/admin/dashboard.php">Admin Panel</a></li>
+                <li><a href="logout.php">Logout</a></li>
+            <?php else: ?>
+                <li><a href="loginout.php">Login</a></li>
+            <?php endif; ?>
+
             <li class="dropdown">
                 <a href="#">Help Center ▼</a>
                 <ul class="dropdown-menu">
-                <li><a href="shopping.php">How To Order</a></li>
-                <li><a href="shipping.php">Shipping Information</a></li>
-                <li><a href="payment.php">Payment Methods</a></li>
-                <li><a href="refund.php">Refund & Return Policy</a></li>
-                <li><a href="size.php">Size Chart</a></li>
+                    <li><a href="shopping.php">How To Order</a></li>
+                    <li><a href="shipping.php">Shipping Information</a></li>
+                    <li><a href="payment.php">Payment Methods</a></li>
+                    <li><a href="refund.php">Refund & Return Policy</a></li>
+                    <li><a href="size.php">Size Chart</a></li>
                 </ul>
             </li>
         </ul>
@@ -51,12 +95,13 @@
     $products = $conn->query("SELECT * FROM products WHERE category = 'T-Shirt'");
     while ($p = $products->fetch_assoc()):
       $hargaAwal = $p['price'] * 2; // estimasi harga awal sebelum diskon
+      $discountPercent = round(($hargaAwal - $p['price']) / $hargaAwal * 100);
     ?>
-      <div class="kaos-item" onclick="openPopup('<?= $p['image'] ?>', '<?= $p['name'] ?>', 'Rp<?= number_format($p['price']) ?>')">
-        <span class="discount">Diskon!</span>
+      <div class="kaos-item" onclick="openPopup('<?= $p['image'] ?>', '<?= $p['name'] ?>', 'Rp<?= number_format($p['price'], 0, ',', '.') ?>', '<?= $p['id'] ?>')">
+        <span class="discount"><?= $discountPercent ?>% OFF</span>
         <img src="<?= $p['image'] ?>" alt="<?= $p['name'] ?>">
         <h3><?= $p['name'] ?></h3>
-        <p class="price"><del>Rp<?= number_format($hargaAwal) ?></del> <strong>Rp<?= number_format($p['price']) ?></strong></p>
+        <p class="price"><del>Rp<?= number_format($hargaAwal, 0, ',', '.') ?></del> <strong>Rp<?= number_format($p['price'], 0, ',', '.') ?></strong></p>
       </div>
     <?php endwhile; ?>
   </div>
@@ -69,6 +114,7 @@
     <img id="popupImage" src="" alt="Produk">
     <h3 id="popupTitle">Product Name</h3>
     <p class="popupPrice" id="popupPrice">Rp0</p>
+    <input type="hidden" id="popupProductId">
 
     <div class="popupSize">
       <label>Size Choice:</label>
@@ -93,7 +139,7 @@
   </div>
 </div>
 
-    <footer>
+<footer>
     <div class="footer-container">
         <div class="footer-section">
             <h4>Hello JackArmyFriends!</h4>
@@ -108,7 +154,7 @@
         </div>
         </div>
 
-           <div class="footer-section">
+        <div class="footer-section">
             <h4>Products</h4>
                 <ul>
                     <li><a href="products.php">All Product</a></li>
@@ -129,35 +175,41 @@
             </ul>
         </div>
 
- <div class="footer-section">
-    <h4>Newsletter</h4>
-    <form id="newsletterForm">
-        <input type="email" id="emailInput" placeholder="Insert your email" required>
-        <button type="submit">Send</button>
-    </form>
-</div>
+        <div class="footer-section">
+            <h4>Newsletter</h4>
+            <form id="newsletterForm">
+                <input type="email" id="emailInput" placeholder="Insert your email" required>
+                <button type="submit">Send</button>
+            </form>
+        </div>
     </div>
 
     <div class="footer-bottom">
         <p>Copyright &copy; 2025 <strong>JACKARMY</strong></p>
     </div>
 </footer>
-<script src="cart.js"></script>
-<script src="news.js"></script>
-<script src="account.js"></script>
+
 <script>
 // Popup functionality
 let currentQuantity = 1;
 let selectedSize = '';
 
-function openPopup(imageSrc, productName, productPrice) {
+function openPopup(imageSrc, productName, productPrice, productId) {
     document.getElementById('popupImage').src = imageSrc;
     document.getElementById('popupTitle').textContent = productName;
     document.getElementById('popupPrice').textContent = productPrice;
+    document.getElementById('popupProductId').value = productId;
     document.getElementById('popupOverlay').style.display = 'flex';
     document.getElementById('quantityDisplay').textContent = '1';
     currentQuantity = 1;
     selectedSize = '';
+    
+    // Reset size buttons
+    const buttons = document.querySelectorAll('#popupOverlay .size-buttons button');
+    buttons.forEach(button => {
+        button.style.backgroundColor = '#f1f1f1';
+        button.style.color = 'black';
+    });
 }
 
 function closePopup() {
@@ -166,8 +218,7 @@ function closePopup() {
 
 function selectSize(size) {
     selectedSize = size;
-    // You can add visual feedback for selected size here
-    const buttons = document.querySelectorAll('.size-buttons button');
+    const buttons = document.querySelectorAll('#popupOverlay .size-buttons button');
     buttons.forEach(button => {
         button.style.backgroundColor = button.textContent === size ? '#333' : '#f1f1f1';
         button.style.color = button.textContent === size ? 'white' : 'black';
@@ -193,18 +244,55 @@ function addToCart() {
     }
     
     const productName = document.getElementById('popupTitle').textContent;
-    const productPrice = document.getElementById('popupPrice').textContent;
+    const productPriceText = document.getElementById('popupPrice').textContent;
+    const productImage = document.getElementById('popupImage').src;
+    const productId = document.getElementById('popupProductId').value;
     
-    // Here you would typically send this data to your server or update localStorage
-    alert(`Added to cart: ${productName} (Size: ${selectedSize}, Quantity: ${currentQuantity})`);
+    // Extract numeric price from text (e.g., "Rp79.900" -> 79900)
+    const productPrice = parseInt(productPriceText.replace(/\D/g, ''));
+    
+    // Get or initialize cart from localStorage
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+    
+    // Add new item to cart
+    cart.push({
+        id: productId,
+        name: productName,
+        price: productPrice,
+        image: productImage,
+        size: selectedSize,
+        quantity: currentQuantity
+    });
+    
+    // Save back to localStorage
+    localStorage.setItem('cart', JSON.stringify(cart));
+    
+    // Show success notification
+    showNotification(`${productName} added to cart!`);
+    
+    // Close popup
     closePopup();
+}
+
+// Function to show notification
+function showNotification(message) {
+    const notification = document.createElement('div');
+    notification.className = 'notification';
+    notification.textContent = message;
+    document.body.appendChild(notification);
+    
+    // Remove after 3 seconds
+    setTimeout(() => {
+        notification.remove();
+    }, 3000);
 }
 
 function searchProducts() {
     const searchTerm = document.getElementById('searchInput').value.trim().toLowerCase();
     if (searchTerm) {
-        // Here you would typically redirect to a search page or filter products
         alert(`Searching for: ${searchTerm}`);
+        // In a real implementation, you would redirect to a search page or filter products
+        // window.location.href = `search.php?q=${encodeURIComponent(searchTerm)}`;
     } else {
         alert('Please enter a search term');
     }
