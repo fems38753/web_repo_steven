@@ -1,7 +1,16 @@
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 include 'php/connect.php';
 
+// ✅ Inilah bagian yang hilang sebelumnya:
+
+
+$stmt = $conn->prepare("SELECT * FROM products WHERE name LIKE CONCAT('%', ?, '%') OR category LIKE CONCAT('%', ?, '%')");
+$stmt->bind_param("ss", $query, $query);
+$stmt->execute();
+$result = $stmt->get_result();
 ?>
 
 <!DOCTYPE html>
@@ -11,6 +20,7 @@ include 'php/connect.php';
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jackarmyofficial</title>
     <link rel="stylesheet" href="pbl02.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
     /* Updated notification style - smaller and more subtle */
     .notification {
@@ -42,238 +52,229 @@ include 'php/connect.php';
 </style>
 </head>
 <body>
-<?php
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-?>
+
 <header>
     <nav class="navbar">
-        <div class="logo">JACK<span>ARMY</span></div>
-        <ul class="nav-links">
-            <li><a href="index.php">Home</a></li>
-            <li class="dropdown">
-                <a href="#">Products ▼</a>
-                <ul class="dropdown-menu">
-                    <li><a href="products.php">All Product</a></li>
-                    <li><a href="baju.php">T-Shirt</a></li>
-                    <li><a href="jaket.php">Jacket</a></li>
-                    <li><a href="topi.php">Hat</a></li>
-                </ul>
-            </li>
-            <li><a href="cart.php">Cart</a></li>
+  <a href="index.php" class="logo">JACK<span>ARMY</span></a>
+  
+ <div class="right-navbar">
+      <!-- ✅ Search Bar -->
+      <div class="search-bar">
+        <input type="text" id="searchInput" placeholder="Search...">
+        <button onclick="searchProducts()"><i class="fas fa-search"></i></button>
+      </div>
 
-            <?php if (isset($_SESSION['user_id']) && $_SESSION['role'] === 'user'): ?>
-                <li><a href="account.php">Account</a></li>
-                <li><a href="logout.php">Logout</a></li>
-            <?php elseif (isset($_SESSION['admin_id']) && $_SESSION['role'] === 'admin'): ?>
-                <li><a href="php/admin/dashboard.php">Admin Panel</a></li>
-                <li><a href="logout.php">Logout</a></li>
-            <?php else: ?>
-                <li><a href="loginout.php">Login</a></li>
-            <?php endif; ?>
+    <ul class="nav-links">
+      <li><a href="index.php">Home</a></li>
 
-            <li class="dropdown">
-                <a href="#">Help Center ▼</a>
-                <ul class="dropdown-menu">
-                    <li><a href="shopping.php">How To Order</a></li>
-                    <li><a href="shipping.php">Shipping Information</a></li>
-                    <li><a href="payment.php">Payment Methods</a></li>
-                    <li><a href="refund.php">Refund & Return Policy</a></li>
-                    <li><a href="size.php">Size Chart</a></li>
-                </ul>
-            </li>
+      <li class="dropdown">
+        <a href="#"><i class="fas fa-box"></i> Products ▼</a>
+        <ul class="dropdown-menu">
+          <li><a href="products.php">All Product</a></li>
+          <li><a href="baju.php">T-Shirt</a></li>
+          <li><a href="jaket.php">Jacket</a></li>
+          <li><a href="topi.php">Hat</a></li>
         </ul>
-        <div class="search-bar">
-            <input type="text" id="searchInput" placeholder="Search...">
-            <button onclick="searchProducts()">Search</button>
-        </div>
-    </nav>
+      </li>
+
+      <li><a href="cart.php"><i class="fas fa-shopping-cart"></i> Cart</a></li>
+
+      <?php if (isset($_SESSION['user_id']) && $_SESSION['role'] === 'user'): ?>
+        <li><a href="account.php"><i class="fas fa-user"></i></a></li>
+      <?php elseif (isset($_SESSION['admin_id']) && $_SESSION['role'] === 'admin'): ?>
+        <li><a href="php/admin/dashboard.php"><i class="fas fa-user-shield"></i> Admin Panel</a></li>
+        <li><a href="logout.php">Logout</a></li>
+      <?php else: ?>
+        <li><a href="loginout.php"><i class="fas fa-sign-in-alt"></i> Login</a></li>
+      <?php endif; ?>
+
+      <li class="dropdown">
+        <a href="#"><i class="fas fa-question-circle"></i>▼</a>
+        <ul class="dropdown-menu">
+          <li><a href="shopping.php">How To Order</a></li>
+          <li><a href="shipping.php">Shipping Information</a></li>
+          <li><a href="payment.php">Payment Methods</a></li>
+          <li><a href="refund.php">Refund & Return Policy</a></li>
+          <li><a href="size.php">Size Chart</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</nav>
 </header>
 
 <!-- Hero Section -->
 <section class="hero-carousel">
   <div class="carousel">
     <!-- Navigation Buttons -->
-    <button class="prev" aria-label="Previous Slide" onclick="moveSlide(-1)">&#10094;</button>
+    <button class="prev" onclick="moveSlide(-1)">&#10094;</button>
 
     <!-- Carousel Slides -->
-    <img src="Images/hero1.jpg" class="slide active" alt="Hero 1">
-    <img src="Images/hero2.jpg" class="slide" alt="Hero 2">
-    <img src="Images/hero3.jpg" class="slide" alt="Hero 3">
-    <img src="Images/hero4.jpg" class="slide" alt="Hero 4">
+    <img src="Images/hero1.jpg" class="slide active">
+    <img src="Images/hero2.jpg" class="slide">
+    <img src="Images/hero3.jpg" class="slide">
+    <img src="Images/hero4.jpg" class="slide">
 
-    <button class="next" aria-label="Next Slide" onclick="moveSlide(1)">&#10095;</button>
+    <button class="next" onclick="moveSlide(1)">&#10095;</button>
+
+    <!-- View Products Button -->
+    <button class="view-products-btn" onclick="scrollToProducts()">View Products</button>
   </div>
 </section>
 
-<!-- Produk Kaos -->
-<section class="produk-kaos">
+<!-- BAJU -->   
+<section class="produk-kaos" id="products">
   <h2>T-SHIRT COLLECTION</h2>
   <div class="kaos-container">
-    <div class="kaos-item" onclick="openPopup('images/baju1.jpg', 'Kaos Origami Navy', 'Rp79.900')">
-      <span class="discount">60% OFF</span>
-      <img src="images/baju1.jpg" alt="Kaos Origami Navy">
-      <h3>T-Shirt Angel Demon</h3>
-      <p class="price"><del>Rp199.000</del> <strong>Rp79.900</strong></p>
-    </div>
-    <div class="kaos-item" onclick="openPopup('images/baju2.jpg', 'T-Shirt Wolf', 'Rp69.000')">
-      <span class="discount">65% OFF</span>
-      <img src="images/baju2.jpg" alt="T-Shirt Wolf">
-      <h3>T-Shirt Wolf</h3>
-      <p class="price"><del>Rp199.000</del> <strong>Rp69.000</strong></p>
-    </div>
-    <div class="kaos-item" onclick="openPopup('images/baju3.jpg', 'T-Shirt Breath', 'Rp89.000')">
-      <span class="discount">55% OFF</span>
-      <img src="images/baju3.jpg" alt="T-Shirt Breath">
-      <h3>T-Shirt Breath</h3>
-      <p class="price"><del>Rp199.000</del> <strong>Rp89.000</strong></p>
-    </div>
-    <div class="kaos-item" onclick="openPopup('images/baju4.jpg', 'T-Shirt Creates', 'Rp93.000')">
-      <span class="discount">53% OFF</span>
-      <img src="images/baju4.jpg" alt="T-Shirt Creates">
-      <h3>T-Shirt Creates</h3>
-      <p class="price"><del>Rp199.000</del> <strong>Rp93.000</strong></p>
-    </div>
-    <div class="kaos-item" onclick="openPopup('images/baju5.jpg', 'T-Shirt Love Hurts', 'Rp79.900')">
-      <span class="discount">60% OFF</span>
-      <img src="images/baju5.jpg" alt="T-Shirt Love Hurts">
-      <h3>T-Shirt Love Hurts</h3>
-      <p class="price"><del>Rp199.000</del> <strong>Rp79.900</strong></p>
-    </div>
+    <?php
+    $products = $conn->query("SELECT * FROM products WHERE category = 'T-Shirt'");
+    while ($p = $products->fetch_assoc()):
+      $hargaAwal = $p['price'] * 2;
+      $discountPercent = round(($hargaAwal - $p['price']) / $hargaAwal * 100);
+    ?>
+      <div class="kaos-item" onclick="openPopup(
+        '<?= $p['image'] ?>', 
+        '<?= $p['name'] ?>', 
+        '<?= $p['price'] ?>', 
+        '<?= $p['id'] ?>', 
+        '<?= $p['size_available'] ?>')">
+        <span class="discount"><?= $discountPercent ?>% OFF</span>
+        <img src="<?= $p['image'] ?>" alt="<?= $p['name'] ?>">
+        <h3><?= $p['name'] ?></h3>
+        <p class="price">
+          <del>Rp<?= number_format($hargaAwal, 0, ',', '.') ?></del>
+          <strong>Rp<?= number_format($p['price'], 0, ',', '.') ?></strong>
+        </p>
+      </div>
+    <?php endwhile; ?>
   </div>
 </section>
 
-<!-- Produk Jaket -->
+<!-- JAKET -->   
 <section class="produk-jaket">
   <h2>JACKET COLLECTION</h2>
   <div class="jaket-container">
-    <div class="kaos-item" onclick="openPopup('images/jaket1.jpg', 'Jacket Hoodie Starboy', 'Rp199.000')">
-      <span class="discount">50% OFF</span>
-      <img src="images/jaket1.jpg" alt="Jacket Hoodie Starboy">
-      <h3>Jacket Hoodie Starboy</h3>
-      <p class="price"><del>Rp399.000</del> <strong>Rp199.000</strong></p>
-    </div>
-    <div class="kaos-item" onclick="openPopup('images/jaket2.jpg', 'Jacket Hoodie X', 'Rp197.450')">
-      <span class="discount">45% OFF</span>
-      <img src="images/jaket2.jpg" alt="Jacket Hoodie X">
-      <h3>Jacket Hoodie X</h3>
-      <p class="price"><del>Rp359.000</del> <strong>Rp197.450</strong></p>
-    </div>
-    <div class="kaos-item" onclick="openPopup('images/jaket3.jpg', 'Jacket Hoodie Star', 'Rp199.000')">
-      <span class="discount">50% OFF</span>
-      <img src="images/jaket3.jpg" alt="Jacket Hoodie Star">
-      <h3>Jacket Hoodie Star</h3>
-      <p class="price"><del>Rp399.000</del> <strong>Rp199.000</strong></p>
-    </div>
-    <div class="kaos-item" onclick="openPopup('images/jaket4.jpg', 'Jacket Cardigan', 'Rp197.450')">
-      <span class="discount">45% OFF</span>
-      <img src="images/jaket4.jpg" alt="Jacket Cardigan">
-      <h3>Jacket Cardigan</h3>
-      <p class="price"><del>Rp359.000</del> <strong>Rp197.450</strong></p>
-    </div>
-    <div class="kaos-item" onclick="openPopup('images/jaket5.jpg', 'Jacket Canvas', 'Rp199.000')">
-      <span class="discount">50% OFF</span>
-      <img src="images/jaket5.jpg" alt="Jacket Canvas">
-      <h3>Jacket Canvas</h3>
-      <p class="price"><del>Rp399.000</del> <strong>Rp199.000</strong></p>
-    </div>
+    <?php
+    $products = $conn->query("SELECT * FROM products WHERE category = 'Jacket'");
+    while ($p = $products->fetch_assoc()):
+      $hargaAwal = $p['price'] * 2; // estimasi harga awal sebelum diskon
+      $discountPercent = round(($hargaAwal - $p['price']) / $hargaAwal * 100);
+    ?>
+      <div class="kaos-item" onclick="openPopup(
+        '<?= $p['image'] ?>', 
+        '<?= htmlspecialchars($p['name']) ?>', 
+        '<?= $p['price'] ?>', 
+        '<?= $p['id'] ?>', 
+        '<?= $p['size_available'] ?>'
+      )">
+        <span class="discount"><?= $discountPercent ?>% OFF</span>
+        <img src="<?= $p['image'] ?>" alt="<?= $p['name'] ?>">
+        <h3><?= $p['name'] ?></h3>
+        <p class="price">
+          <del>Rp<?= number_format($hargaAwal, 0, ',', '.') ?></del>
+          <strong>Rp<?= number_format($p['price'], 0, ',', '.') ?></strong>
+        </p>
+      </div>
+    <?php endwhile; ?>
   </div>
 </section>
 
-<!-- Produk Topi -->
+<!-- TOPI --> 
 <section class="produk-topi">
   <h2>HAT COLLECTION</h2>
-  <div class="topi-container">
-    <div class="kaos-item" onclick="openHatPopup('images/topi1.jpg', 'Bucket Hat Nylon Black', 'Rp95.400')">
-      <span class="discount">40% OFF</span>
-      <img src="images/topi1.jpg" alt="Bucket Hat Nylon Black">
-      <h3>Bucket Hat Nylon Black</h3>
-      <p class="price"><del>Rp159.000</del> <strong>Rp95.400</strong></p>
-    </div>
-    <div class="kaos-item" onclick="openHatPopup('images/topi2.jpg', 'Bucket Hat Nusantara', 'Rp83.850')">
-      <span class="discount">35% OFF</span>
-      <img src="images/topi2.jpg" alt="Bucket Hat Nusantara">
-      <h3>Bucket Hat Nusantara</h3>
-      <p class="price"><del>Rp129.000</del> <strong>Rp83.850</strong></p>
-    </div>
-    <div class="kaos-item" onclick="openHatPopup('images/topi3.jpg', 'Hat Nusantara Bold', 'Rp95.400')">
-      <span class="discount">40% OFF</span>
-      <img src="images/topi3.jpg" alt="Hat Nusantara Bold">
-      <h3>Hat Nusantara Bold</h3>
-      <p class="price"><del>Rp159.000</del> <strong>Rp95.400</strong></p>
-    </div>
-    <div class="kaos-item" onclick="openHatPopup('images/topi4.jpg', 'Hat Nocturn', 'Rp83.850')">
-      <span class="discount">35% OFF</span>
-      <img src="images/topi4.jpg" alt="Hat Nocturn">
-      <h3>Hat Nocturn</h3>
-      <p class="price"><del>Rp129.000</del> <strong>Rp83.850</strong></p>
-    </div>
-    <div class="kaos-item" onclick="openHatPopup('images/topi5.jpg', 'Hat Freedom', 'Rp95.400')">
-      <span class="discount">40% OFF</span>
-      <img src="images/topi5.jpg" alt="Hat Freedom">
-      <h3>Hat Freedom</h3>
-      <p class="price"><del>Rp159.000</del> <strong>Rp95.400</strong></p>
-    </div>
-  </div>
+  <div class="topi-container"> <!-- TAMBAHKAN INI -->
+    <?php
+      $products = $conn->query("SELECT * FROM products WHERE LOWER(category) = 'hat'");
+      while ($p = $products->fetch_assoc()):
+        $hargaAwal = $p['price'] * 1.6;
+        $discountPercent = round(($hargaAwal - $p['price']) / $hargaAwal * 100);
+    ?>
+      <div class="kaos-item" onclick="openHatPopup(
+          '<?= $p['image'] ?>',
+          '<?= htmlspecialchars($p['name']) ?>',
+          <?= $p['price'] ?>,
+          <?= $p['id'] ?>,
+          <?= $p['stock'] ?>
+        )">
+        <span class="discount"><?= $discountPercent ?>% OFF</span>
+        <img src="<?= $p['image'] ?>" alt="<?= $p['name'] ?>">
+        <h3><?= $p['name'] ?></h3>
+        <p class="price"><del>Rp<?= number_format($hargaAwal, 0, ',', '.') ?></del> <strong>Rp<?= number_format($p['price'], 0, ',', '.') ?></strong></p>
+      </div>
+    <?php endwhile; ?>
+  </div> <!-- TUTUP .topi-container -->
 </section>
 
-<!-- Popup Product Detail -->
+<!-- Popup Product Detail (T-Shirt / Jacket) -->
 <div class="popup-overlay" id="popupOverlay" style="display: none;">
   <div class="popup-content">
     <span class="close-btn" onclick="closePopup()">&times;</span>
-    <img id="popupImage" src="" alt="Produk">
+    <img id="popupImage" src="" alt="Product Image">
     <h3 id="popupTitle">Product Name</h3>
-    <p class="popupPrice" id="popupPrice">Rp0</p>
+    <p id="popupPrice" class="popupPrice">Rp0</p>
+    <p id="popupStock" class="popupStock">Stok: 0</p>
 
-    <div class="popupSize">
-      <label>Size Choice:</label>
-      <div class="size-buttons">
-        <button onclick="selectSize('S')">S</button>
-        <button onclick="selectSize('M')">M</button>
-        <button onclick="selectSize('L')">L</button>
-        <button onclick="selectSize('XL')">XL</button>
+    <form action="add_to_cart.php" method="POST">
+      <input type="hidden" name="product_id" id="popupProductId">
+      <input type="hidden" name="size" id="popupSelectedSize">
+      <input type="hidden" name="quantity" id="popupQuantity" value="1">
+
+      <div class="popupSize">
+        <label>Size:</label>
+        <div class="size-buttons">
+          <button type="button" id="sizeS" onclick="selectSize('S')">S</button>
+          <button type="button" id="sizeM" onclick="selectSize('M')">M</button>
+          <button type="button" id="sizeL" onclick="selectSize('L')">L</button>
+          <button type="button" id="sizeXL" onclick="selectSize('XL')">XL</button>
+        </div>
       </div>
-    </div>
 
-    <div class="popupQuantity">
-      <label>Quantity:</label>
-      <div class="quantity-wrapper">
-        <button onclick="decreaseQuantity()">-</button>
-        <span id="quantityDisplay">1</span>
-        <button onclick="increaseQuantity()">+</button>
-      </div>
-    </div><br>
+      <div class="popupQuantity">
+        <label>Quantity:</label>
+        <div class="quantity-wrapper">
+          <button type="button" onclick="changeQty(-1)">-</button>
+          <span id="qtyDisplay">1</span>
+          <button type="button" onclick="changeQty(1)">+</button>
+        </div>
+      </div><br>
 
-    <a href="#" class="addToCartBtn" onclick="addToCart()">Add To Cart</a>
+      <button type="submit" class="addToCartBtn">Add To Cart</button>
+    </form>
   </div>
 </div>
 
-<!-- Hat Popup Product Detail (with All Size option) -->
+<!-- Popup Product Detail for Hat -->
 <div class="popup-overlay" id="hatPopupOverlay" style="display: none;">
   <div class="popup-content">
     <span class="close-btn" onclick="closeHatPopup()">&times;</span>
-    <img id="hatPopupImage" src="" alt="Produk">
+    <img id="hatPopupImage" src="" alt="Hat Produk">
     <h3 id="hatPopupTitle">Product Name</h3>
     <p class="popupPrice" id="hatPopupPrice">Rp0</p>
+    <p id="hatPopupStockInfo" style="color: #666;">Stok: 0</p>
 
-    <div class="popupSize">
-      <label>Size:</label>
-      <div class="size-buttons">
-        <button class="size-selected" onclick="selectHatSize('All Size')">All Size</button>
+    <form action="add_to_cart.php" method="POST">
+      <input type="hidden" name="product_id" id="formHatProductId">
+      <input type="hidden" name="size" value="All Size">
+      <input type="hidden" name="quantity" id="formHatQty" value="1">
+
+      <div class="popupSize">
+        <label>Size:</label>
+        <div class="size-buttons">
+          <button type="button" class="size-selected">All Size</button>
+        </div>
       </div>
-    </div>
 
-    <div class="popupQuantity">
-      <label>Quantity:</label>
-      <div class="quantity-wrapper">
-        <button onclick="decreaseHatQuantity()">-</button>
-        <span id="hatQuantityDisplay">1</span>
-        <button onclick="increaseHatQuantity()">+</button>
-      </div>
-    </div><br>
+      <div class="popupQuantity">
+        <label>Quantity:</label>
+        <div class="quantity-wrapper">
+          <button type="button" onclick="decreaseHatQuantity()">-</button>
+          <span id="hatQuantityDisplay">1</span>
+          <button type="button" onclick="increaseHatQuantity()">+</button>
+        </div>
+      </div><br>
 
-    <a href="#" class="addToCartBtn" onclick="addHatToCart()">Add To Cart</a>
+      <button type="submit" class="addToCartBtn">Add To Cart</button>
+    </form>
   </div>
 </div>
 
@@ -328,174 +329,202 @@ if (session_status() === PHP_SESSION_NONE) {
 </footer>
 
 <script>
-// Carousel functionality
 let currentSlide = 0;
-const slides = document.querySelectorAll('.slide');
+const slides = document.querySelectorAll(".slide");
 
-function showSlide(n) {
-    slides.forEach(slide => slide.classList.remove('active'));
-    currentSlide = (n + slides.length) % slides.length;
-    slides[currentSlide].classList.add('active');
+function showSlide(index) {
+  slides.forEach((slide, i) => {
+    slide.classList.remove("active");
+    if (i === index) {
+      slide.classList.add("active");
+    }
+  });
 }
 
-function moveSlide(n) {
-    showSlide(currentSlide + n);
+function moveSlide(direction) {
+  currentSlide += direction;
+  if (currentSlide < 0) currentSlide = slides.length - 1;
+  if (currentSlide >= slides.length) currentSlide = 0;
+  showSlide(currentSlide);
 }
 
-// Auto-advance slides every 5 seconds
+document.addEventListener("DOMContentLoaded", () => {
+  showSlide(currentSlide);
+});
+
 setInterval(() => moveSlide(1), 5000);
 
-// Popup functionality for regular products
-let currentQuantity = 1;
-let selectedSize = '';
 
-function openPopup(imageSrc, productName, productPrice) {
-    document.getElementById('popupImage').src = imageSrc;
-    document.getElementById('popupTitle').textContent = productName;
-    document.getElementById('popupPrice').textContent = productPrice;
-    document.getElementById('popupOverlay').style.display = 'flex';
-    document.getElementById('quantityDisplay').textContent = '1';
-    currentQuantity = 1;
-    selectedSize = '';
-    
-    // Reset size buttons
-    const buttons = document.querySelectorAll('.size-buttons button');
-    buttons.forEach(button => {
-        button.style.backgroundColor = '#f1f1f1';
-        button.style.color = 'black';
-    });
+function scrollToProducts() {
+  const section = document.getElementById("products");
+  if (section) {
+    section.scrollIntoView({ behavior: "smooth" });
+  }
+}
+
+let qty = 1;
+let size = '';
+let stockInfo = {};
+
+// === T-SHIRT / JACKET ===
+function openPopup(img, title, price, id, size_available) {
+  document.getElementById('popupOverlay').style.display = 'flex';
+  document.getElementById('popupImage').src = img;
+  document.getElementById('popupTitle').innerText = title;
+  document.getElementById('popupPrice').innerText = 'Rp' + price;
+  document.getElementById('popupProductId').value = id;
+  qty = 1;
+  document.getElementById('qtyDisplay').innerText = qty;
+  document.getElementById('popupQuantity').value = qty;
+
+  size = '';
+  document.getElementById('popupSelectedSize').value = '';
+
+  stockInfo = {};
+  size_available.split(',').forEach(function (item) {
+    let [sz, stok] = item.split(':');
+    stockInfo[sz] = parseInt(stok);
+  });
+
+  ['S', 'M', 'L', 'XL'].forEach(updateSizeButton);
+}
+
+function updateSizeButton(sz) {
+  const btn = document.getElementById('size' + sz);
+  btn.innerText = sz + ' (' + (stockInfo[sz] ?? 0) + ')';
+  btn.disabled = stockInfo[sz] <= 0;
 }
 
 function closePopup() {
-    document.getElementById('popupOverlay').style.display = 'none';
+  document.getElementById('popupOverlay').style.display = 'none';
 }
 
-function selectSize(size) {
-    selectedSize = size;
-    const buttons = document.querySelectorAll('.size-buttons button');
-    buttons.forEach(button => {
-        button.style.backgroundColor = button.textContent === size ? '#333' : '#f1f1f1';
-        button.style.color = button.textContent === size ? 'white' : 'black';
-    });
+function changeQty(val) {
+  qty += val;
+  if (qty < 1) qty = 1;
+  if (size && qty > stockInfo[size]) qty = stockInfo[size];
+  document.getElementById('qtyDisplay').innerText = qty;
+  document.getElementById('popupQuantity').value = qty;
 }
 
-function increaseQuantity() {
-    currentQuantity++;
-    document.getElementById('quantityDisplay').textContent = currentQuantity;
-}
+function selectSize(sz) {
+  if (stockInfo[sz] <= 0) {
+    alert('Stok habis untuk size ' + sz);
+    return;
+  }
+  size = sz;
+  qty = 1;
+  document.getElementById('qtyDisplay').innerText = qty;
+  document.getElementById('popupQuantity').value = qty;
+  document.getElementById('popupSelectedSize').value = sz;
 
-function decreaseQuantity() {
-    if (currentQuantity > 1) {
-        currentQuantity--;
-        document.getElementById('quantityDisplay').textContent = currentQuantity;
-    }
+  ['S', 'M', 'L', 'XL'].forEach(s => {
+    document.getElementById('size' + s).classList.remove('size-selected');
+  });
+  document.getElementById('size' + sz).classList.add('size-selected');
 }
 
 function addToCart() {
-    if (!selectedSize) {
-        alert('Please select a size first');
-        return;
+  const productId = document.getElementById('popupProductId').value;
+  const productName = document.getElementById('popupTitle').innerText;
+  const priceText = document.getElementById('popupPrice').innerText;
+
+  if (!size) {
+    alert('Silakan pilih ukuran terlebih dahulu.');
+    return;
+  }
+
+  const productPrice = parseInt(priceText.replace(/\D/g, ''));
+
+  fetch('add_to_cart.php', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    body: `product_id=${productId}&quantity=${qty}&size=${encodeURIComponent(size)}`
+  })
+  .then(res => res.text())
+  .then(response => {
+    if (response === 'SUCCESS') {
+      alert(`${productName} berhasil ditambahkan ke keranjang!`);
+      closePopup();
+    } else if (response === 'OUT_OF_STOCK') {
+      alert('Stok tidak mencukupi.');
+    } else if (response === 'NOT_LOGGED_IN') {
+      alert('Anda belum login.');
+      window.location.href = 'loginout.php';
+    } else {
+      alert('Terjadi kesalahan saat menambahkan ke keranjang.');
+      console.log(response);
     }
-    
-    const productName = document.getElementById('popupTitle').textContent;
-    const productPriceText = document.getElementById('popupPrice').textContent;
-    const productImage = document.getElementById('popupImage').src;
-    
-    // Extract numeric price from text (e.g., "Rp79.900" -> 79900)
-    const productPrice = parseInt(productPriceText.replace(/\D/g, ''));
-    
-    // Get or initialize cart from localStorage
-    let cart = JSON.parse(localStorage.getItem('cart')) || [];
-    
-    // Add new item to cart
-    cart.push({
-        name: productName,
-        price: productPrice,
-        image: productImage,
-        size: selectedSize,
-        quantity: currentQuantity
-    });
-    
-    // Save back to localStorage
-    localStorage.setItem('cart', JSON.stringify(cart));
-    
-    // Show success notification
-    showNotification(`${productName} added to cart!`);
-    
-    // Close popup
-    closePopup();
+  });
 }
 
-// Popup functionality for hat products
-let hatCurrentQuantity = 1;
-let hatSelectedSize = 'All Size';
+// === HAT ===
+let hatQty = 1;
+let hatStock = 0;
 
-function openHatPopup(imageSrc, productName, productPrice) {
-    document.getElementById('hatPopupImage').src = imageSrc;
-    document.getElementById('hatPopupTitle').textContent = productName;
-    document.getElementById('hatPopupPrice').textContent = productPrice;
-    document.getElementById('hatPopupOverlay').style.display = 'flex';
-    document.getElementById('hatQuantityDisplay').textContent = '1';
-    hatCurrentQuantity = 1;
-    hatSelectedSize = 'All Size';
-    
-    // Set All Size as selected
-    const sizeButton = document.querySelector('#hatPopupOverlay .size-buttons button');
-    sizeButton.style.backgroundColor = '#333';
-    sizeButton.style.color = 'white';
-}
+function openHatPopup(img, title, price, id, stock) {
+  document.getElementById('hatPopupOverlay').style.display = 'flex';
+  document.getElementById('hatPopupImage').src = img;
+  document.getElementById('hatPopupTitle').textContent = title;
+  document.getElementById('hatPopupPrice').textContent = 'Rp' + price.toLocaleString('id-ID');
+  document.getElementById('formHatProductId').value = id;
+  document.getElementById('formHatQty').value = 1;
+  document.getElementById('hatQuantityDisplay').textContent = '1';
+  document.getElementById('hatPopupStockInfo').textContent = `Stok: ${stock}`;
 
-function closeHatPopup() {
-    document.getElementById('hatPopupOverlay').style.display = 'none';
-}
-
-function selectHatSize(size) {
-    hatSelectedSize = size;
-    const sizeButton = document.querySelector('#hatPopupOverlay .size-buttons button');
-    sizeButton.style.backgroundColor = '#333';
-    sizeButton.style.color = 'white';
+  hatQty = 1;
+  hatStock = stock;
 }
 
 function increaseHatQuantity() {
-    hatCurrentQuantity++;
-    document.getElementById('hatQuantityDisplay').textContent = hatCurrentQuantity;
+  if (hatQty < hatStock) {
+    hatQty++;
+    document.getElementById('hatQuantityDisplay').innerText = hatQty;
+    document.getElementById('formHatQty').value = hatQty;
+  }
 }
 
 function decreaseHatQuantity() {
-    if (hatCurrentQuantity > 1) {
-        hatCurrentQuantity--;
-        document.getElementById('hatQuantityDisplay').textContent = hatCurrentQuantity;
-    }
+  if (hatQty > 1) {
+    hatQty--;
+    document.getElementById('hatQuantityDisplay').innerText = hatQty;
+    document.getElementById('formHatQty').value = hatQty;
+  }
+}
+
+function closeHatPopup() {
+  document.getElementById('hatPopupOverlay').style.display = 'none';
 }
 
 function addHatToCart() {
-    const productName = document.getElementById('hatPopupTitle').textContent;
-    const productPriceText = document.getElementById('hatPopupPrice').textContent;
-    const productImage = document.getElementById('hatPopupImage').src;
-    
-    // Extract numeric price from text (e.g., "Rp79.900" -> 79900)
-    const productPrice = parseInt(productPriceText.replace(/\D/g, ''));
-    
-    // Get or initialize cart from localStorage
-    let cart = JSON.parse(localStorage.getItem('cart')) || [];
-    
-    // Add new item to cart
-    cart.push({
-        name: productName,
-        price: productPrice,
-        image: productImage,
-        size: hatSelectedSize,
-        quantity: hatCurrentQuantity
-    });
-    
-    // Save back to localStorage
-    localStorage.setItem('cart', JSON.stringify(cart));
-    
-    // Show success notification
-    showNotification(`${productName} added to cart!`);
-    
-    // Close popup
-    closeHatPopup();
+  const productId = document.getElementById('formHatProductId').value;
+  const qty = document.getElementById('formHatQty').value;
+  const productName = document.getElementById('hatPopupTitle').innerText;
+
+  fetch('add_to_cart.php', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    body: `product_id=${productId}&quantity=${qty}&size=All Size`
+  })
+  .then(res => res.text())
+  .then(response => {
+    if (response === 'SUCCESS') {
+      alert(`${productName} berhasil ditambahkan ke keranjang!`);
+      closeHatPopup();
+    } else if (response === 'OUT_OF_STOCK') {
+      alert('Stok habis.');
+    } else if (response === 'NOT_LOGGED_IN') {
+      alert('Anda belum login.');
+      window.location.href = 'loginout.php';
+    } else {
+      alert('Gagal menambahkan produk ke keranjang.');
+      console.log(response);
+    }
+  });
 }
 
 // Function to show notification
@@ -512,15 +541,22 @@ function showNotification(message) {
 }
 
 function searchProducts() {
-    const searchTerm = document.getElementById('searchInput').value.trim().toLowerCase();
-    if (searchTerm) {
-        alert(`Searching for: ${searchTerm}`);
-        // In a real implementation, you would redirect to a search page or filter products
-        // window.location.href = `search.php?q=${encodeURIComponent(searchTerm)}`;
-    } else {
-        alert('Please enter a search term');
-    }
+  const searchTerm = document.getElementById('searchInput').value.trim();
+  if (searchTerm) {
+    window.location.href = `search.php?query=${encodeURIComponent(searchTerm)}`;
+  } else {
+    alert('Please enter a search term');
+  }
 }
+
+document.getElementById('searchInput').addEventListener('keypress', function (e) {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    searchProducts();
+  }
+});
+
 </script>
+
 </body>
 </html>

@@ -1,391 +1,349 @@
-<?php 
+<?php
 session_start();
 include 'php/connect.php';
 
-// Check if user is logged in
-$isLoggedIn = isset($_SESSION['user_id']);
-$userData = [];
+if (!isset($_SESSION['user_id'])) {
+    header("Location: loginout.php");
+    exit;
+}
 
-if ($isLoggedIn) {
-    // Fetch user data from database
-    $userId = $_SESSION['user_id'];
-    $stmt = $conn->prepare("SELECT * FROM users WHERE id = ?");
-    $stmt->bind_param("i", $userId);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $userData = $result->fetch_assoc();
+$user_id = $_SESSION['user_id'];
+$user = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM users WHERE id = $user_id"));
+$page = $_GET['page'] ?? 'dashboard';
+
+// ⬇⬇⬇ INI YANG DITAMBAHKAN UNTUK MENYIMPAN DATA ⬇⬇⬇
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_account'])) {
+    $email   = mysqli_real_escape_string($conn, $_POST['email']);
+    $no_telp = mysqli_real_escape_string($conn, $_POST['no_telp']);
+    $alamat  = mysqli_real_escape_string($conn, $_POST['alamat']);
+    $password = $_POST['password'];
+
+    if (!empty($password)) {
+        $hashed = password_hash($password, PASSWORD_DEFAULT);
+        $sql = "UPDATE users SET email='$email', password='$hashed', no_telp='$no_telp', alamat='$alamat' WHERE id=$user_id";
+    } else {
+        $sql = "UPDATE users SET email='$email', no_telp='$no_telp', alamat='$alamat' WHERE id=$user_id";
+    }
+
+    if (mysqli_query($conn, $sql)) {
+        header("Location: account.php?page=settings&success=1");
+        exit;
+    } else {
+        echo "<p style='color:red;'>Gagal menyimpan perubahan: " . mysqli_error($conn) . "</p>";
+    }
 }
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>My Account | Jackarmyofficial</title>
-  <link rel="stylesheet" href="pbl02.css" />
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-  <style>
-    /* Additional styles for account page */
-    .account-container {
-      max-width: 1200px;
-      margin: 50px auto;
-      padding: 20px;
-      display: flex;
-      gap: 30px;
-    }
-    
-    .account-sidebar {
-      width: 250px;
-      background: #f8f8f8;
-      border-radius: 8px;
-      padding: 20px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
-    
-    .account-content {
-      flex: 1;
-      background: #fff;
-      border-radius: 8px;
-      padding: 30px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
-    
-    .account-sidebar h3, .account-content h2 {
-      color: #333;
-      margin-bottom: 20px;
-      padding-bottom: 10px;
-      border-bottom: 1px solid #eee;
-    }
-    
-    .account-sidebar ul {
-      list-style: none;
-      padding: 0;
-    }
-    
-    .account-sidebar li {
-      margin-bottom: 10px;
-    }
-    
-    .account-sidebar a {
-      display: block;
-      padding: 8px 10px;
-      color: #555;
-      text-decoration: none;
-      border-radius: 4px;
-      transition: all 0.3s;
-    }
-    
-    .account-sidebar a:hover, .account-sidebar a.active {
-      background: #e9e9e9;
-      color: #000;
-    }
-    
-    .account-sidebar a.active {
-      font-weight: bold;
-    }
-    
-    .user-profile {
-      display: flex;
-      align-items: center;
-      margin-bottom: 30px;
-    }
-    
-    .user-avatar {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      background: #ddd;
-      display: flex;
-      align-items: center;
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Account</title>
+    <link rel="stylesheet" href="pbl02.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        .container { display: flex; max-width: 1100px; margin: 40px auto; background: white; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); overflow: hidden; }
+        .sidebar { width: 250px; background: #333; color: white; padding: 30px 20px; }
+        .sidebar h2 { color: white; margin-bottom: 20px; }
+        .sidebar a { color: white; text-decoration: none; display: block; margin: 10px 0; padding: 10px; border-radius: 5px; }
+        .sidebar a:hover { background: #555; }
+        .content { flex: 1; padding: 30px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        table th, table td { padding: 10px; border: 1px solid #ddd; text-align: left; }
+        h3 { margin-top: 0; }
+        .btn { padding: 6px 12px; background: #3498db; color: white; border: none; border-radius: 4px; cursor: pointer; text-decoration: none; }
+        .btn:hover { background: #2980b9; }
+
+        .settings-form {
+          display: flex;
+          flex-direction: column;
+          gap: 15px;
+          max-width: 600px;
+        }
+
+        .settings-form .form-row {
+          display: flex;
+          flex-direction: column;
+        }
+
+        .settings-form label {
+          font-weight: bold;
+          margin-bottom: 4px;
+        }
+
+        .settings-form input, 
+        .settings-form textarea {
+          padding: 10px;
+          border: 1px solid #ccc;
+          border-radius: 5px;
+        }
+
+        .settings-form .btn-save {
+          padding: 10px 20px;
+          background: #3498db;
+          color: white;
+          border: none;
+          border-radius: 5px;
+          cursor: pointer;
+        }
+
+        .btn-toggle-sort {
+          background: #2c3e50;
+          color: white;
+          padding: 6px 12px;
+          border-radius: 4px;
+          text-decoration: none;
+          font-size: 14px;
+        }
+        .btn-toggle-sort:hover {
+          background: #34495e;
+        }
+
+        .logout-popup {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.6);
       justify-content: center;
-      margin-right: 20px;
-      overflow: hidden;
+      align-items: center;
+      z-index: 999;
     }
-    
-    .user-avatar img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-    
-    .user-info h3 {
-      margin: 0 0 5px;
-      color: #333;
-    }
-    
-    .user-info p {
-      margin: 0;
-      color: #777;
-    }
-    
-    .account-details {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 20px;
-    }
-    
-    .detail-card {
-      background: #f9f9f9;
-      padding: 15px;
-      border-radius: 6px;
-      border-left: 4px solid #333;
-    }
-    
-    .detail-card h4 {
-      margin: 0 0 10px;
-      color: #333;
-    }
-    
-    .detail-card p {
-      margin: 0;
-      color: #666;
-    }
-    
-    .order-history {
-      margin-top: 30px;
-    }
-    
-    .order-table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-    
-    .order-table th, .order-table td {
-      padding: 12px 15px;
-      text-align: left;
-      border-bottom: 1px solid #eee;
-    }
-    
-    .order-table th {
-      background: #f5f5f5;
-      font-weight: 600;
-    }
-    
-    .order-status {
-      padding: 4px 8px;
-      border-radius: 4px;
-      font-size: 12px;
-      font-weight: 600;
-    }
-    
-    .status-pending {
-      background: #fff3cd;
-      color: #856404;
-    }
-    
-    .status-completed {
-      background: #d4edda;
-      color: #155724;
-    }
-    
-    .status-shipped {
-      background: #cce5ff;
-      color: #004085;
-    }
-    
-    .login-required {
+
+    .logout-box {
+      background: white;
+      padding: 30px 25px;
+      border-radius: 10px;
       text-align: center;
-      padding: 50px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      font-family: 'Poppins', sans-serif;
+      min-width: 280px;
     }
-    
-    .login-required h2 {
+
+    .logout-box p {
+      font-size: 16px;
+      font-weight: 500;
       margin-bottom: 20px;
     }
-    
-    .account-actions {
-      margin-top: 30px;
-      display: flex;
-      gap: 15px;
-    }
-    
-    .btn {
-      padding: 10px 20px;
-      border-radius: 4px;
+
+    .logout-box button {
+      padding: 8px 20px;
       border: none;
-      cursor: pointer;
+      border-radius: 6px;
       font-weight: 600;
-      transition: all 0.3s;
+      cursor: pointer;
+      transition: 0.2s;
     }
-    
-    .btn-primary {
-      background: #333;
+
+    .logout-btn-yes {
+      background-color: #e74c3c;
       color: white;
     }
-    
-    .btn-primary:hover {
-      background: #555;
+
+    .logout-btn-yes:hover {
+      background-color: #c0392b;
     }
-    
-    .btn-secondary {
-      background: #f0f0f0;
-      color: #333;
+
+    .logout-btn-no {
+      background-color: #bdc3c7;
+      color: #2c3e50;
     }
-    
-    .btn-secondary:hover {
-      background: #e0e0e0;
+
+    .logout-btn-no:hover {
+      background-color: #95a5a6;
     }
-  </style>
-</head>
-<?php
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
+
+    .account-settings-form {
+  max-width: 600px;
+  margin: auto;
 }
-?>
+
+.account-settings-form input,
+.account-settings-form textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 15px;
+}
+
+.account-settings-form label {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.account-settings-form button {
+  background-color: #3498db;
+  color: white;
+  padding: 12px;
+  width: 100%;
+  border: none;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.account-settings-form button:hover {
+  background-color: #2980b9;
+}
+    </style>
+</head>
 <body>
 <header>
     <nav class="navbar">
-        <div class="logo">JACK<span>ARMY</span></div>
-        <ul class="nav-links">
-            <li><a href="index.php">Home</a></li>
-            <li class="dropdown">
-                <a href="#">Products ▼</a>
-                <ul class="dropdown-menu">
-                    <li><a href="products.php">All Product</a></li>
-                    <li><a href="baju.php">T-Shirt</a></li>
-                    <li><a href="jaket.php">Jacket</a></li>
-                    <li><a href="topi.php">Hat</a></li>
-                </ul>
-            </li>
-            <li><a href="cart.php">Cart</a></li>
+  <a href="index.php" class="logo">JACK<span>ARMY</span></a>
+  
+  <div class="right-navbar">
+    <div class="search-bar">
+      <input type="text" id="searchInput" placeholder="Search...">
+      <button onclick="searchProducts()"><i class="fas fa-search"></i></button>
+    </div>
 
-            <?php if (isset($_SESSION['user_id']) && $_SESSION['role'] === 'user'): ?>
-                <li><a href="account.php">Account</a></li>
-                <li><a href="logout.php">Logout</a></li>
-            <?php elseif (isset($_SESSION['admin_id']) && $_SESSION['role'] === 'admin'): ?>
-                <li><a href="php/admin/dashboard.php">Admin Panel</a></li>
-                <li><a href="logout.php">Logout</a></li>
-            <?php else: ?>
-                <li><a href="loginout.php">Login</a></li>
-            <?php endif; ?>
+    <ul class="nav-links">
+      <li><a href="index.php">Home</a></li>
 
-            <li class="dropdown">
-                <a href="#">Help Center ▼</a>
-                <ul class="dropdown-menu">
-                    <li><a href="shopping.php">How To Order</a></li>
-                    <li><a href="shipping.php">Shipping Information</a></li>
-                    <li><a href="payment.php">Payment Methods</a></li>
-                    <li><a href="refund.php">Refund & Return Policy</a></li>
-                    <li><a href="size.php">Size Chart</a></li>
-                </ul>
-            </li>
+      <li class="dropdown">
+        <a href="#"><i class="fas fa-box"></i> Products ▼</a>
+        <ul class="dropdown-menu">
+          <li><a href="products.php">All Product</a></li>
+          <li><a href="baju.php">T-Shirt</a></li>
+          <li><a href="jaket.php">Jacket</a></li>
+          <li><a href="topi.php">Hat</a></li>
         </ul>
-        <div class="search-bar">
-            <input type="text" id="searchInput" placeholder="Search...">
-            <button onclick="searchProducts()">Search</button>
-        </div>
-    </nav>
+      </li>
+
+      <li><a href="cart.php"><i class="fas fa-shopping-cart"></i> Cart</a></li>
+
+      <?php if (isset($_SESSION['user_id']) && $_SESSION['role'] === 'user'): ?>
+        <li><a href="account.php"><i class="fas fa-user"></i></a></li>
+      <?php elseif (isset($_SESSION['admin_id']) && $_SESSION['role'] === 'admin'): ?>
+        <li><a href="php/admin/dashboard.php"><i class="fas fa-user-shield"></i> Admin Panel</a></li>
+        <li><a href="logout.php">Logout</a></li>
+      <?php else: ?>
+        <li><a href="loginout.php"><i class="fas fa-sign-in-alt"></i> Login</a></li>
+      <?php endif; ?>
+
+      <li class="dropdown">
+        <a href="#"><i class="fas fa-question-circle"></i>▼</a>
+        <ul class="dropdown-menu">
+          <li><a href="shopping.php">How To Order</a></li>
+          <li><a href="shipping.php">Shipping Information</a></li>
+          <li><a href="payment.php">Payment Methods</a></li>
+          <li><a href="refund.php">Refund & Return Policy</a></li>
+          <li><a href="size.php">Size Chart</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</nav>
 </header>
 
-  <main class="account-container">
-    <?php if ($isLoggedIn): ?>
-      <!-- User is logged in - show account dashboard -->
-      <aside class="account-sidebar">
-        <div class="user-profile">
-          <div class="user-avatar">
-            <?php if (!empty($userData['avatar'])): ?>
-              <img src="<?php echo htmlspecialchars($userData['avatar']); ?>" alt="Profile Picture">
-            <?php else: ?>
-              <?php echo strtoupper(substr($userData['username'], 0, 1)); ?>
-            <?php endif; ?>
-          </div>
-          <div class="user-info">
-            <h3><?php echo htmlspecialchars($userData['username']); ?></h3>
-            <p><?php echo htmlspecialchars($userData['email']); ?></p>
-          </div>
-        </div>
-        
-        <h3>My Account</h3>
-        <ul>
-          <li><a href="account.php" class="active">Dashboard</a></li>
-          <li><a href="orders.php">My Orders</a></li>
-          <li><a href="addresses.php">Addresses</a></li>
-          <li><a href="wishlist.php">Wishlist</a></li>
-          <li><a href="settings.php">Account Settings</a></li>
-          <li><a href="logout.php">Logout</a></li>
-        </ul>
-      </aside>
-      
-      <section class="account-content">
-        <h2>Account Overview</h2>
-        
-        <div class="account-details">
-          <div class="detail-card">
-            <h4>Total Orders</h4>
-            <p>5</p>
-          </div>
-          <div class="detail-card">
-            <h4>Pending Orders</h4>
-            <p>1</p>
-          </div>
-          <div class="detail-card">
-            <h4>Completed Orders</h4>
-            <p>4</p>
-          </div>
-          <div class="detail-card">
-            <h4>Account Created</h4>
-            <p><?php echo date('F j, Y', strtotime($userData['created_at'])); ?></p>
-          </div>
-        </div>
-        
-        <div class="order-history">
-          <h3>Recent Orders</h3>
-          <table class="order-table">
-            <thead>
-              <tr>
-                <th>Order #</th>
-                <th>Date</th>
-                <th>Items</th>
-                <th>Total</th>
-                <th>Status</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>#10025</td>
-                <td>May 15, 2023</td>
-                <td>2</td>
-                <td>$89.98</td>
-                <td><span class="order-status status-completed">Completed</span></td>
-                <td><a href="#" class="btn btn-secondary">View</a></td>
-              </tr>
-              <tr>
-                <td>#10020</td>
-                <td>May 5, 2023</td>
-                <td>1</td>
-                <td>$45.99</td>
-                <td><span class="order-status status-shipped">Shipped</span></td>
-                <td><a href="#" class="btn btn-secondary">Track</a></td>
-              </tr>
-              <tr>
-                <td>#10018</td>
-                <td>April 28, 2023</td>
-                <td>3</td>
-                <td>$120.50</td>
-                <td><span class="order-status status-pending">Processing</span></td>
-                <td><a href="#" class="btn btn-secondary">View</a></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
-    <?php else: ?>
-      <!-- User is not logged in - show login prompt -->
-      <div class="login-required" style="width: 100%;">
-        <h2>Please Login to View Your Account</h2>
-        <p>You need to be logged in to access your account dashboard, order history, and settings.</p>
-        <div class="account-actions">
-          <button class="btn btn-primary" onclick="openPopup('login-popup')">Login</button>
-          <button class="btn btn-secondary" onclick="openPopup('register-popup')">Register</button>
-        </div>
-      </div>
-    <?php endif; ?>
-  </main>
+<div class="container">
+    <div class="sidebar">
+        <h2>My Account</h2>
+        <a href="account.php?page=dashboard">Dashboard</a>
+        <a href="account.php?page=orders">My Orders</a>
+        <a href="account.php?page=settings">Account Settings</a>
+        <a href="#" onclick="confirmLogout(event)">Logout</a>
+    </div>
+    <div class="content">
+        <?php if ($page === 'dashboard'): ?>
+            <h3>Hi <?= htmlspecialchars($user['username']) ?> 👋</h3>
+            <p>Ubah informasi Anda di halaman <a href="account.php?page=settings">Account Settings</a></p>
+            <table>
+                <tr><th>Email</th><td><?= htmlspecialchars($user['email']) ?></td><td><a class="btn" href="account.php?page=settings">Edit</a></td></tr>
+                <tr><th>No. Telepon</th><td><?= htmlspecialchars($user['no_telp']) ?></td><td><a class="btn" href="account.php?page=settings">Edit</a></td></tr>
+                <tr><th>Alamat</th><td><?= htmlspecialchars($user['alamat']) ?></td><td><a class="btn" href="account.php?page=settings">Edit</a></td></tr>
+                <tr><th>Akun Dibuat</th><td><?= $user['created_at'] ?? 'N/A' ?></td><td></td></tr>
+                <tr><th>Order Terakhir</th><td colspan="2"><a class="btn" href="account.php?page=orders">See</a></td></tr>
+            </table>
 
-  <footer>
+        <?php elseif ($page === 'orders'): ?>
+  <h3>My Orders</h3>
+
+  <?php
+    // Toggle sort ASC/DESC
+    $sortOrder = isset($_GET['sort']) && $_GET['sort'] === 'asc' ? 'ASC' : 'DESC';
+    $toggleOrder = $sortOrder === 'ASC' ? 'desc' : 'asc';
+
+    // Query orders berdasarkan user dan sort
+    $orders = mysqli_query($conn, "SELECT * FROM orders WHERE user_id = $user_id ORDER BY id $sortOrder");
+  ?>
+
+  <!-- Tombol Sort -->
+  <div style="margin: 10px 0;">
+    <a href="account.php?page=orders&sort=<?= $toggleOrder ?>" class="btn-toggle-sort">
+      Sort by ID <?= $sortOrder === 'ASC' ? '▲' : '▼' ?>
+    </a>
+  </div>
+
+  <?php if (mysqli_num_rows($orders) === 0): ?>
+    <p>Belum ada pesanan.</p>
+  <?php else: ?>
+    <table style="width:100%; border-collapse: collapse; margin-top: 10px;">
+      <thead style="background-color: #f2f2f2;">
+        <tr>
+          <th style="padding: 10px; border: 1px solid #ccc;">ID</th>
+          <th style="padding: 10px; border: 1px solid #ccc;">Total</th>
+          <th style="padding: 10px; border: 1px solid #ccc;">Payment</th>
+          <th style="padding: 10px; border: 1px solid #ccc;">Shipping</th>
+          <th style="padding: 10px; border: 1px solid #ccc;">Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <?php while ($o = mysqli_fetch_assoc($orders)): ?>
+          <tr>
+            <td style="padding: 10px; border: 1px solid #ccc;">#<?= $o['id'] ?></td>
+            <td style="padding: 10px; border: 1px solid #ccc;">Rp<?= number_format($o['total_price'], 0, ',', '.') ?></td>
+            <td style="padding: 10px; border: 1px solid #ccc;"><?= ucfirst($o['payment_method']) ?></td>
+            <td style="padding: 10px; border: 1px solid #ccc;"><?= $o['shipping_method'] ?></td>
+            <td style="padding: 10px; border: 1px solid #ccc; color: green; font-weight: bold;">Complete</td>
+          </tr>
+        <?php endwhile; ?>
+      </tbody>
+    </table>
+  <?php endif; ?>
+
+        <?php elseif ($page === 'settings'): ?>
+  <h3>Account Settings</h3>
+
+  <?php if (isset($_GET['success'])): ?>
+    <div style="color:green; margin-bottom:10px;">Perubahan berhasil disimpan.</div>
+  <?php endif; ?>
+
+  <form method="POST" class="account-settings-form">
+    <label>Email:</label>
+    <input type="email" name="email" value="<?= $user['email'] ?>" required>
+
+    <label>Password <small>(biarkan kosong jika tidak ingin diganti)</small>:</label>
+    <input type="password" name="password" placeholder="******">
+
+    <label>No. Telp:</label>
+    <input type="text" name="no_telp" value="<?= $user['no_telp'] ?? '' ?>">
+
+    <label>Alamat:</label>
+    <textarea name="alamat"><?= $user['alamat'] ?? '' ?></textarea>
+
+    <button type="submit" name="update_account">Simpan Perubahan</button>
+  </form>
+<?php endif; ?>
+    </div>
+</div>
+
+<div id="logoutPopup" class="logout-popup">
+  <div class="logout-box">
+    <p>Apakah Anda yakin ingin keluar?</p>
+    <div style="display: flex; justify-content: center; gap: 15px;">
+      <button class="logout-btn-yes" onclick="window.location.href='logout.php'">Ya</button>
+      <button class="logout-btn-no" onclick="document.getElementById('logoutPopup').style.display='none'">Tidak</button>
+    </div>
+  </div>
+</div>
+
+<footer>
     <div class="footer-container">
         <div class="footer-section">
             <h4>Hello JackArmyFriends!</h4>
@@ -403,7 +361,7 @@ if (session_status() === PHP_SESSION_NONE) {
         <div class="footer-section">
             <h4>Products</h4>
                 <ul>
-                    <li><a href="products.php">All product</a></li>
+                    <li><a href="products.php">All Product</a></li>
                     <li><a href="baju.php">T-Shirt</a></li>
                     <li><a href="jaket.php">Jacket</a></li>
                     <li><a href="topi.php">Hat</a></li>
@@ -433,56 +391,13 @@ if (session_status() === PHP_SESSION_NONE) {
     <div class="footer-bottom">
         <p>Copyright &copy; 2025 <strong>JACKARMY</strong></p>
     </div>
-  </footer>
+</footer>
 
-  <script src="search.js"></script>
-  <script src="cart.js"></script>
-  <script src="news.js"></script>
-  <script>
-    // Popup functions
-    function openPopup(popupId) {
-      document.getElementById(popupId).style.display = 'block';
-    }
-    
-    function closePopup(popupId) {
-      document.getElementById(popupId).style.display = 'none';
-    }
-    
-    function switchPopup(toPopupId) {
-      // Hide all popups first
-      document.querySelectorAll('.overlay').forEach(popup => {
-        popup.style.display = 'none';
-      });
-      // Show the requested popup
-      document.getElementById(toPopupId).style.display = 'block';
-    }
-    
-    function togglePassword(inputId) {
-      const input = document.getElementById(inputId);
-      const button = input.nextElementSibling;
-      
-      if (input.type === 'password') {
-        input.type = 'text';
-        button.textContent = 'Hide';
-      } else {
-        input.type = 'password';
-        button.textContent = 'Show';
-      }
-    }
-    
-    // Handle form submissions
-    document.getElementById('loginForm')?.addEventListener('submit', function(e) {
-      e.preventDefault();
-      // Add your login AJAX here
-      console.log('Login form submitted');
-    });
-    
-    document.getElementById('registerForm')?.addEventListener('submit', function(e) {
-      e.preventDefault();
-      // Add your registration AJAX here
-      console.log('Register form submitted');
-    });
-
-  </script>
+<script>
+function confirmLogout(e) {
+  e.preventDefault();
+  document.getElementById('logoutPopup').style.display = 'flex';
+}
+</script>
 </body>
 </html>

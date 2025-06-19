@@ -339,11 +339,12 @@ h2 {
                     <tr>
                         <td><?= $product['id'] ?></td>
                         <td>
-                            <img src="../<?= htmlspecialchars($product['image']) ?>" 
-                                 alt="<?= htmlspecialchars($product['name']) ?>" 
-                                 width="50" height="50" 
-                                 class="product-thumbnail" 
-                                 style="object-fit: cover;">
+                            <img src="../../Images/<?= basename($product['image']) ?>"
+                                alt="<?= htmlspecialchars($product['name']) ?>" 
+                                width="50" height="50" 
+                                class="product-thumbnail" 
+                                style="object-fit: cover;">
+
                         </td>
                         <td><?= htmlspecialchars($product['name']) ?></td>
                         <td><?= htmlspecialchars($product['category_name']) ?></td>

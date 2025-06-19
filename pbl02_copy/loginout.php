@@ -150,6 +150,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['register'])) {
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <style>
     /* Main container */
     .auth-container {
@@ -347,46 +348,51 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['register'])) {
 <body>
 <header>
     <nav class="navbar">
-        <div class="logo">JACK<span>ARMY</span></div>
-        <ul class="nav-links">
-            <li><a href="index.php">Home</a></li>
-            <li class="dropdown">
-                <a href="#">Products ▼</a>
-                <ul class="dropdown-menu">
-                    <li><a href="products.php">All Product</a></li>
-                    <li><a href="baju.php">T-Shirt</a></li>
-                    <li><a href="jaket.php">Jacket</a></li>
-                    <li><a href="topi.php">Hat</a></li>
-                </ul>
-            </li>
-            <li><a href="cart.php">Cart</a></li>
+  <a href="index.php" class="logo">JACK<span>ARMY</span></a>
+  
+  <div class="right-navbar">
+    <div class="search-bar">
+      <input type="text" id="searchInput" placeholder="Search...">
+      <button onclick="searchProducts()"><i class="fas fa-search"></i></button>
+    </div>
 
-            <?php if (isset($_SESSION['user_id']) && $_SESSION['role'] === 'user'): ?>
-                <li><a href="account.php">Account</a></li>
-                <li><a href="logout.php">Logout</a></li>
-            <?php elseif (isset($_SESSION['admin_id']) && $_SESSION['role'] === 'admin'): ?>
-                <li><a href="php/admin/dashboard.php">Admin Panel</a></li>
-                <li><a href="logout.php">Logout</a></li>
-            <?php else: ?>
-                <li><a href="loginout.php">Login</a></li>
-            <?php endif; ?>
+    <ul class="nav-links">
+      <li><a href="index.php">Home</a></li>
 
-            <li class="dropdown">
-                <a href="#">Help Center ▼</a>
-                <ul class="dropdown-menu">
-                    <li><a href="shopping.php">How To Order</a></li>
-                    <li><a href="shipping.php">Shipping Information</a></li>
-                    <li><a href="payment.php">Payment Methods</a></li>
-                    <li><a href="refund.php">Refund & Return Policy</a></li>
-                    <li><a href="size.php">Size Chart</a></li>
-                </ul>
-            </li>
+      <li class="dropdown">
+        <a href="#"><i class="fas fa-box"></i> Products ▼</a>
+        <ul class="dropdown-menu">
+          <li><a href="products.php">All Product</a></li>
+          <li><a href="baju.php">T-Shirt</a></li>
+          <li><a href="jaket.php">Jacket</a></li>
+          <li><a href="topi.php">Hat</a></li>
         </ul>
-        <div class="search-bar">
-            <input type="text" id="searchInput" placeholder="Search...">
-            <button onclick="searchProducts()">Search</button>
-        </div>
-    </nav>
+      </li>
+
+      <li><a href="cart.php"><i class="fas fa-shopping-cart"></i> Cart</a></li>
+
+      <?php if (isset($_SESSION['user_id']) && $_SESSION['role'] === 'user'): ?>
+        <li><a href="account.php"><i class="fas fa-user"></i></a></li>
+      <?php elseif (isset($_SESSION['admin_id']) && $_SESSION['role'] === 'admin'): ?>
+        <li><a href="php/admin/dashboard.php"><i class="fas fa-user-shield"></i> Admin Panel</a></li>
+        <li><a href="logout.php">Logout</a></li>
+      <?php else: ?>
+        <li><a href="loginout.php"><i class="fas fa-sign-in-alt"></i> Login</a></li>
+      <?php endif; ?>
+
+      <li class="dropdown">
+        <a href="#"><i class="fas fa-question-circle"></i>▼</a>
+        <ul class="dropdown-menu">
+          <li><a href="shopping.php">How To Order</a></li>
+          <li><a href="shipping.php">Shipping Information</a></li>
+          <li><a href="payment.php">Payment Methods</a></li>
+          <li><a href="refund.php">Refund & Return Policy</a></li>
+          <li><a href="size.php">Size Chart</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</nav>
 </header>
 
   <main class="auth-container">
