@@ -95,7 +95,7 @@ $result = $conn->query("SELECT * FROM categories ORDER BY id ASC");
     <h2>Manage Category</h2>
 
     <form method="POST">
-      <input type="text" name="name" placeholder="Tambah kategori baru..." required>
+      <input type="text" name="name" placeholder="Add New Category..." required>
       <button type="submit">Add</button>
     </form>
 
