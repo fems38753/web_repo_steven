@@ -17,5 +17,5 @@ $_SESSION['cart'][] = [
     'category' => $data['category']
 ];
 
-echo "Item ditambahkan ke keranjang.";
+echo "Item added to cart.";
 ?>

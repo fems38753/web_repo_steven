@@ -16,7 +16,7 @@ $order = mysqli_fetch_assoc(mysqli_query($conn, "
 "));
 
 if (!$order) {
-  die("Pesanan tidak ditemukan.");
+  die("Order not found.");
 }
 
 // Ambil item pesanan
@@ -32,7 +32,7 @@ $items = mysqli_query($conn, "
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <title>Detail Pesanan #<?= $order_id ?></title>
+  <title>Detail Order #<?= $order_id ?></title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
     body {
@@ -112,12 +112,12 @@ $items = mysqli_query($conn, "
 <body>
 
 <div class="order-box">
-  <h2>Detail Pesanan #<?= $order['id'] ?></h2>
+  <h2>Detail Order #<?= $order['id'] ?></h2>
 
   <div class="order-info">
-    <p><strong>Pelanggan:</strong> <?= htmlspecialchars($order['username'] ?? 'Guest') ?></p>
-    <p><strong>Metode Pembayaran:</strong> <?= ucfirst($order['payment_method']) ?></p>
-    <p><strong>Metode Pengiriman (Kurir):</strong> <?= $order['shipping_method'] ?></p>
+    <p><strong>Customer:</strong> <?= htmlspecialchars($order['username'] ?? 'Guest') ?></p>
+    <p><strong>Payment Methods:</strong> <?= ucfirst($order['payment_method']) ?></p>
+    <p><strong>Shipping Methods:</strong> <?= $order['shipping_method'] ?></p>
     <p><strong>Total:</strong> Rp<?= number_format($order['total_price'], 0, ',', '.') ?></p>
     <p><strong>Status:</strong> <span style="color:green;">Complete</span></p>
   </div>
@@ -125,11 +125,11 @@ $items = mysqli_query($conn, "
   <table>
     <thead>
       <tr>
-        <th>Produk</th>
-        <th>Gambar</th>
-        <th>Ukuran</th>
+        <th>Product</th>
+        <th>Image/th>
+        <th>Size</th>
         <th>Qty</th>
-        <th>Harga</th>
+        <th>Price</th>
         <th>Subtotal</th>
       </tr>
     </thead>
@@ -147,8 +147,7 @@ $items = mysqli_query($conn, "
     </tbody>
   </table>
 
-  <a href="orders.php" class="back-link"><i class="fas fa-arrow-left"></i> Kembali ke Pesanan</a>
+  <a href="orders.php" class="back-link"><i class="fas fa-arrow-left"></i> Back to Orders</a>
 </div>
-
 </body>
 </html>

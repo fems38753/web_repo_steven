@@ -59,7 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // 3. Redirect ke account page
     echo "<script>
         localStorage.removeItem('cart');
-        alert('Order berhasil! Silakan cek di akun Anda.');
+        alert('Order successful! Please check your account.');
         window.location.href = 'account.php';
     </script>";
     exit;

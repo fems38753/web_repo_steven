@@ -89,23 +89,23 @@ include 'auth_check.php';
 
     <div class="dropdown">
       <div class="dropdown-title">Dashboard</div>
-      <a href="dashboard.php">Beranda</a>
+      <a href="dashboard.php">Home</a>
     </div>
 
     <div class="dropdown">
-      <div class="dropdown-title">Kelola Produk</div>
-      <a href="products.php">Daftar Produk</a>
-      <a href="add_product.php">Tambah Produk</a>
+      <div class="dropdown-title">Manage Product</div>
+      <a href="products.php">Product List</a>
+      <a href="add_product.php">Add Product</a>
     </div>
 
     <div class="dropdown">
-      <div class="dropdown-title">Pesanan</div>
-      <a href="orders.php">Daftar Pesanan</a>
+      <div class="dropdown-title">Order</div>
+      <a href="orders.php">Order List</a>
     </div>
 
     <div class="dropdown">
       <div class="dropdown-title">Admin</div>
-      <a href="insert_admin.php">Tambah Admin</a>
+      <a href="insert_admin.php">Add Admin</a>
     </div>
 
     <div class="dropdown">

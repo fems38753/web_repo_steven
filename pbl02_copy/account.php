@@ -251,14 +251,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_account'])) {
     </div>
     <div class="content">
         <?php if ($page === 'dashboard'): ?>
-            <h3>Hi <?= htmlspecialchars($user['username']) ?> 👋</h3>
-            <p>Ubah informasi Anda di halaman <a href="account.php?page=settings">Account Settings</a></p>
+            <h3>Hallo <?= htmlspecialchars($user['username']) ?> 👋</h3>
+            <p>Changes saved successfully. <a href="account.php?page=settings">Account Settings</a></p>
             <table>
                 <tr><th>Email</th><td><?= htmlspecialchars($user['email']) ?></td><td><a class="btn" href="account.php?page=settings">Edit</a></td></tr>
-                <tr><th>No. Telepon</th><td><?= htmlspecialchars($user['no_telp']) ?></td><td><a class="btn" href="account.php?page=settings">Edit</a></td></tr>
-                <tr><th>Alamat</th><td><?= htmlspecialchars($user['alamat']) ?></td><td><a class="btn" href="account.php?page=settings">Edit</a></td></tr>
-                <tr><th>Akun Dibuat</th><td><?= $user['created_at'] ?? 'N/A' ?></td><td></td></tr>
-                <tr><th>Order Terakhir</th><td colspan="2"><a class="btn" href="account.php?page=orders">See</a></td></tr>
+                <tr><th>Phone Number</th><td><?= htmlspecialchars($user['no_telp']) ?></td><td><a class="btn" href="account.php?page=settings">Edit</a></td></tr>
+                <tr><th>Address</th><td><?= htmlspecialchars($user['alamat']) ?></td><td><a class="btn" href="account.php?page=settings">Edit</a></td></tr>
+                <tr><th>Account Created</th><td><?= $user['created_at'] ?? 'N/A' ?></td><td></td></tr>
+                <tr><th>Last Order</th><td colspan="2"><a class="btn" href="account.php?page=orders">See</a></td></tr>
             </table>
 
         <?php elseif ($page === 'orders'): ?>
@@ -311,23 +311,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_account'])) {
   <h3>Account Settings</h3>
 
   <?php if (isset($_GET['success'])): ?>
-    <div style="color:green; margin-bottom:10px;">Perubahan berhasil disimpan.</div>
+    <div style="color:green; margin-bottom:10px;">Changes saved successfully.</div>
   <?php endif; ?>
 
   <form method="POST" class="account-settings-form">
     <label>Email:</label>
     <input type="email" name="email" value="<?= $user['email'] ?>" required>
 
-    <label>Password <small>(biarkan kosong jika tidak ingin diganti)</small>:</label>
+    <label>Password <small>(leave blank if you don't want to change it)</small>:</label>
     <input type="password" name="password" placeholder="******">
 
-    <label>No. Telp:</label>
+    <label>Phone Number:</label>
     <input type="text" name="no_telp" value="<?= $user['no_telp'] ?? '' ?>">
 
-    <label>Alamat:</label>
+    <label>Address:</label>
     <textarea name="alamat"><?= $user['alamat'] ?? '' ?></textarea>
 
-    <button type="submit" name="update_account">Simpan Perubahan</button>
+    <button type="submit" name="update_account">Save Changes</button>
   </form>
 <?php endif; ?>
     </div>
@@ -335,7 +335,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_account'])) {
 
 <div id="logoutPopup" class="logout-popup">
   <div class="logout-box">
-    <p>Apakah Anda yakin ingin keluar?</p>
+    <p>Are you sure you want to logout?</p>
     <div style="display: flex; justify-content: center; gap: 15px;">
       <button class="logout-btn-yes" onclick="window.location.href='logout.php'">Ya</button>
       <button class="logout-btn-no" onclick="document.getElementById('logoutPopup').style.display='none'">Tidak</button>
@@ -398,6 +398,22 @@ function confirmLogout(e) {
   e.preventDefault();
   document.getElementById('logoutPopup').style.display = 'flex';
 }
+
+function searchProducts() {
+  const searchTerm = document.getElementById('searchInput').value.trim();
+  if (searchTerm) {
+    window.location.href = `search.php?query=${encodeURIComponent(searchTerm)}`;
+  } else {
+    alert('Please enter a search term');
+  }
+}
+
+document.getElementById('searchInput').addEventListener('keypress', function (e) {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    searchProducts();
+  }
+});
 </script>
 </body>
 </html>

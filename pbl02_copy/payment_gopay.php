@@ -11,8 +11,8 @@ if (isset($_GET['status']) && $_GET['status'] === 'success') {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Pembayaran GoPay</title>
-    <link rel="stylesheet" href="style.css">
+    <title>GoPay Payment</title>
+    <link rel=" stylesheet" href="style.css">
     <style>
         body {
             font-family: 'Segoe UI', sans-serif;
@@ -118,45 +118,45 @@ if (isset($_GET['status']) && $_GET['status'] === 'success') {
 <body>
     <div class="container">
         <div class="icon-check">📲</div>
-        <h2>Pembayaran via GoPay</h2>
-        <p>Silakan transfer ke akun GoPay di bawah ini:</p>
+        <h2>Payment via GoPay</h2>
+        <p>Please transfer to the GoPay account below:</p>
 
         <div class="va-box">
             <strong id="vaNumber">0857-9876-5432</strong>
             <button class="copy-btn" onclick="copyVA()">Salin</button>
         </div>
-        <p>Nama Akun: <strong>JACKARMY INDONESIA</strong></p>
+        <p>Account Name: <strong>JACKARMY INDONESIA</strong></p>
 
         <div class="timer">
-            Batas waktu pembayaran: <span id="countdown">02:00</span> menit
+            Payment deadline: <span id="countdown">02:00</span> minute
         </div>
 
         <div class="steps">
-            <h4>Cara Pembayaran via GoPay:</h4>
+            <h4>How to Pay via GoPay:</h4>
             <ol>
-                <li>Buka aplikasi Gojek Anda.</li>
-                <li>Pilih menu <strong>Bayar</strong>.</li>
-                <li>Masukkan nomor GoPay tujuan: <strong>0857-9876-5432</strong>.</li>
-                <li>Masukkan nominal sesuai total belanja Anda.</li>
-                <li>Pastikan nama penerima sudah benar.</li>
-                <li>Tekan tombol <strong>Bayar</strong> untuk menyelesaikan transaksi.</li>
+                <li>Open your Gojek application.</li>
+                <li>Select menu <strong>Pay</strong>.</li>
+                <li>Enter the destination GoPay number: <strong>0857-9876-5432</strong>.</li>
+                <li>Enter the nominal amount according to your total purchases.</li>
+                <li>Make sure the recipient name is correct.</li>
+                <li>Press the button <strong>Pay</strong> to complete the transaction.</li>
             </ol>
         </div>
 
-        <div class="notes">Setelah melakukan pembayaran, klik tombol di bawah ini.</div>
+        <div class="notes">After making payment, click the button below.</div>
         <button onclick="refreshPayment()" class="btn btn-primary">Refresh Payment</button>
     </div>
 
     <script>
         function refreshPayment() {
-            alert("Payment berhasil!");
+            alert("Payment successful!");
             window.location.href = "payment_gopay.php?status=success";
         }
 
         function copyVA() {
             const va = document.getElementById("vaNumber").textContent;
             navigator.clipboard.writeText(va);
-            alert("Nomor GoPay berhasil disalin!");
+            alert("GoPay number successfully copied!");
         }
 
         // Countdown timer 2 minutes (120 detik)
@@ -171,8 +171,8 @@ if (isset($_GET['status']) && $_GET['status'] === 'success') {
 
             if (time < 0) {
                 clearInterval(timer);
-                countdownEl.textContent = "Waktu habis!";
-                alert("Waktu pembayaran telah habis. Silakan lakukan pemesanan ulang.");
+                countdownEl.textContent = "Time has run out!";
+                alert("Payment time has expired. Please re-order.");
                 // window.location.href = "cart.php"; // Aktifkan jika ingin redirect otomatis
             }
         }, 1000);

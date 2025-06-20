@@ -11,7 +11,7 @@ if (isset($_GET['status']) && $_GET['status'] === 'success') {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Pembayaran BCA Virtual Account</title>
+    <title>Payment BCA Virtual Account</title>
     <link rel="stylesheet" href="pbl02.css">
     <style>
         body {
@@ -118,43 +118,43 @@ if (isset($_GET['status']) && $_GET['status'] === 'success') {
 <body>
     <div class="container">
         <div class="icon-check">💳</div>
-        <h2>Pembayaran via BCA Virtual Account</h2>
-        <p>Silakan lakukan transfer ke rekening virtual di bawah ini:</p>
+        <h2>Payment via BCA Virtual Account</h2>
+        <p>Please make a transfer to the virtual account below:</p>
 
         <div class="va-box">
             <strong id="vaNumber">88888-1234567890</strong>
-            <button class="copy-btn" onclick="copyVA()">Salin</button>
+            <button class="copy-btn" onclick="copyVA()">Copy</button>
         </div>
-        <p>Atas Nama: <strong>PT JACKARMY</strong></p>
+        <p>On behalf of: <strong>PT JACKARMY</strong></p>
 
         <div class="timer">
-            Batas waktu pembayaran: <span id="countdown">02:00</span> menit
+            Payment deadline: <span id="countdown">02:00</span> minute
         </div>
 
         <div class="steps">
-            <h4>Cara Pembayaran:</h4>
+            <h4>Payment method:</h4>
             <ol>
-                <li>Buka aplikasi m-BCA atau Internet Banking.</li>
-                <li>Pilih menu transfer ke Virtual Account.</li>
-                <li>Masukkan nomor VA di atas dan nominal sesuai total belanja.</li>
-                <li>Konfirmasi dan selesaikan pembayaran.</li>
+                <li>Open the m-BCA or Internet Banking application.</li>
+                <li>Select the transfer menu to Virtual Account.</li>
+                <li>Enter the VA number above and the nominal amount according to the total purchase.</li>
+                <li>Confirm and complete payment.</li>
             </ol>
         </div>
 
-        <div class="notes">Setelah melakukan pembayaran, klik tombol di bawah ini.</div>
+        <div class="notes">After making payment, click the button below.</div>
         <button onclick="refreshPayment()" class="btn btn-primary">Refresh Payment</button>
     </div>
 
     <script>
         function refreshPayment() {
-            alert("Payment berhasil!");
+            alert("Payment successful!");
             window.location.href = "payment_bca.php?status=success";
         }
 
         function copyVA() {
             const va = document.getElementById("vaNumber").textContent;
             navigator.clipboard.writeText(va);
-            alert("Nomor VA berhasil disalin!");
+            alert("VA number successfully copied!");
         }
 
         // Countdown timer 2 minutes (120 detik)
@@ -169,8 +169,8 @@ if (isset($_GET['status']) && $_GET['status'] === 'success') {
 
             if (time < 0) {
                 clearInterval(timer);
-                countdownEl.textContent = "Waktu habis!";
-                alert("Waktu pembayaran telah habis. Silakan lakukan pemesanan ulang.");
+                countdownEl.textContent = "Time has run out!";
+                alert("Payment time has expired. Please re-order.");
                 // window.location.href = "cart.php"; // Aktifkan jika ingin redirect
             }
         }, 1000);

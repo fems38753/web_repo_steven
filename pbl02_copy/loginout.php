@@ -563,6 +563,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['register'])) {
         switchForm('registerForm');
       }
     });
+
+    function searchProducts() {
+  const searchTerm = document.getElementById('searchInput').value.trim();
+  if (searchTerm) {
+    window.location.href = `search.php?query=${encodeURIComponent(searchTerm)}`;
+  } else {
+    alert('Please enter a search term');
+  }
+}
+
+document.getElementById('searchInput').addEventListener('keypress', function (e) {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    searchProducts();
+  }
+});
   </script>
 </body>
 </html>

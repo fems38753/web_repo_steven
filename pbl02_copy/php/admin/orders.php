@@ -17,7 +17,7 @@ $result = $conn->query($sql);
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <title>Admin - Pesanan</title>
+  <title>Admin - Order</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <style>
@@ -138,17 +138,17 @@ $result = $conn->query($sql);
     </div>
     <ul class="sidebar-menu">
       <li><a href="dashboard.php"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a></li>
-      <li><a href="products.php"><i class="fas fa-box-open"></i> <span>Kelola Produk</span></a></li>
-      <li><a href="add_product.php"><i class="fas fa-plus-circle"></i> <span>Tambah Produk</span></a></li>
-      <li><a href="orders.php"><i class="fas fa-shopping-cart"></i> <span>Pesanan</span></a></li>
-      <li><a href="pengguna.php"><i class="fas fa-users"></i> <span>Pengguna</span></a></li>
-      <li><a href="kategori.php"><i class="fas fa-tags"></i> <span>Kategori</span></a></li>
+      <li><a href="products.php"><i class="fas fa-box-open"></i> <span>Manage Product</span></a></li>
+      <li><a href="add_product.php"><i class="fas fa-plus-circle"></i> <span>Add Product</span></a></li>
+      <li><a href="orders.php"><i class="fas fa-shopping-cart"></i> <span>Order</span></a></li>
+      <li><a href="pengguna.php"><i class="fas fa-users"></i> <span>User</span></a></li>
+      <li><a href="kategori.php"><i class="fas fa-tags"></i> <span>Category</span></a></li>
       <li><a href="/prog_web/web_repo_steven/pbl02_copy/logout.php"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a></li>
     </ul>
   </aside>
 
   <div class="main-content">
-    <h2>Manajemen Pesanan 
+    <h2>Manage Order
       <a href="orders.php?sort=<?= $sortToggle ?>" class="sort-button">
         Sort ID <?= $sort === 'ASC' ? '▲' : '▼' ?>
       </a>
@@ -157,11 +157,11 @@ $result = $conn->query($sql);
     <table>
       <thead>
         <tr>
-          <th>ID Pesanan</th>
+          <th>ID Order</th>
           <th>Customer</th>
           <th>Total</th>
           <th>Status</th>
-          <th>Aksi</th>
+          <th>Action</th>
         </tr>
       </thead>
       <tbody>
@@ -171,7 +171,7 @@ $result = $conn->query($sql);
           <td><?= htmlspecialchars($order['username'] ?? 'Guest') ?></td>
           <td>Rp<?= number_format($order['total_price'], 0, ',', '.') ?></td>
           <td><span class="status-complete">Complete</span></td>
-          <td><a href="order_items2.php?id=<?= $order['id'] ?>" class="btn-view">Lihat Detail</a></td>
+          <td><a href="order_items2.php?id=<?= $order['id'] ?>" class="btn-view">View Details </a></td>
         </tr>
         <?php endwhile; ?>
       </tbody>

@@ -430,7 +430,7 @@ function addToCart() {
   const priceText = document.getElementById('popupPrice').innerText;
 
   if (!size) {
-    alert('Silakan pilih ukuran terlebih dahulu.');
+    alert('Please select the size first.');
     return;
   }
 
@@ -446,15 +446,15 @@ function addToCart() {
   .then(res => res.text())
   .then(response => {
     if (response === 'SUCCESS') {
-      alert(`${productName} berhasil ditambahkan ke keranjang!`);
+      alert(`${productName}successfully added to cart!`);
       closePopup();
     } else if (response === 'OUT_OF_STOCK') {
-      alert('Stok tidak mencukupi.');
+      alert('Insufficient stock.');
     } else if (response === 'NOT_LOGGED_IN') {
-      alert('Anda belum login.');
+      alert('You are not logged in yet.');
       window.location.href = 'loginout.php';
     } else {
-      alert('Terjadi kesalahan saat menambahkan ke keranjang.');
+      alert('An error occurred while adding to cart.');
       console.log(response);
     }
   });
@@ -513,15 +513,15 @@ function addHatToCart() {
   .then(res => res.text())
   .then(response => {
     if (response === 'SUCCESS') {
-      alert(`${productName} berhasil ditambahkan ke keranjang!`);
+      alert(`${productName} successfully added to cart!`);
       closeHatPopup();
     } else if (response === 'OUT_OF_STOCK') {
-      alert('Stok habis.');
+      alert('Out of stock.');
     } else if (response === 'NOT_LOGGED_IN') {
-      alert('Anda belum login.');
+      alert('You are not logged in yet.');
       window.location.href = 'loginout.php';
     } else {
-      alert('Gagal menambahkan produk ke keranjang.');
+      alert('Failed to add product to cart.');
       console.log(response);
     }
   });

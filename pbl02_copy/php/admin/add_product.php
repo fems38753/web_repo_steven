@@ -289,18 +289,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
     <ul class="sidebar-menu">
       <li><a href="dashboard.php"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a></li>
-      <li><a href="products.php"><i class="fas fa-box-open"></i> <span>Kelola Produk</span></a></li>
-      <li><a href="add_product.php"><i class="fas fa-plus-circle"></i> <span>Tambah Produk</span></a></li>
-      <li><a href="orders.php"><i class="fas fa-shopping-cart"></i> <span>Pesanan</span></a></li>
-      <li><a href="pengguna.php"><i class="fas fa-users"></i> <span>Pengguna</span></a></li>
-      <li><a href="kategori.php"><i class="fas fa-tags"></i> <span>Kategori</span></a></li>
+      <li><a href="products.php"><i class="fas fa-box-open"></i> <span>Manage Product</span></a></li>
+      <li><a href="add_product.php"><i class="fas fa-plus-circle"></i> <span>Add Product</span></a></li>
+      <li><a href="orders.php"><i class="fas fa-shopping-cart"></i> <span>Order</span></a></li>
+      <li><a href="pengguna.php"><i class="fas fa-users"></i> <span>User</span></a></li>
+      <li><a href="kategori.php"><i class="fas fa-tags"></i> <span>Category</span></a></li>
       <li><a href="/prog_web/web_repo_steven/pbl02_copy/logout.php"><i class="fas fa-sign-out-alt"></i>Logout</a></li>
     </ul>
   </aside>
 <body>
     <div class="main-container">
         <div class="main-content">
-            <h2>Tambah Produk</h2>
+            <h2>Add Product</h2>
             
             <?php if (isset($error)): ?>
                 <div class="alert alert-error"><?= $error ?></div>

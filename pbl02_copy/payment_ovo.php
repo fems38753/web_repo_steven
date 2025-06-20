@@ -11,7 +11,7 @@ if (isset($_GET['status']) && $_GET['status'] === 'success') {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Pembayaran OVO</title>
+    <title>OVO Payment</title>
     <link rel="stylesheet" href="style.css">
     <style>
         body {
@@ -118,45 +118,45 @@ if (isset($_GET['status']) && $_GET['status'] === 'success') {
 <body>
     <div class="container">
         <div class="icon-check">📱</div>
-        <h2>Pembayaran via OVO</h2>
-        <p>Silakan transfer ke nomor OVO di bawah ini:</p>
+        <h2>Payment via OVO</h2>
+        <p>Please transfer to the OVO number below:</p>
 
         <div class="va-box">
             <strong id="vaNumber">0812-3456-7890</strong>
-            <button class="copy-btn" onclick="copyVA()">Salin</button>
+            <button class="copy-btn" onclick="copyVA()">Copy</button>
         </div>
-        <p>Nama Akun: <strong>JACKARMY ID</strong></p>
+        <p>Account Name: <strong>JACKARMY ID</strong></p>
 
         <div class="timer">
-            Batas waktu pembayaran: <span id="countdown">02:00</span> menit
+            Payment Deadline: <span id="countdown">02:00</span> minute
         </div>
 
         <div class="steps">
-            <h4>Cara Pembayaran via OVO:</h4>
+            <h4>Payment Method via OVO:</h4>
             <ol>
-                <li>Buka aplikasi OVO Anda.</li>
-                <li>Pilih menu <strong>Transfer</strong>.</li>
-                <li>Pilih transfer ke <strong>sesama OVO</strong>.</li>
-                <li>Masukkan nomor OVO: <strong>0812-3456-7890</strong>.</li>
-                <li>Masukkan nominal sesuai total belanja Anda.</li>
-                <li>Periksa nama penerima dan tekan <strong>Transfer</strong>.</li>
+                <li>Open your OVO application.</li>
+                <li>Select menu <strong>Transfer</strong>.</li>
+                <li>Select transfer to<strong>fellow OVO</strong>.</li>
+                <li>Input OVO Number: <strong>0812-3456-7890</strong>.</li>
+                <li>Enter the nominal amount according to your total purchases.</li>
+                <li>Check the recipient name and press <strong>Transfer</strong>.</li>
             </ol>
         </div>
 
-        <div class="notes">Setelah melakukan pembayaran, klik tombol di bawah ini.</div>
+        <div class="notes">After making payment, click the button below.</div>
         <button onclick="refreshPayment()" class="btn btn-primary">Refresh Payment</button>
     </div>
 
     <script>
         function refreshPayment() {
-            alert("Payment berhasil!");
+            alert("Payment successful!");
             window.location.href = "payment_ovo.php?status=success";
         }
 
         function copyVA() {
             const va = document.getElementById("vaNumber").textContent;
             navigator.clipboard.writeText(va);
-            alert("Nomor OVO berhasil disalin!");
+            alert("OVO number successfully copied!");
         }
 
         // Countdown timer 2 minutes (120 detik)
@@ -171,8 +171,8 @@ if (isset($_GET['status']) && $_GET['status'] === 'success') {
 
             if (time < 0) {
                 clearInterval(timer);
-                countdownEl.textContent = "Waktu habis!";
-                alert("Waktu pembayaran telah habis. Silakan lakukan pemesanan ulang.");
+                countdownEl.textContent = "Time has run out!";
+                alert("Payment time has expired. Please re-order.");
                 // window.location.href = "cart.php"; // Aktifkan jika ingin redirect otomatis
             }
         }, 1000);

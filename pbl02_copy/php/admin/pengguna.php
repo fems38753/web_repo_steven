@@ -16,7 +16,7 @@ $result = $conn->query("SELECT * FROM users ORDER BY id ASC");
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <title>Manajemen Pengguna</title>
+  <title>Management User</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
@@ -91,10 +91,6 @@ $result = $conn->query("SELECT * FROM users ORDER BY id ASC");
       padding: 25px;
       background: #fff;
       min-height: 100vh;
-    }
-
-    h2 {
-      color: var(--primary-color);
     }
 
     .btn {
@@ -205,19 +201,19 @@ $result = $conn->query("SELECT * FROM users ORDER BY id ASC");
     </div>
     <ul class="sidebar-menu">
       <li><a href="dashboard.php"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a></li>
-      <li><a href="products.php"><i class="fas fa-box-open"></i> <span>Kelola Produk</span></a></li>
-      <li><a href="add_product.php"><i class="fas fa-plus-circle"></i> <span>Tambah Produk</span></a></li>
-      <li><a href="orders.php"><i class="fas fa-shopping-cart"></i> <span>Pesanan</span></a></li>
-      <li><a href="pengguna.php"><i class="fas fa-users"></i> <span>Pengguna</span></a></li>
-      <li><a href="kategori.php"><i class="fas fa-tags"></i> <span>Kategori</span></a></li>
+      <li><a href="products.php"><i class="fas fa-box-open"></i> <span>Manage Product</span></a></li>
+      <li><a href="add_product.php"><i class="fas fa-plus-circle"></i> <span>Add Product</span></a></li>
+      <li><a href="orders.php"><i class="fas fa-shopping-cart"></i> <span>Order</span></a></li>
+      <li><a href="pengguna.php"><i class="fas fa-users"></i> <span>User</span></a></li>
+      <li><a href="kategori.php"><i class="fas fa-tags"></i> <span>Category</span></a></li>
       <li><a href="/prog_web/web_repo_steven/pbl02_copy/logout.php"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a></li>
     </ul>
   </aside>
 
   <div class="main-content">
-    <h2>Manajemen Pengguna</h2>
+    <h2>Manage User</h2>
 
-    <a href="add_user.php" class="btn"><i class="fas fa-user-plus"></i> Tambah Pengguna</a>
+    <a href="add_user.php" class="btn"><i class="fas fa-user-plus"></i> Add User</a>
 
     <div class="table-responsive">
       <table>
@@ -226,8 +222,8 @@ $result = $conn->query("SELECT * FROM users ORDER BY id ASC");
             <th>ID</th>
             <th>Username</th>
             <th>Email</th>
-            <th>Tanggal Daftar</th>
-            <th>Aksi</th>
+            <th>Registration Date</th>
+            <th>Action</th>
           </tr>
         </thead>
         <tbody>
@@ -242,7 +238,7 @@ $result = $conn->query("SELECT * FROM users ORDER BY id ASC");
                   <i class="fas fa-edit"></i>
                 </a>
                 <a href="pengguna.php?delete=<?= $user['id'] ?>" class="btn-delete" title="Hapus"
-                   onclick="return confirm('Yakin ingin menghapus pengguna ini?')">
+                   onclick="return confirm('Are you sure you want to delete this user?')">
                   <i class="fas fa-trash-alt"></i>
                 </a>
               </td>

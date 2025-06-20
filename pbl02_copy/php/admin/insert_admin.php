@@ -10,25 +10,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $stmt = $conn->prepare("INSERT INTO admins (email, password) VALUES (?, ?)");
   $stmt->bind_param("ss", $email, $password);
   $stmt->execute();
-  echo "<p style='color:green'>Admin berhasil ditambahkan.</p>";
+  echo "<p style='color:green'>Admin added successfully.</p>";
 }
 
 $admins = $conn->query("SELECT id, email, password FROM admins");
 ?>
 
-<h2>Tambah Admin</h2>
+<h2>Add Admin</h2>
 <form method="post" style="max-width:400px;">
   <label>Email:</label><br>
   <input type="email" name="email" required style="width:100%; padding:8px;"><br><br>
 
   <label>Password:</label><br>
   <input type="password" name="password" id="admin_password" required style="width:100%; padding:8px;">
-  <input type="checkbox" onclick="togglePassword()"> Tampilkan Password<br><br>
+  <input type="checkbox" onclick="togglePassword()"> Show Password<br><br>
 
-  <button type="submit" style="padding:8px 16px;">Tambah Admin</button>
+  <button type="submit" style="padding:8px 16px;">Add Admin</button>
 </form>
 
-<h3>Daftar Admin</h3>
+<h3>Admin List</h3>
 <table border="1" cellpadding="10" cellspacing="0">
   <tr>
     <th>ID</th>
@@ -50,5 +50,3 @@ function togglePassword() {
   input.type = input.type === "password" ? "text" : "password";
 }
 </script>
-
-<hr>

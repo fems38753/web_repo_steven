@@ -11,7 +11,7 @@ if (isset($_GET['status']) && $_GET['status'] === 'success') {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Pembayaran Kartu Kredit (Visa)</title>
+    <title>Credit Card Payment (Visa)</title>
     <link rel="stylesheet" href="style.css">
     <style>
         body {
@@ -101,41 +101,41 @@ if (isset($_GET['status']) && $_GET['status'] === 'success') {
 <body>
     <div class="container">
         <div class="card-icon">💳</div>
-        <h2>Pembayaran via Visa</h2>
+        <h2>Payment via Visa</h2>
 
         <form onsubmit="submitPayment(event)">
             <div class="form-group">
-                <label for="cardNumber">Nomor Kartu</label>
+                <label for="cardNumber">Card Number</label>
                 <input type="text" id="cardNumber" placeholder="**** **** **** 5678" maxlength="19" required>
             </div>
             <div class="form-group">
-                <label for="cardName">Nama di Kartu</label>
+                <label for="cardName">Card Name</label>
                 <input type="text" id="cardName" placeholder="Nama Lengkap" required>
             </div>
             <div class="form-group">
-                <label for="expDate">Masa Berlaku (MM/YY)</label>
+                <label for="expDate">Validity period (MM/YY)</label>
                 <input type="text" id="expDate" placeholder="MM/YY" maxlength="5" required>
             </div>
             <div class="form-group">
                 <label for="cvv">CVV</label>
                 <input type="number" id="cvv" placeholder="***" maxlength="3" required>
             </div>
-            <button type="submit" class="btn btn-primary">Bayar Sekarang</button>
+            <button type="submit" class="btn btn-primary">Pay Now</button>
         </form>
 
         <div class="timer">
-            Batas waktu pembayaran: <span id="countdown">05:00</span> menit
+            Payment deadline:<span id="countdown">05:00</span> minute
         </div>
 
         <div class="secure-info">
-            Transaksi Anda diproses dengan aman melalui sistem pembayaran terenkripsi.
+Your transactions are processed securely through an encrypted payment system
         </div>
     </div>
 
     <script>
         function submitPayment(event) {
             event.preventDefault();
-            alert("Pembayaran Visa berhasil diproses!");
+            alert("Visa payment successfully processed!");
             window.location.href = "payment_visa.php?status=success";
         }
 
@@ -151,8 +151,8 @@ if (isset($_GET['status']) && $_GET['status'] === 'success') {
 
             if (time < 0) {
                 clearInterval(timer);
-                countdownEl.textContent = "Waktu habis!";
-                alert("Waktu pembayaran telah habis. Silakan ulangi proses.");
+                countdownEl.textContent = "Time has run out!";
+                alert("Payment time has expired. Please repeat the process.");
             }
         }, 1000);
     </script>

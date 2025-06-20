@@ -21,7 +21,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
         exit();
     } else {
-        echo "Login gagal. Cek email/password.";
+        echo "Login failed. Check email/password.";
     }
 }
 ?>

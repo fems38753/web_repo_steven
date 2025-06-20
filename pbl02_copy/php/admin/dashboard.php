@@ -217,40 +217,40 @@ $total_items = $conn->query("SELECT SUM(quantity) AS i FROM order_items")->fetch
     </div>
     <ul class="sidebar-menu">
       <li><a href="dashboard.php"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a></li>
-      <li><a href="products.php"><i class="fas fa-box-open"></i> <span>Kelola Produk</span></a></li>
-      <li><a href="add_product.php"><i class="fas fa-plus-circle"></i> <span>Tambah Produk</span></a></li>
-      <li><a href="orders.php"><i class="fas fa-shopping-cart"></i> <span>Pesanan</span></a></li>
-      <li><a href="pengguna.php"><i class="fas fa-users"></i> <span>Pengguna</span></a></li>
-      <li><a href="kategori.php"><i class="fas fa-tags"></i> <span>Kategori</span></a></li>
+      <li><a href="products.php"><i class="fas fa-box-open"></i> <span>Manage Product</span></a></li>
+      <li><a href="add_product.php"><i class="fas fa-plus-circle"></i> <span>Add product</span></a></li>
+      <li><a href="orders.php"><i class="fas fa-shopping-cart"></i> <span>Order</span></a></li>
+      <li><a href="pengguna.php"><i class="fas fa-users"></i> <span>User</span></a></li>
+      <li><a href="kategori.php"><i class="fas fa-tags"></i> <span>Category</span></a></li>
       <li><a href="/prog_web/web_repo_steven/pbl02_copy/logout.php"><i class="fas fa-sign-out-alt"></i>Logout</a></li>
     </ul>
   </aside>
 
   <div class="main-content">
     <div class="admin-info">
-      <h2>Selamat Datang, <?= htmlspecialchars($_SESSION['admin_email'] ?? $_SESSION['username'] ?? 'Admin'); ?></h2>
-      <p>Terakhir login: <?= date('d F Y H:i'); ?></p>
+      <h2>Welcome, <?= htmlspecialchars($_SESSION['admin_email'] ?? $_SESSION['username'] ?? 'Admin'); ?></h2>
+      <p>Last login: <?= date('d F Y H:i'); ?></p>
     </div>
 
     <section class="stats">
       <div class="box">
         <h2>Rp<?= number_format($total_income, 0, ',', '.'); ?></h2>
-        <p>Total Pendapatan</p>
+        <p>Total Income</p>
       </div>
       <div class="box">
         <h2><?= number_format($total_orders, 0, ',', '.'); ?></h2>
-        <p>Total Pesanan</p>
+        <p>Order Total</p>
       </div>
       <div class="box">
         <h2><?= number_format($total_items, 0, ',', '.'); ?></h2>
-        <p>Total Produk Terjual</p>
+        <p>Total Products Sold</p>
       </div>
     </section>
 
     <div class="quick-actions">
-      <a href="products.php"><i class="fas fa-box-open"></i> Kelola Produk</a>
-      <a href="orders.php"><i class="fas fa-shopping-cart"></i> Lihat Pesanan</a>
-      <a href="pengguna.php"><i class="fas fa-users"></i> Kelola Pengguna</a>
+      <a href="products.php"><i class="fas fa-box-open"></i> Manage Product</a>
+      <a href="orders.php"><i class="fas fa-shopping-cart"></i> View Orders</a>
+      <a href="pengguna.php"><i class="fas fa-users"></i> Manage User</a>
       <a href="/prog_web/web_repo_steven/pbl02_copy/logout.php"><i class="fas fa-sign-out-alt"></i>Logout</a>
     </div>
   </div>

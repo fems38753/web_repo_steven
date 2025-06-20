@@ -33,12 +33,12 @@ if (!empty($_FILES['image_upload']['name'])) {
 }
 ?>
 
-<h2>Edit Produk</h2>
+<h2>Edit Product</h2>
 <form method="post" enctype="multipart/form-data">
-  <label>Nama Produk:</label><br>
+  <label>Product Name:</label><br>
   <input type="text" name="name" value="<?= $product['name'] ?>" required><br>
 
-  <label>Kategori:</label><br>
+  <label>category:</label><br>
   <select name="category_id">
     <?php while ($cat = $categories->fetch_assoc()): ?>
       <option value="<?= $cat['id'] ?>" <?= $cat['id'] == $product['category_id'] ? 'selected' : '' ?>>
@@ -47,16 +47,16 @@ if (!empty($_FILES['image_upload']['name'])) {
     <?php endwhile ?>
   </select><br>
 
-  <label>Harga:</label><br>
+  <label>Price:</label><br>
   <input type="number" name="price" value="<?= $product['price'] ?>" required><br>
 
-  <label>Diskon (%):</label><br>
+  <label>Discount (%):</label><br>
   <input type="number" name="discount" value="<?= $product['discount'] ?>"><br>
 
-  <label>Gambar (path):</label><br>
+  <label>Image (path):</label><br>
   <input type="text" name="image" value="<?= $product['image'] ?>"><br>
 
-  <label>Upload Gambar Baru (Opsional):</label><br>
+  <label>Upload New Image (Opsional):</label><br>
   <input type="file" name="image_upload" accept="image/*"><br>
 
   <button type="submit">Update</button>

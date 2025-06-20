@@ -17,7 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $cart = $_SESSION['cart'] ?? [];
     if (empty($cart)) {
-        echo "<script>alert('Keranjang kosong.'); window.location.href='cart.php';</script>";
+        echo "<script>alert('Empty Cart.'); window.location.href='cart.php';</script>";
         exit;
     }
 

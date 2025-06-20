@@ -22,10 +22,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             header("Location: admin/dashboard.php");
             exit;
         } else {
-            $error = "Password salah.";
+            $error = "Incorrect password.";
         }
     } else {
-        $error = "Admin tidak ditemukan.";
+        $error = "Admin not found.";
     }
 }
 ?>

@@ -258,30 +258,35 @@ function addHatToCart() {
   .then(res => res.text())
   .then(response => {
     if (response === 'SUCCESS') {
-      alert(`${productName} berhasil ditambahkan ke keranjang!`);
+      alert(`${productName} successfully added to cart!`);
       closeHatPopup();
     } else if (response === 'OUT_OF_STOCK') {
       alert('Stok habis.');
     } else if (response === 'NOT_LOGGED_IN') {
-      alert('Anda belum login.');
+      alert('You are not logged in yet.');
       window.location.href = 'loginout.php';
     } else {
-      alert('Gagal menambahkan produk ke keranjang.');
+      alert('Failed to add product to cart.');
       console.log(response);
     }
   });
 }
 
 function searchProducts() {
-    const searchTerm = document.getElementById('searchInput').value.trim().toLowerCase();
-    if (searchTerm) {
-        alert(`Searching for: ${searchTerm}`);
-        // In a real implementation, you would redirect to a search page or filter products
-        // window.location.href = `search.php?q=${encodeURIComponent(searchTerm)}`;
-    } else {
-        alert('Please enter a search term');
-    }
+  const searchTerm = document.getElementById('searchInput').value.trim();
+  if (searchTerm) {
+    window.location.href = `search.php?query=${encodeURIComponent(searchTerm)}`;
+  } else {
+    alert('Please enter a search term');
+  }
 }
+
+document.getElementById('searchInput').addEventListener('keypress', function (e) {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    searchProducts();
+  }
+});
 </script>
 </body>
 </html>

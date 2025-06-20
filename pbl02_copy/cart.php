@@ -96,7 +96,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['payment'])) {
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-   <style>
+<style>
     /* Cart item styles */
     .cart-item {
         display: flex;
@@ -525,23 +525,59 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['payment'])) {
 </footer>
 
 <script>
-// Shipping cost mapping
+// Ambil elemen shipping radio
+const shippingRadios = document.querySelectorAll('input[name="shipping"]');
 const shippingCosts = {
     'JNE': 10000,
     'J&T': 12500,
     'SiCepat': 15000
 };
 
+// Ambil elemen harga ongkir & total
+const shippingCostElem = document.querySelector('.summary-row:nth-child(2) span:last-child');
+const totalPaymentElem = document.querySelector('.summary-row.total span:last-child');
 
+// Dapatkan total produk dari elemen
+let totalProduk = <?= $total ?>;
 
-
-
-
+// Fungsi format ke Rupiah
 function formatCurrency(amount) {
-    return 'Rp ' + amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    return 'Rp' + amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 }
 
+// Event saat user pilih jasa pengiriman
+shippingRadios.forEach(radio => {
+    radio.addEventListener('change', () => {
+        const selectedShipping = radio.value;
+        const newShippingCost = shippingCosts[selectedShipping];
+        const newTotal = totalProduk + newShippingCost;
 
+        // Update elemen HTML
+        if (shippingCostElem) {
+            shippingCostElem.textContent = formatCurrency(newShippingCost);
+        }
+
+        if (totalPaymentElem) {
+            totalPaymentElem.textContent = formatCurrency(newTotal);
+        }
+    });
+});
+
+function searchProducts() {
+  const searchTerm = document.getElementById('searchInput').value.trim();
+  if (searchTerm) {
+    window.location.href = `search.php?query=${encodeURIComponent(searchTerm)}`;
+  } else {
+    alert('Please enter a search term');
+  }
+}
+
+document.getElementById('searchInput').addEventListener('keypress', function (e) {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    searchProducts();
+  }
+});
 </script>
 </body>
 </html>
