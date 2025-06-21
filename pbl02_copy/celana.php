@@ -26,7 +26,6 @@
         height: 50px;
         border: 1px solid rgba(255,255,255,0.2);
     }
-    
 
     @keyframes slideIn {
         from {transform: translateX(100%); opacity: 0;}
@@ -37,7 +36,6 @@
         from {opacity: 1;}
         to {opacity: 0;}
     }
-    
     </style>
 </head>
 <?php
@@ -94,22 +92,23 @@ if (session_status() === PHP_SESSION_NONE) {
 </nav>
 </header>
 
-<!-- BAJU -->   
-<section class="produk-kaos" id="products">
-  <h2>T-SHIRT COLLECTION</h2>
-  <div class="kaos-container">
+<!-- CELANA -->   
+<section class="produk-jaket">
+  <h2>PANTS COLLECTION</h2>
+  <div class="jaket-container">
     <?php
-    $products = $conn->query("SELECT * FROM products WHERE category_id = (SELECT id FROM categories WHERE name = 'T-Shirt') OR category = 'T-Shirt'");
+    $products = $conn->query("SELECT * FROM products WHERE category_id = (SELECT id FROM categories WHERE name = 'Pants') OR category = 'Pants'");
     while ($p = $products->fetch_assoc()):
-      $hargaAwal = $p['price'] * 2;
+      $hargaAwal = $p['price'] * 2; // estimasi harga awal sebelum diskon
       $discountPercent = round(($hargaAwal - $p['price']) / $hargaAwal * 100);
     ?>
       <div class="kaos-item" onclick="openPopup(
         '<?= $p['image'] ?>', 
-        '<?= $p['name'] ?>', 
+        '<?= htmlspecialchars($p['name']) ?>', 
         '<?= $p['price'] ?>', 
         '<?= $p['id'] ?>', 
-        '<?= $p['size_available'] ?>')">
+        '<?= $p['size_available'] ?>'
+      )">
         <span class="discount"><?= $discountPercent ?>% OFF</span>
         <img src="<?= $p['image'] ?>" alt="<?= $p['name'] ?>">
         <h3><?= $p['name'] ?></h3>
@@ -322,7 +321,6 @@ function addToCart() {
     }
   });
 }
-
 
 function searchProducts() {
   const searchTerm = document.getElementById('searchInput').value.trim();

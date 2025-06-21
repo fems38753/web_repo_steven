@@ -1832,23 +1832,26 @@ textarea {
   position: fixed;
   top: 0;
   left: 0;
-  display: none;
+  display: flex; /* This ensures the content is centered */
   justify-content: center;
   align-items: center;
   width: 100vw;
-  height: 100vh;
-  background-color: rgba(0,0,0,0.6);
-  z-index: 1000;
+  height: 80vh;
+  background-color: rgba(0,0,0,0.6); /* Transparent dark background */
+  z-index: 9999;
 }
 
 .popup-content {
   background-color: white;
   border-radius: 10px;
-  max-width: 500px;
-  width: 90%;
+  max-width: 500px;  /* Maximum width of the popup */
+  width: 90%;        /* Make it responsive */
   padding: 30px;
   text-align: center;
   position: relative;
+  max-height: 80vh; /* Limit the height */
+  overflow-y: auto; /* Scroll if content is larger than the viewport */
+  box-sizing: border-box;
 }
 
 .popup-content img {
@@ -1892,4 +1895,24 @@ textarea {
   border: none;
   border-radius: 5px;
   cursor: pointer;
+}
+
+.quantity-wrapper button {
+  font-size: 16px; /* Decrease the font size */
+  padding: 8px 16px; /* Slightly reduce padding */
+  width: 30px; /* Reduce width */
+  height: 30px; /* Reduce height */
+  border-radius: 5px;
+  background-color: #f4f4f4; /* Light background color */
+  border: 1px solid #333; /* Border around the button */
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.quantity-wrapper button:hover {
+  background-color: #ddd; /* Darker background on hover */
+}
+
+.quantity-wrapper button:active {
+  background-color: #ccc; /* Even darker background when clicked */
 }

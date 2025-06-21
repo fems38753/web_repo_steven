@@ -1,11 +1,8 @@
 <?php
+session_start();
 include '../connect.php';
 
-// Check if sidebar should be minimized
-$sidebarMinimized = isset($_COOKIE['sidebar_minimized']) && $_COOKIE['sidebar_minimized'] === 'true';
-
-$categories = $conn->query("SELECT * FROM categories");
-
+// Handle form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = $conn->real_escape_string($_POST['name']);
     $category_id = (int)$_POST['category_id'];
@@ -14,28 +11,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stock = (int)$_POST['stock'];
     $size_available = $conn->real_escape_string($_POST['size_available']);
 
-    // File upload handling
+    // Validate the size format (e.g., S:4,M:4,L:4,XL:4)
+    if (!preg_match("/^[A-Za-z]+:\d+(,[A-Za-z]+:\d+)*$/", $size_available)) {
+        $error = "Invalid size format. Use 'S:4,M:4,L:4' format.";
+        exit();
+    }
+
+    // Handle image upload
     $image = '';
     if ($_FILES['image']['name']) {
-        $target_dir = "../uploads/products/";
+        $target_dir = "C:/xampp/htdocs/prog_web/web_repo_steven/pbl02_copy/php/admin/images/";  // Full path to the image folder
         if (!is_dir($target_dir)) {
-            mkdir($target_dir, 0777, true);
+            mkdir($target_dir, 0777, true);  // Create directory if it doesn't exist (optional)
         }
-        
+
         $file_ext = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
         $filename = uniqid() . '.' . $file_ext;
         $target_file = $target_dir . $filename;
-        
+
+        // Move the uploaded file to the target directory
         if (move_uploaded_file($_FILES['image']['tmp_name'], $target_file)) {
-            $image = "uploads/products/" . $filename;
+            $image = "php/admin/images/" . $filename;  // Store relative path in the database
         }
     }
 
+    // Save the product into the database
     $stmt = $conn->prepare("INSERT INTO products 
                           (name, category_id, price, discount, image, stock, size_available) 
                           VALUES (?, ?, ?, ?, ?, ?, ?)");
-    $stmt->bind_param("siiissi", $name, $category_id, $price, $discount, $image, $stock, $size_available);
-    
+    $stmt->bind_param("siiisss", $name, $category_id, $price, $discount, $image, $stock, $size_available);
+
     if ($stmt->execute()) {
         $_SESSION['message'] = "Product added successfully";
         header('Location: products.php');
@@ -44,7 +49,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error = "Failed to add product: " . $conn->error;
     }
 }
+
+// Get categories from the database
+$categories = $conn->query("SELECT * FROM categories");
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -301,17 +310,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="main-container">
         <div class="main-content">
             <h2>Add Product</h2>
-            
+
             <?php if (isset($error)): ?>
                 <div class="alert alert-error"><?= $error ?></div>
             <?php endif; ?>
-            
+
             <form method="POST" enctype="multipart/form-data" class="product-form">
                 <div class="form-group">
                     <label for="name">Product Name</label>
                     <input type="text" id="name" name="name" required>
                 </div>
-                
+
                 <div class="form-group">
                     <label for="category_id">Category</label>
                     <select id="category_id" name="category_id" required>
@@ -324,39 +333,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <?php endif; ?>
                     </select>
                 </div>
-                
+
                 <div class="form-row">
                     <div class="form-group">
                         <label for="price">Price (Rp)</label>
                         <input type="number" id="price" name="price" min="0" required>
                     </div>
-                    
+
                     <div class="form-group">
                         <label for="discount">Discount (%)</label>
                         <input type="number" id="discount" name="discount" min="0" max="100" value="0">
                     </div>
                 </div>
-                
+
                 <div class="form-row">
                     <div class="form-group">
                         <label for="stock">Stock</label>
                         <input type="number" id="stock" name="stock" min="0" required>
                     </div>
-                    
+
                     <div class="form-group">
                         <label for="size_available">Sizes Available</label>
-                        <input type="text" id="size_available" name="size_available" placeholder="S.2,M.3,L.4,XL.5" required>
-                        <span class="size-format-hint">Format: Size.Quantity (e.g., S.2,M.3,L.4,XL.5)</span>
+                        <input type="text" id="size_available" name="size_available" placeholder="S:4,M:4,L:4,XL:4" required>
+                        <span class="size-format-hint">Format: Size:Quantity (e.g., S:4,M:4,L:4,XL:4)</span>
                     </div>
                 </div>
-                
+
                 <div class="form-group">
                     <label>Product Image</label>
                     <div class="file-upload-wrapper">
                         <input type="file" name="image" accept="image/*" required>
                     </div>
                 </div>
-                
+
                 <div class="form-actions">
                     <button type="submit" class="btn btn-submit">Save Product</button>
                     <a href="products.php" class="btn btn-cancel">Cancel</a>

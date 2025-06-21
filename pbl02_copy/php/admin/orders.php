@@ -5,7 +5,7 @@ include '../connect.php';
 $sort = $_GET['sort'] ?? 'DESC';
 $sortToggle = $sort === 'ASC' ? 'DESC' : 'ASC';
 
-$sql = "SELECT o.id, u.username, o.total_price
+$sql = "SELECT o.id, u.username, o.total_price, o.status
         FROM orders o
         LEFT JOIN users u ON o.user_id = u.id
         ORDER BY o.id $sort";
@@ -86,7 +86,7 @@ $result = $conn->query($sql);
     }
 
     th, td {
-      padding: 14px 16px;
+      padding: 10px 16px;  /* Adjusted padding for better alignment */
       border-bottom: 1px solid #eee;
       text-align: left;
     }
@@ -94,6 +94,11 @@ $result = $conn->query($sql);
     th {
       background: #2c3e50;
       color: #fff;
+      width: 20%;  /* Set column width */
+    }
+
+    td {
+      width: 20%;
     }
 
     tr:hover {
@@ -103,7 +108,7 @@ $result = $conn->query($sql);
     .btn-view {
       background: #3498db;
       color: #fff;
-      padding: 6px 10px;
+      padding: 6px 12px;
       border-radius: 4px;
       text-decoration: none;
       font-size: 13px;
@@ -111,6 +116,11 @@ $result = $conn->query($sql);
 
     .status-complete {
       color: green;
+      font-weight: bold;
+    }
+
+    .status-proceed {
+      color: orange;
       font-weight: bold;
     }
 
@@ -127,6 +137,31 @@ $result = $conn->query($sql);
 
     .sort-button:hover {
       background: #636e72;
+    }
+
+    /* Styling for dropdown */
+    select {
+      padding: 5px 10px;
+      font-size: 14px;
+      background-color: #fff;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      cursor: pointer;
+      width: 100px;
+      margin-top: 5px;
+    }
+
+    select:focus {
+      outline: none;
+      border-color: #3498db;
+    }
+
+    /* Ensure table fills the available width */
+    .main-content {
+      margin-left: 240px;
+      padding: 30px;
+      width: 100%;
+      overflow-x: auto;
     }
   </style>
 </head>
@@ -170,11 +205,27 @@ $result = $conn->query($sql);
           <td>#<?= $order['id'] ?></td>
           <td><?= htmlspecialchars($order['username'] ?? 'Guest') ?></td>
           <td>Rp<?= number_format($order['total_price'], 0, ',', '.') ?></td>
-          <td><span class="status-complete">Complete</span></td>
-          <td><a href="order_items2.php?id=<?= $order['id'] ?>" class="btn-view">View Details </a></td>
+          <td>
+            <?php if ($order['status'] == 'Complete'): ?>
+              <span class="status-complete">Complete</span>
+            <?php else: ?>
+              <span class="status-proceed">Proceed</span>
+            <?php endif; ?>
+          </td>
+          <td>
+            <a href="order_items2.php?id=<?= $order['id'] ?>" class="btn-view">View Details </a>
+            <!-- Admin update status form -->
+            <form action="update_order_status.php" method="POST" style="display:inline;">
+              <input type="hidden" name="order_id" value="<?= $order['id'] ?>">
+              <select name="status" onchange="this.form.submit()">
+                <option value="Proceed" <?= $order['status'] == 'Proceed' ? 'selected' : '' ?>>Proceed</option>
+                <option value="Complete" <?= $order['status'] == 'Complete' ? 'selected' : '' ?>>Complete</option>
+              </select>
+            </form>
+          </td>
         </tr>
         <?php endwhile; ?>
-      </tbody>
+    </tbody>
     </table>
   </div>
 

@@ -10,6 +10,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <?php
 if (session_status() === PHP_SESSION_NONE) {
@@ -18,46 +19,52 @@ if (session_status() === PHP_SESSION_NONE) {
 ?>
 <body>
 <header>
-    <nav class="navbar">
-        <div class="logo">JACK<span>ARMY</span></div>
-        <ul class="nav-links">
-            <li><a href="index.php">Home</a></li>
-            <li class="dropdown">
-                <a href="#">Products ▼</a>
-                <ul class="dropdown-menu">
-                    <li><a href="products.php">All Product</a></li>
-                    <li><a href="baju.php">T-Shirt</a></li>
-                    <li><a href="jaket.php">Jacket</a></li>
-                    <li><a href="topi.php">Hat</a></li>
-                </ul>
-            </li>
-            <li><a href="cart.php">Cart</a></li>
+  <nav class="navbar">
+  <a href="index.php" class="logo">JACK<span>ARMY</span></a>
+  
+  <div class="right-navbar">
+    <div class="search-bar">
+      <input type="text" id="searchInput" placeholder="Search...">
+      <button onclick="searchProducts()"><i class="fas fa-search"></i></button>
+    </div>
 
-            <?php if (isset($_SESSION['user_id']) && $_SESSION['role'] === 'user'): ?>
-                <li><a href="account.php">Account</a></li>
-            <?php elseif (isset($_SESSION['admin_id']) && $_SESSION['role'] === 'admin'): ?>
-                <li><a href="php/admin/dashboard.php">Admin Panel</a></li>
-                <li><a href="logout.php">Logout</a></li>
-            <?php else: ?>
-                <li><a href="loginout.php">Login</a></li>
-            <?php endif; ?>
+    <ul class="nav-links">
+      <li><a href="index.php">Home</a></li>
 
-            <li class="dropdown">
-                <a href="#">Help Center ▼</a>
-                <ul class="dropdown-menu">
-                    <li><a href="shopping.php">How To Order</a></li>
-                    <li><a href="shipping.php">Shipping Information</a></li>
-                    <li><a href="payment.php">Payment Methods</a></li>
-                    <li><a href="refund.php">Refund & Return Policy</a></li>
-                    <li><a href="size.php">Size Chart</a></li>
-                </ul>
-            </li>
+      <li class="dropdown">
+        <a href="#"><i class="fas fa-box"></i> Products ▼</a>
+        <ul class="dropdown-menu">
+          <li><a href="products.php">All Product</a></li>
+          <li><a href="baju.php">T-Shirt</a></li>
+          <li><a href="jaket.php">Jacket</a></li>
+          <li><a href="celana.php">Celana</a></li>
+          <li><a href="topi.php">Hat</a></li>
         </ul>
-        <div class="search-bar">
-            <input type="text" id="searchInput" placeholder="Search...">
-            <button onclick="searchProducts()">Search</button>
-        </div>
-    </nav>
+      </li>
+
+      <li><a href="cart.php"><i class="fas fa-shopping-cart"></i> Cart</a></li>
+
+      <?php if (isset($_SESSION['user_id']) && $_SESSION['role'] === 'user'): ?>
+        <li><a href="account.php"><i class="fas fa-user"></i></a></li>
+      <?php elseif (isset($_SESSION['admin_id']) && $_SESSION['role'] === 'admin'): ?>
+        <li><a href="php/admin/dashboard.php"><i class="fas fa-user-shield"></i> Admin Panel</a></li>
+        <li><a href="logout.php">Logout</a></li>
+      <?php else: ?>
+        <li><a href="loginout.php"><i class="fas fa-sign-in-alt"></i> Login</a></li>
+      <?php endif; ?>
+
+      <li class="dropdown">
+        <a href="#"><i class="fas fa-question-circle"></i>▼</a>
+        <ul class="dropdown-menu">
+          <li><a href="shopping.php">How To Order</a></li>
+          <li><a href="shipping.php">Shipping Information</a></li>
+          <li><a href="payment.php">Payment Methods</a></li>
+          <li><a href="size.php">Size Chart</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</nav>
 </header>
 
     <section class="shopping-container">
@@ -97,11 +104,12 @@ if (session_status() === PHP_SESSION_NONE) {
 
         <div class="footer-section">
             <h4>Products</h4>
-                <ul>
-                    <li><a href="products.php">All Product</a></li>
-                    <li><a href="baju.php">T-Shirt</a></li>
-                    <li><a href="jaket.php">Jacket</a></li>
-                    <li><a href="topi.php">Hat</a></li>
+                <ul class="dropdown-menu">
+                  <li><a href="products.php">All Product</a></li>
+                  <li><a href="baju.php">T-Shirt</a></li>
+                  <li><a href="jaket.php">Jacket</a></li>
+                  <li><a href="celana.php">Celana</a></li>
+                  <li><a href="topi.php">Hat</a></li>
                 </ul>
         </div>
 
@@ -111,18 +119,18 @@ if (session_status() === PHP_SESSION_NONE) {
                 <li><a href="shopping.php">How To Order</a></li>
                 <li><a href="shipping.php">Shipping Information</a></li>
                 <li><a href="payment.php">Payment Methods</a></li>
-                <li><a href="refund.php">Refund & Return Policy</a></li>
                 <li><a href="size.php">Size Chart</a></li>
             </ul>
         </div>
 
         <div class="footer-section">
-            <h4>Newsletter</h4>
+          <h4>Newsletter</h4>
             <form id="newsletterForm">
-                <input type="email" id="emailInput" placeholder="Insert your email" required>
-                <button type="submit">Send</button>
+              <input type="email" name="email" id="emailInput" placeholder="Insert your email" required>
+              <button type="submit">Send</button>
             </form>
-        </div>
+            <p id="newsletterMessage" style="margin-top: 10px; color: green;"></p>
+      </div>
     </div>
 
     <div class="footer-bottom">
@@ -146,6 +154,30 @@ document.getElementById('searchInput').addEventListener('keypress', function (e)
     e.preventDefault();
     searchProducts();
   }
+});
+
+document.getElementById('newsletterForm').addEventListener('submit', function(e) {
+  e.preventDefault(); // Mencegah form reload halaman
+  const email = document.getElementById('emailInput').value;
+  const messageBox = document.getElementById('newsletterMessage');
+
+  fetch('newsletter_submit.php', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: 'email=' + encodeURIComponent(email)
+  })
+  .then(response => response.text())
+  .then(data => {
+    messageBox.textContent = data;
+    messageBox.style.color = data.toLowerCase().includes('thank') ? 'white' : 'red';
+    document.getElementById('newsletterForm').reset();
+  })
+  .catch(error => {
+    messageBox.textContent = "An error occurred.";
+    messageBox.style.color = 'red';
+  });
 });
 </script>
 </body>

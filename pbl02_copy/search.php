@@ -1,20 +1,20 @@
 <?php
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-include 'php/connect.php';
+session_start();
+include 'php/connect.php';  // Include your database connection
 
-$query = isset($_GET['query']) ? trim($_GET['query']) : '';
+$query = isset($_GET['query']) ? trim($_GET['query']) : '';  // Get the query from the URL
 
 if (empty($query)) {
-    echo "Masukkan kata kunci pencarian.";
+    echo "Please enter a search keyword.";
     exit;
 }
 
+// Prepare SQL statement to search for products by name or category
 $stmt = $conn->prepare("SELECT * FROM products WHERE name LIKE CONCAT('%', ?, '%') OR category LIKE CONCAT('%', ?, '%')");
-$stmt->bind_param("ss", $query, $query);
+$stmt->bind_param("ss", $query, $query);  // Bind the query to the prepared statement
 $stmt->execute();
-$result = $stmt->get_result();
+$result = $stmt->get_result();  // Execute the statement and get the result
+
 ?>
 
 <!DOCTYPE html>
@@ -24,36 +24,7 @@ $result = $stmt->get_result();
   <title>Hasil Pencarian - JackArmy</title>
   <link rel="stylesheet" href="pbl02.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <style>
-    .popup-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background-color: rgba(0,0,0,0.7);
-      display: none;
-      justify-content: center;
-      align-items: center;
-      z-index: 9999;
-    }
-    .popup-content {
-      background: #fff;
-      padding: 20px;
-      width: 90%;
-      max-width: 400px;
-      border-radius: 10px;
-      text-align: center;
-      position: relative;
-    }
-    .close-btn {
-      position: absolute;
-      top: 10px;
-      right: 15px;
-      font-size: 20px;
-      cursor: pointer;
-    }
-  </style>
+  <link rel="stylesheet" href="pbl02.css">
 </head>
 <body>
 
@@ -71,9 +42,10 @@ $result = $stmt->get_result();
           <a href="#"><i class="fas fa-box"></i> Products ▼</a>
           <ul class="dropdown-menu">
             <li><a href="products.php">All Product</a></li>
-            <li><a href="baju.php">T-Shirt</a></li>
-            <li><a href="jaket.php">Jacket</a></li>
-            <li><a href="topi.php">Hat</a></li>
+                    <li><a href="baju.php">T-Shirt</a></li>
+                    <li><a href="jaket.php">Jacket</a></li>
+                    <li><a href="celana.php">Celana</a></li>
+                    <li><a href="topi.php">Hat</a></li>
           </ul>
         </li>
         <li><a href="cart.php"><i class="fas fa-shopping-cart"></i> Cart</a></li>
@@ -91,7 +63,6 @@ $result = $stmt->get_result();
             <li><a href="shopping.php">How To Order</a></li>
             <li><a href="shipping.php">Shipping Information</a></li>
             <li><a href="payment.php">Payment Methods</a></li>
-            <li><a href="refund.php">Refund & Return Policy</a></li>
             <li><a href="size.php">Size Chart</a></li>
           </ul>
         </li>
@@ -101,7 +72,7 @@ $result = $stmt->get_result();
 </header>
 
 <section class="search-results" style="padding: 40px;">
-  <h2>Hasil Pencarian untuk: <em><?= htmlspecialchars($query) ?></em></h2>
+  <h2>Search For : <em><?= htmlspecialchars($query) ?></em></h2>
   <?php if ($result->num_rows > 0): ?>
     <div class="kaos-container">
       <?php while ($p = $result->fetch_assoc()):
@@ -113,7 +84,7 @@ $result = $stmt->get_result();
       ?>
         <div class="kaos-item" onclick="<?= $onclick ?>">
           <span class="discount"><?= $discountPercent ?>% OFF</span>
-          <img src="<?= $p['image'] ?>" alt="<?= $p['name'] ?>">
+          <img src="<?= $p['image'] ?>" alt="<?= $p['name'] ?>" class="product-img">
           <h3><?= $p['name'] ?></h3>
           <p class="price">
             <del>Rp<?= number_format($hargaAwal, 0, ',', '.') ?></del>
@@ -221,6 +192,7 @@ $result = $stmt->get_result();
                     <li><a href="products.php">All Product</a></li>
                     <li><a href="baju.php">T-Shirt</a></li>
                     <li><a href="jaket.php">Jacket</a></li>
+                    <li><a href="celana.php">Celana</a></li>
                     <li><a href="topi.php">Hat</a></li>
                 </ul>
         </div>
@@ -231,18 +203,18 @@ $result = $stmt->get_result();
                 <li><a href="shopping.php">How To Order</a></li>
                 <li><a href="shipping.php">Shipping Information</a></li>
                 <li><a href="payment.php">Payment Methods</a></li>
-                <li><a href="refund.php">Refund & Return Policy</a></li>
                 <li><a href="size.php">Size Chart</a></li>
             </ul>
         </div>
 
         <div class="footer-section">
-            <h4>Newsletter</h4>
+          <h4>Newsletter</h4>
             <form id="newsletterForm">
-                <input type="email" id="emailInput" placeholder="Insert your email" required>
-                <button type="submit">Send</button>
+              <input type="email" name="email" id="emailInput" placeholder="Insert your email" required>
+              <button type="submit">Send</button>
             </form>
-        </div>
+            <p id="newsletterMessage" style="margin-top: 10px; color: green;"></p>
+      </div>
     </div>
 
     <div class="footer-bottom">
@@ -278,7 +250,8 @@ let size = '';
 let stockInfo = {};
 
 // === T-SHIRT / JACKET ===
-function openPopup(img, title, price, id, size_available) {
+
+function openPopup(img, title, price, id, size_available, stock) {
   document.getElementById('popupOverlay').style.display = 'flex';
   document.getElementById('popupImage').src = img;
   document.getElementById('popupTitle').innerText = title;
@@ -297,12 +270,24 @@ function openPopup(img, title, price, id, size_available) {
     stockInfo[sz] = parseInt(stok);
   });
 
+  // Calculate the total stock for the product
+  let totalStock = 0;
+  for (let size in stockInfo) {
+    totalStock += stockInfo[size];
+  }
+
+  // Display total stock in the popup
+  document.getElementById('popupStock').innerText = 'Stok: ' + totalStock;
+
+  // Update buttons based on the stock
   ['S', 'M', 'L', 'XL'].forEach(updateSizeButton);
 }
 
 function updateSizeButton(sz) {
   const btn = document.getElementById('size' + sz);
+  // Display the stock available in parentheses
   btn.innerText = sz + ' (' + (stockInfo[sz] ?? 0) + ')';
+  // Disable the button if stock is 0
   btn.disabled = stockInfo[sz] <= 0;
 }
 
@@ -320,7 +305,7 @@ function changeQty(val) {
 
 function selectSize(sz) {
   if (stockInfo[sz] <= 0) {
-    alert('Out of stock for size' + sz);
+    alert('Stok habis untuk size ' + sz);
     return;
   }
   size = sz;
@@ -329,9 +314,11 @@ function selectSize(sz) {
   document.getElementById('popupQuantity').value = qty;
   document.getElementById('popupSelectedSize').value = sz;
 
+  // Remove 'size-selected' class from all buttons
   ['S', 'M', 'L', 'XL'].forEach(s => {
     document.getElementById('size' + s).classList.remove('size-selected');
   });
+  // Add 'size-selected' class to the selected button
   document.getElementById('size' + sz).classList.add('size-selected');
 }
 
@@ -437,6 +424,30 @@ function addHatToCart() {
     }
   });
 }
+
+document.getElementById('newsletterForm').addEventListener('submit', function(e) {
+  e.preventDefault(); // Mencegah form reload halaman
+  const email = document.getElementById('emailInput').value;
+  const messageBox = document.getElementById('newsletterMessage');
+
+  fetch('newsletter_submit.php', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: 'email=' + encodeURIComponent(email)
+  })
+  .then(response => response.text())
+  .then(data => {
+    messageBox.textContent = data;
+    messageBox.style.color = data.toLowerCase().includes('thank') ? 'white' : 'red';
+    document.getElementById('newsletterForm').reset();
+  })
+  .catch(error => {
+    messageBox.textContent = "An error occurred.";
+    messageBox.style.color = 'red';
+  });
+});
 </script>
 
 </body>

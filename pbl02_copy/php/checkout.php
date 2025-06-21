@@ -12,7 +12,7 @@ $user_id = $_SESSION['user_id'];
 $cart = $_SESSION['cart'] ?? [];
 
 if (empty($cart)) {
-    echo "Keranjang kosong!";
+    echo "Empty Cart!";
     exit();
 }
 

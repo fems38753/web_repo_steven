@@ -1,4 +1,5 @@
 <?php
+session_start();
 include '../connect.php';
 
 // Handle delete operation
@@ -59,12 +60,13 @@ body {
 
 /* Konten utama di kanan sidebar */
 .main-content {
+    flex: 1;
     margin-left: var(--sidebar-width);
     padding: 30px;
-    flex: 1;
     background: #fff;
     min-height: 100vh;
     box-shadow: inset 0 0 8px rgba(0,0,0,0.03);
+    width: 135%; /* Make sure it's full width */
 }
 
 h2 {
@@ -306,87 +308,82 @@ h2 {
     </ul>
   </aside>
 
-    <div class="main-content">
-    <h2>Manage Product</h2>
+    <div class="main-container">
+        <div class="main-content">
+            <h2>Manage Products</h2>
 
-    <?php if (isset($_SESSION['message'])): ?>
-        <div class="alert alert-success">
-            <?= htmlspecialchars($_SESSION['message']); unset($_SESSION['message']); ?>
-        </div>
-    <?php endif; ?>
+            <?php if (isset($_SESSION['message'])): ?>
+                <div class="alert alert-success">
+                    <?= htmlspecialchars($_SESSION['message']); unset($_SESSION['message']); ?>
+                </div>
+            <?php endif; ?>
 
-    <a href="add_product.php" class="btn btn-primary mb-3">
-        <i class="fas fa-plus-circle"></i>&emsp; Add New Product
-    </a>
-
-    <div class="table-responsive">
-        <table class="product-table">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Image</th>
-                    <th>Name</th>
-                    <th>Category</th>
-                    <th>Price</th>
-                    <th>Discount</th>
-                    <th>Stock</th>
-                    <th>Sizes</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php while ($product = $result->fetch_assoc()): ?>
-                    <tr>
-                        <td><?= $product['id'] ?></td>
-                        <td>
-                            <img src="../../Images/<?= basename($product['image']) ?>"
-                                alt="<?= htmlspecialchars($product['name']) ?>" 
-                                width="50" height="50" 
-                                class="product-thumbnail" 
-                                style="object-fit: cover;">
-
-                        </td>
-                        <td><?= htmlspecialchars($product['name']) ?></td>
-                        <td><?= htmlspecialchars($product['category_name']) ?></td>
-                        <td>Rp<?= number_format($product['price'], 0, ',', '.') ?></td>
-                        <td><?= htmlspecialchars($product['discount']) ?>%</td>
-                        <td><?= htmlspecialchars($product['stock']) ?></td>
-                        <td><?= nl2br(htmlspecialchars(str_replace(',', "\n", $product['size_available']))) ?></td>
-                        <td class="actions">
-                            <a href="edit_product.php?id=<?= $product['id'] ?>" class="btn-edit" title="Edit">
-                                <i class="fa-solid fa-pen"></i>
-                            </a>
-                            <a href="products.php?delete=<?= $product['id'] ?>"
-                                class="btn-delete"
-                                title="Delete"
-                                onclick="return confirmDelete(event)">
-                                <i class="fa-solid fa-trash"></i>
-                            </a>
-                        </td>
-                    </tr>
-                <?php endwhile; ?>
-            </tbody>
-        </table>
-    </div>
-
-    <!-- Pagination -->
-    <div class="pagination">
-        <?php for ($i = 1; $i <= $total_pages; $i++): ?>
-            <a href="products.php?page=<?= $i ?>" class="<?= $i == $page ? 'active' : '' ?>">
-                <?= $i ?>
+            <a href="add_product.php" class="btn btn-primary mb-3">
+                <i class="fas fa-plus-circle"></i>&emsp; Add New Product
             </a>
-        <?php endfor; ?>
+
+            <div class="table-responsive">
+                <table class="product-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Image</th>
+                            <th>Name</th>
+                            <th>Category</th>
+                            <th>Price</th>
+                            <th>Discount</th>
+                            <th>Stock</th>
+                            <th>Sizes</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php while ($product = $result->fetch_assoc()): ?>
+                            <tr>
+                                <td><?= $product['id'] ?></td>
+                                <td>
+                                    <img src="images/<?= basename($product['image']) ?>" alt="<?= htmlspecialchars($product['name']) ?>" width="50" height="50" class="product-thumbnail" style="object-fit: cover;">
+                                </td>
+                                <td><?= htmlspecialchars($product['name']) ?></td>
+                                <td><?= htmlspecialchars($product['category_name']) ?></td>
+                                <td>Rp<?= number_format($product['price'], 0, ',', '.') ?></td>
+                                <td><?= htmlspecialchars($product['discount']) ?>%</td>
+                                <td><?= htmlspecialchars($product['stock']) ?></td>
+                                <td><?= nl2br(htmlspecialchars(str_replace(',', "\n", $product['size_available']))) ?></td>
+                                <td class="actions">
+                                    <a href="edit_product.php?id=<?= $product['id'] ?>" class="btn-edit" title="Edit">
+                                        <i class="fa-solid fa-pen"></i>
+                                    </a>
+                                    <a href="products.php?delete=<?= $product['id'] ?>" class="btn-delete" title="Delete" onclick="return confirmDelete(event)">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        <?php endwhile; ?>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination">
+                <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+                    <a href="products.php?page=<?= $i ?>" class="<?= $i == $page ? 'active' : '' ?>">
+                        <?= $i ?>
+                    </a>
+                <?php endfor; ?>
+            </div>
+        </div>
     </div>
-</div>
 
-<script>
-function confirmDelete(e) {
-    e.preventDefault();
-    if (confirm('Are you sure you want to delete this product?')) {
-        window.location.href = e.target.closest('a').href;
-    }
-    return false;
-}
-</script>
+    <script>
+        function confirmDelete(e) {
+            e.preventDefault();
+            if (confirm('Are you sure you want to delete this product?')) {
+                window.location.href = e.target.closest('a').href;
+            }
+            return false;
+        }
+    </script>
 
-<?php include 'footer_admin.php'; ?>
+</body>
+</html>

@@ -63,6 +63,7 @@ if (session_status() === PHP_SESSION_NONE) {
           <li><a href="products.php">All Product</a></li>
           <li><a href="baju.php">T-Shirt</a></li>
           <li><a href="jaket.php">Jacket</a></li>
+          <li><a href="celana.php">Celana</a></li>
           <li><a href="topi.php">Hat</a></li>
         </ul>
       </li>
@@ -84,7 +85,6 @@ if (session_status() === PHP_SESSION_NONE) {
           <li><a href="shopping.php">How To Order</a></li>
           <li><a href="shipping.php">Shipping Information</a></li>
           <li><a href="payment.php">Payment Methods</a></li>
-          <li><a href="refund.php">Refund & Return Policy</a></li>
           <li><a href="size.php">Size Chart</a></li>
         </ul>
       </li>
@@ -181,6 +181,7 @@ if (session_status() === PHP_SESSION_NONE) {
                     <li><a href="products.php">All Product</a></li>
                     <li><a href="baju.php">T-Shirt</a></li>
                     <li><a href="jaket.php">Jacket</a></li>
+                    <li><a href="celana.php">Celana</a></li>
                     <li><a href="topi.php">Hat</a></li>
                 </ul>
         </div>
@@ -191,18 +192,18 @@ if (session_status() === PHP_SESSION_NONE) {
                 <li><a href="shopping.php">How To Order</a></li>
                 <li><a href="shipping.php">Shipping Information</a></li>
                 <li><a href="payment.php">Payment Methods</a></li>
-                <li><a href="refund.php">Refund & Return Policy</a></li>
                 <li><a href="size.php">Size Chart</a></li>
             </ul>
         </div>
 
         <div class="footer-section">
-            <h4>Newsletter</h4>
+          <h4>Newsletter</h4>
             <form id="newsletterForm">
-                <input type="email" id="emailInput" placeholder="Insert your email" required>
-                <button type="submit">Send</button>
+              <input type="email" name="email" id="emailInput" placeholder="Insert your email" required>
+              <button type="submit">Send</button>
             </form>
-        </div>
+            <p id="newsletterMessage" style="margin-top: 10px; color: green;"></p>
+      </div>
     </div>
 
     <div class="footer-bottom">
@@ -216,7 +217,7 @@ let size = '';
 let stockInfo = {};
 
 // === T-SHIRT / JACKET ===
-function openPopup(img, title, price, id, size_available) {
+function openPopup(img, title, price, id, size_available, stock) {
   document.getElementById('popupOverlay').style.display = 'flex';
   document.getElementById('popupImage').src = img;
   document.getElementById('popupTitle').innerText = title;
@@ -235,12 +236,24 @@ function openPopup(img, title, price, id, size_available) {
     stockInfo[sz] = parseInt(stok);
   });
 
+  // Calculate the total stock for the product
+  let totalStock = 0;
+  for (let size in stockInfo) {
+    totalStock += stockInfo[size];
+  }
+
+  // Display total stock in the popup
+  document.getElementById('popupStock').innerText = 'Stok: ' + totalStock;
+
+  // Update buttons based on the stock
   ['S', 'M', 'L', 'XL'].forEach(updateSizeButton);
 }
 
 function updateSizeButton(sz) {
   const btn = document.getElementById('size' + sz);
+  // Display the stock available in parentheses
   btn.innerText = sz + ' (' + (stockInfo[sz] ?? 0) + ')';
+  // Disable the button if stock is 0
   btn.disabled = stockInfo[sz] <= 0;
 }
 
@@ -267,9 +280,11 @@ function selectSize(sz) {
   document.getElementById('popupQuantity').value = qty;
   document.getElementById('popupSelectedSize').value = sz;
 
+  // Remove 'size-selected' class from all buttons
   ['S', 'M', 'L', 'XL'].forEach(s => {
     document.getElementById('size' + s).classList.remove('size-selected');
   });
+  // Add 'size-selected' class to the selected button
   document.getElementById('size' + sz).classList.add('size-selected');
 }
 
@@ -323,6 +338,30 @@ document.getElementById('searchInput').addEventListener('keypress', function (e)
     e.preventDefault();
     searchProducts();
   }
+});
+
+document.getElementById('newsletterForm').addEventListener('submit', function(e) {
+  e.preventDefault(); // Mencegah form reload halaman
+  const email = document.getElementById('emailInput').value;
+  const messageBox = document.getElementById('newsletterMessage');
+
+  fetch('newsletter_submit.php', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: 'email=' + encodeURIComponent(email)
+  })
+  .then(response => response.text())
+  .then(data => {
+    messageBox.textContent = data;
+    messageBox.style.color = data.toLowerCase().includes('thank') ? 'white' : 'red';
+    document.getElementById('newsletterForm').reset();
+  })
+  .catch(error => {
+    messageBox.textContent = "An error occurred.";
+    messageBox.style.color = 'red';
+  });
 });
 </script>
 </body>

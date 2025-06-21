@@ -1,6 +1,8 @@
 <?php
+session_start();
 include '../connect.php';
 
+// If the product ID is not present in the URL, redirect
 if (!isset($_GET['id'])) {
     header('Location: products.php');
     exit();
@@ -24,35 +26,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $discount = (int)$_POST['discount'];
     $stock = (int)$_POST['stock'];
     $size_available = $conn->real_escape_string($_POST['size_available']);
-    
-    // Keep existing image unless new one is uploaded
+
+    // Validate the size format (e.g., S:4,M:4,L:4,XL:4)
+    if (!preg_match("/^[A-Za-z]+:\d+(,[A-Za-z]+:\d+)*$/", $size_available)) {
+        $error = "Invalid size format. Use 'S:4,M:4,L:4' format.";
+        exit();
+    }
+
+    // Keep the existing image unless a new one is uploaded
     $image = $product['image'];
-    
+
     if ($_FILES['image']['name']) {
-        $target_dir = "../uploads/products/";
+        $target_dir = "C:/xampp/htdocs/prog_web/web_repo_steven/pbl02_copy/php/admin/images/";
         if (!is_dir($target_dir)) {
-            mkdir($target_dir, 0777, true);
+            mkdir($target_dir, 0777, true);  // Create directory if it doesn't exist
         }
-        
-        // Delete old image if exists
+
+        // Delete the old image if it exists
         if ($image && file_exists("../$image")) {
             unlink("../$image");
         }
-        
+
         $file_ext = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
         $filename = uniqid() . '.' . $file_ext;
         $target_file = $target_dir . $filename;
-        
+
         if (move_uploaded_file($_FILES['image']['tmp_name'], $target_file)) {
-            $image = "uploads/products/" . $filename;
+            $image = "php/admin/images/" . $filename;
         }
     }
-    
+
+    // Update the product in the database
     $stmt = $conn->prepare("UPDATE products SET 
-                          name=?, category_id=?, price=?, discount=?, image=?, stock=?, size_available=?
+                          name=?, category_id=?, price=?, discount=?, image=?, stock=?, size_available=? 
                           WHERE id=?");
-    $stmt->bind_param("siiissii", $name, $category_id, $price, $discount, $image, $stock, $size_available, $id);
-    
+    $stmt->bind_param("siiisssi", $name, $category_id, $price, $discount, $image, $stock, $size_available, $id);
+
     if ($stmt->execute()) {
         $_SESSION['message'] = "Product updated successfully";
         header('Location: products.php');
@@ -62,6 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="id">
@@ -413,27 +423,27 @@ h2 {
             </div>
             
             <div class="form-group">
-                <label for="size_available">Sizes Available</label>
-                <input type="text" id="size_available" name="size_available" value="<?= htmlspecialchars($product['size_available']) ?>" required>
-                <span class="size-format-hint">Format: Size.Quantity (e.g., S.2,M.3,L.4,XL.5)</span>
-            </div>
+            <label for="size_available">Sizes Available</label>
+            <input type="text" id="size_available" name="size_available" value="<?= htmlspecialchars($product['size_available']) ?>" required>
+            <span class="size-format-hint">Format: Size:Quantity (e.g., S:4,M:4,L:4,XL:4)</span>
+        </div>
         </div>
         
         <div class="form-group">
-            <label>Product Image</label>
-            <?php if ($product['image']): ?>
-                <div class="image-preview-container">
-                    <img src="../<?= $product['image'] ?>" class="current-image-preview">
-                    <div class="image-actions">
-                        <button type="button" class="change-image-btn" onclick="document.querySelector('.file-upload-wrapper input').click()">Change Image</button>
-                        <button type="button" class="remove-image-btn" onclick="confirmRemoveImage()">Remove Image</button>
-                    </div>
-                </div>
-            <?php endif; ?>
-            <div class="file-upload-wrapper">
-                <input type="file" name="image" accept="image/*" <?= empty($product['image']) ? 'required' : '' ?>>
+        <label>Product Image</label>
+        <?php if ($product['image']): ?>
+          <div class="image-preview-container">
+            <img src="images/<?= basename($product['image']) ?>" class="current-image-preview" alt="Product Image" width="150" height="150">
+            <div class="image-actions">
+              <button type="button" class="change-image-btn" onclick="document.querySelector('.file-upload-wrapper input').click()">Change Image</button>
+              <button type="button" class="remove-image-btn" onclick="confirmRemoveImage()">Remove Image</button>
             </div>
+          </div>
+        <?php endif; ?>
+        <div class="file-upload-wrapper">
+          <input type="file" name="image" accept="image/*" <?= empty($product['image']) ? 'required' : '' ?>>
         </div>
+      </div>
         
         <div class="form-actions">
             <button type="submit" class="btn btn-submit">Update Product</button>

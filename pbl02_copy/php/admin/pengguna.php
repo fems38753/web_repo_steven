@@ -136,10 +136,6 @@ $result = $conn->query("SELECT * FROM users ORDER BY id ASC");
       text-align: left;
     }
 
-    tr:hover {
-      background-color: #f9f9f9;
-    }
-
     .actions {
       display: flex;
       gap: 10px;

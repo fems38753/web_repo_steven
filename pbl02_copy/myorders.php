@@ -285,7 +285,6 @@ if (session_status() === PHP_SESSION_NONE) {
                     <li><a href="shopping.php">How To Order</a></li>
                     <li><a href="shipping.php">Shipping Information</a></li>
                     <li><a href="payment.php">Payment Methods</a></li>
-                    <li><a href="refund.php">Refund & Return Policy</a></li>
                     <li><a href="size.php">Size Chart</a></li>
                 </ul>
             </li>
@@ -373,7 +372,6 @@ if (session_status() === PHP_SESSION_NONE) {
                 <li><a href="shopping.php">How To Order</a></li>
                 <li><a href="shipping.php">Shipping Information</a></li>
                 <li><a href="payment.php">Payment Methods</a></li>
-                <li><a href="refund.php">Refund & Return Policy</a></li>
                 <li><a href="size.php">Size Chart</a></li>
             </ul>
         </div>

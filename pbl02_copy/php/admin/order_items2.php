@@ -116,17 +116,21 @@ $items = mysqli_query($conn, "
 
   <div class="order-info">
     <p><strong>Customer:</strong> <?= htmlspecialchars($order['username'] ?? 'Guest') ?></p>
-    <p><strong>Payment Methods:</strong> <?= ucfirst($order['payment_method']) ?></p>
-    <p><strong>Shipping Methods:</strong> <?= $order['shipping_method'] ?></p>
+    <p><strong>Payment Method:</strong> <?= ucfirst($order['payment_method']) ?></p>
+    <p><strong>Shipping Method:</strong> <?= $order['shipping_method'] ?></p>
     <p><strong>Total:</strong> Rp<?= number_format($order['total_price'], 0, ',', '.') ?></p>
-    <p><strong>Status:</strong> <span style="color:green;">Complete</span></p>
+    <p><strong>Status:</strong> 
+      <span style="color: <?= $order['status'] == 'Complete' ? 'green' : 'orange'; ?>; font-weight: bold;">
+        <?= ucfirst($order['status']) ?>
+      </span>
+    </p>
   </div>
 
   <table>
     <thead>
       <tr>
         <th>Product</th>
-        <th>Image/th>
+        <th>Image</th>
         <th>Size</th>
         <th>Qty</th>
         <th>Price</th>
@@ -137,7 +141,7 @@ $items = mysqli_query($conn, "
       <?php while ($item = mysqli_fetch_assoc($items)): ?>
       <tr>
         <td><?= htmlspecialchars($item['name']) ?></td>
-        <td><img src="../../Images/<?= basename($item['image']) ?>" class="product-img" alt="gambar">
+        <td><img src="../../Images/<?= basename($item['image']) ?>" class="product-img" alt="gambar"></td>
         <td><?= $item['size'] ?></td>
         <td><?= $item['quantity'] ?></td>
         <td>Rp<?= number_format($item['price'], 0, ',', '.') ?></td>

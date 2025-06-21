@@ -281,6 +281,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['payment'])) {
           <li><a href="products.php">All Product</a></li>
           <li><a href="baju.php">T-Shirt</a></li>
           <li><a href="jaket.php">Jacket</a></li>
+          <li><a href="celana.php">Celana</a></li>
           <li><a href="topi.php">Hat</a></li>
         </ul>
       </li>
@@ -302,7 +303,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['payment'])) {
           <li><a href="shopping.php">How To Order</a></li>
           <li><a href="shipping.php">Shipping Information</a></li>
           <li><a href="payment.php">Payment Methods</a></li>
-          <li><a href="refund.php">Refund & Return Policy</a></li>
           <li><a href="size.php">Size Chart</a></li>
         </ul>
       </li>
@@ -507,16 +507,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['payment'])) {
         <li><a href="shopping.php">How To Order</a></li>
         <li><a href="shipping.php">Shipping Information</a></li>
         <li><a href="payment.php">Payment Methods</a></li>
-        <li><a href="refund.php">Refund & Return Policy</a></li>
         <li><a href="size.php">Size Chart</a></li>
       </ul>
     </div>
     <div class="footer-section">
-      <h4>Newsletter</h4>
-      <form id="newsletterForm">
-        <input type="email" id="emailInput" placeholder="Insert your email" required>
-        <button type="submit">Send</button>
-      </form>
+          <h4>Newsletter</h4>
+            <form id="newsletterForm">
+              <input type="email" name="email" id="emailInput" placeholder="Insert your email" required>
+              <button type="submit">Send</button>
+            </form>
+            <p id="newsletterMessage" style="margin-top: 10px; color: green;"></p>
+      </div>
     </div>
   </div>
   <div class="footer-bottom">
@@ -577,6 +578,30 @@ document.getElementById('searchInput').addEventListener('keypress', function (e)
     e.preventDefault();
     searchProducts();
   }
+});
+
+document.getElementById('newsletterForm').addEventListener('submit', function(e) {
+  e.preventDefault(); // Mencegah form reload halaman
+  const email = document.getElementById('emailInput').value;
+  const messageBox = document.getElementById('newsletterMessage');
+
+  fetch('newsletter_submit.php', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: 'email=' + encodeURIComponent(email)
+  })
+  .then(response => response.text())
+  .then(data => {
+    messageBox.textContent = data;
+    messageBox.style.color = data.toLowerCase().includes('thank') ? 'white' : 'red';
+    document.getElementById('newsletterForm').reset();
+  })
+  .catch(error => {
+    messageBox.textContent = "An error occurred.";
+    messageBox.style.color = 'red';
+  });
 });
 </script>
 </body>
