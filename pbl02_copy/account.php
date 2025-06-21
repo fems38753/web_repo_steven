@@ -11,7 +11,43 @@ $user_id = $_SESSION['user_id'];
 $user = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM users WHERE id = $user_id"));
 $page = $_GET['page'] ?? 'dashboard';
 
-// ⬇⬇⬇ INI YANG DITAMBAHKAN UNTUK MENYIMPAN DATA ⬇⬇⬇
+// Handling profile picture upload
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile'])) {
+    if ($_FILES['profile_picture']['error'] == 0) {
+        $target_dir = "uploads/profile_picture/";
+        if (!is_dir($target_dir)) {
+            mkdir($target_dir, 0777, true); // Create directory if it doesn't exist
+        }
+
+        $target_file = $target_dir . basename($_FILES["profile_picture"]["name"]);
+        $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+
+        // Check MIME type for image validation
+        $fileMimeType = mime_content_type($_FILES["profile_picture"]["tmp_name"]);
+
+        // Allow only image types
+        if (in_array($imageFileType, ['jpg', 'jpeg', 'png', 'gif']) && strpos($fileMimeType, 'image') !== false) {
+            if (move_uploaded_file($_FILES["profile_picture"]["tmp_name"], $target_file)) {
+                // Update the user's profile picture in the database
+                $profile_picture = basename($_FILES["profile_picture"]["name"]);
+                $update_query = "UPDATE users SET profile_picture = '$profile_picture' WHERE id = $user_id";
+                
+                if (mysqli_query($conn, $update_query)) {
+                    header("Location: account.php?page=settings&success=1");
+                    exit;
+                } else {
+                    echo "<p style='color:red;'>Failed to save the changes: " . mysqli_error($conn) . "</p>";
+                }
+            } else {
+                echo "<p style='color:red;'>Error uploading the file.</p>";
+            }
+        } else {
+            echo "<p style='color:red;'>Only JPG, JPEG, PNG, and GIF files are allowed and must be valid images.</p>";
+        }
+    }
+}
+
+// Handling account settings update
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_account'])) {
     $email   = mysqli_real_escape_string($conn, $_POST['email']);
     $no_telp = mysqli_real_escape_string($conn, $_POST['no_telp']);
@@ -155,40 +191,76 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_account'])) {
     }
 
     .account-settings-form {
-  max-width: 600px;
-  margin: auto;
-}
+        max-width: 600px;
+        margin: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
 
-.account-settings-form input,
-.account-settings-form textarea {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 15px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  font-size: 15px;
-}
+    .account-settings-form label {
+        font-weight: bold;
+        margin-bottom: 4px;
+    }
 
-.account-settings-form label {
-  font-weight: bold;
-  display: block;
-  margin-bottom: 5px;
-}
+    .account-settings-form input,
+    .account-settings-form textarea {
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 15px;
+        width: 100%;
+    }
 
-.account-settings-form button {
-  background-color: #3498db;
-  color: white;
-  padding: 12px;
-  width: 100%;
-  border: none;
-  border-radius: 5px;
-  font-weight: bold;
-  cursor: pointer;
-}
+    .account-settings-form input[type="file"] {
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 14px;
+        background-color: #f8f8f8;
+    }
 
-.account-settings-form button:hover {
-  background-color: #2980b9;
-}
+    .account-settings-form button {
+        padding: 12px;
+        background-color: #3498db;
+        color: white;
+        width: 100%;
+        border: none;
+        border-radius: 5px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .account-settings-form button:hover {
+        background-color: #2980b9;
+    }
+
+    .profile-picture {
+        border-radius: 50%;
+        width: 100px;
+        height: 100px;
+        object-fit: cover;
+        margin-bottom: 10px;
+    }
+
+    .btn-save {
+        padding: 10px 20px;
+        background: #3498db;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .btn-save:hover {
+        background: #2980b9;
+    }
+
+    @media(max-width: 768px) {
+        .account-settings-form {
+            padding: 15px;
+        }
+    }
     </style>
 </head>
 <body>
@@ -251,8 +323,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_account'])) {
     </div>
     <div class="content">
         <?php if ($page === 'dashboard'): ?>
+            <div class="profile-section">
+                <img src="uploads/profile_picture/<?= $user['profile_picture'] ?>" alt="Profile Picture" class="profile-picture">
+            </div>
+
             <h3>Hallo <?= htmlspecialchars($user['username']) ?> 👋</h3>
-            <p>Changes saved successfully. <a href="account.php?page=settings">Account Settings</a></p>
+            <p>Click Here if u want changes <a href="account.php?page=settings">Account Settings</a></p>
             <table>
                 <tr><th>Email</th><td><?= htmlspecialchars($user['email']) ?></td><td><a class="btn" href="account.php?page=settings">Edit</a></td></tr>
                 <tr><th>Phone Number</th><td><?= htmlspecialchars($user['no_telp']) ?></td><td><a class="btn" href="account.php?page=settings">Edit</a></td></tr>
@@ -262,86 +338,76 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_account'])) {
             </table>
 
         <?php elseif ($page === 'orders'): ?>
-  <h3>My Orders</h3>
+            <h3>My Orders</h3>
 
-  <?php
-    // Toggle sort ASC/DESC
-    $sortOrder = isset($_GET['sort']) && $_GET['sort'] === 'asc' ? 'ASC' : 'DESC';
-    $toggleOrder = $sortOrder === 'ASC' ? 'desc' : 'asc';
+            <?php
+            // Toggle sort ASC/DESC
+            $sortOrder = isset($_GET['sort']) && $_GET['sort'] === 'asc' ? 'ASC' : 'DESC';
+            $toggleOrder = $sortOrder === 'ASC' ? 'desc' : 'asc';
 
-    // Query orders berdasarkan user dan sort
-    $orders = mysqli_query($conn, "SELECT * FROM orders WHERE user_id = $user_id ORDER BY id $sortOrder");
-  ?>
+            // Query orders based on user and sort order
+            $orders = mysqli_query($conn, "SELECT * FROM orders WHERE user_id = $user_id ORDER BY id $sortOrder");
+            ?>
 
-  <!-- Tombol Sort -->
-  <div style="margin: 10px 0;">
-    <a href="account.php?page=orders&sort=<?= $toggleOrder ?>" class="btn-toggle-sort">
-      Sort by ID <?= $sortOrder === 'ASC' ? '▲' : '▼' ?>
-    </a>
-  </div>
+            <!-- Sort Button -->
+            <div style="margin: 10px 0;">
+                <a href="account.php?page=orders&sort=<?= $toggleOrder ?>" class="btn-toggle-sort">
+                    Sort by ID <?= $sortOrder === 'ASC' ? '▲' : '▼' ?>
+                </a>
+            </div>
 
-  <?php if (mysqli_num_rows($orders) === 0): ?>
-    <p>No orders yet.</p>
-  <?php else: ?>
-    <table style="width:100%; border-collapse: collapse; margin-top: 10px;">
-      <thead style="background-color: #f2f2f2;">
-        <tr>
-          <th style="padding: 10px; border: 1px solid #ccc;">ID</th>
-          <th style="padding: 10px; border: 1px solid #ccc;">Total</th>
-          <th style="padding: 10px; border: 1px solid #ccc;">Payment</th>
-          <th style="padding: 10px; border: 1px solid #ccc;">Shipping</th>
-          <th style="padding: 10px; border: 1px solid #ccc;">Status</th>
-        </tr>
-      </thead>
-      <tbody>
-      <?php while ($o = mysqli_fetch_assoc($orders)): ?>
-        <tr>
-          <td style="padding: 10px; border: 1px solid #ccc;">#<?= $o['id'] ?></td>
-          <td style="padding: 10px; border: 1px solid #ccc;">Rp<?= number_format($o['total_price'], 0, ',', '.') ?></td>
-          <td style="padding: 10px; border: 1px solid #ccc;"><?= ucfirst($o['payment_method']) ?></td>
-          <td style="padding: 10px; border: 1px solid #ccc;"><?= $o['shipping_method'] ?></td>
-          <td style="padding: 10px; border: 1px solid #ccc; color: <?= $o['status'] == 'Complete' ? 'green' : 'orange'; ?>; font-weight: bold;"><?= ucfirst($o['status']) ?></td>
-        </tr>
-      <?php endwhile; ?>
-  </tbody>
-    </table>
-  <?php endif; ?>
+            <?php if (mysqli_num_rows($orders) === 0): ?>
+                <p>No orders yet.</p>
+            <?php else: ?>
+                <table style="width:100%; border-collapse: collapse; margin-top: 10px;">
+                    <thead style="background-color: #f2f2f2;">
+                        <tr>
+                            <th style="padding: 10px; border: 1px solid #ccc;">ID</th>
+                            <th style="padding: 10px; border: 1px solid #ccc;">Total</th>
+                            <th style="padding: 10px; border: 1px solid #ccc;">Payment</th>
+                            <th style="padding: 10px; border: 1px solid #ccc;">Shipping</th>
+                            <th style="padding: 10px; border: 1px solid #ccc;">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <?php while ($o = mysqli_fetch_assoc($orders)): ?>
+                        <tr>
+                            <td style="padding: 10px; border: 1px solid #ccc;">#<?= $o['id'] ?></td>
+                            <td style="padding: 10px; border: 1px solid #ccc;">Rp<?= number_format($o['total_price'], 0, ',', '.') ?></td>
+                            <td style="padding: 10px; border: 1px solid #ccc;"><?= ucfirst($o['payment_method']) ?></td>
+                            <td style="padding: 10px; border: 1px solid #ccc;"><?= $o['shipping_method'] ?></td>
+                            <td style="padding: 10px; border: 1px solid #ccc; color: <?= $o['status'] == 'Complete' ? 'green' : 'orange'; ?>; font-weight: bold;"><?= ucfirst($o['status']) ?></td>
+                        </tr>
+                    <?php endwhile; ?>
+                    </tbody>
+                </table>
+            <?php endif; ?>
 
         <?php elseif ($page === 'settings'): ?>
-  <h3>Account Settings</h3>
+    <h3>Account Settings</h3>
+    <form method="POST" enctype="multipart/form-data" class="account-settings-form">
+        <label>Email:</label>
+        <input type="email" name="email" value="<?= $user['email'] ?>" required>
 
-  <?php if (isset($_GET['success'])): ?>
-    <div style="color:green; margin-bottom:10px;">Changes saved successfully.</div>
-  <?php endif; ?>
+        <label>Password <small>(leave blank if you don't want to change it)</small>:</label>
+        <input type="password" name="password" placeholder="******">
 
-  <form method="POST" class="account-settings-form">
-    <label>Email:</label>
-    <input type="email" name="email" value="<?= $user['email'] ?>" required>
+        <label>Phone Number:</label>
+        <input type="text" name="no_telp" value="<?= $user['no_telp'] ?? '' ?>">
 
-    <label>Password <small>(leave blank if you don't want to change it)</small>:</label>
-    <input type="password" name="password" placeholder="******">
+        <label>Address:</label>
+        <textarea name="alamat"><?= $user['alamat'] ?? '' ?></textarea>
 
-    <label>Phone Number:</label>
-    <input type="text" name="no_telp" value="<?= $user['no_telp'] ?? '' ?>">
+        <label>Profile Picture:</label>
+        <input type="file" name="profile_picture" accept="image/*">
 
-    <label>Address:</label>
-    <textarea name="alamat"><?= $user['alamat'] ?? '' ?></textarea>
-
-    <button type="submit" name="update_account">Save Changes</button>
-  </form>
+        <button type="submit" name="update_profile" class="btn-save">Update Profile Picture</button>
+        <button type="submit" name="update_account" class="btn-save">Save Changes</button>
+    </form>
 <?php endif; ?>
     </div>
 </div>
 
-<div id="logoutPopup" class="logout-popup">
-  <div class="logout-box">
-    <p>Are you sure you want to logout?</p>
-    <div style="display: flex; justify-content: center; gap: 15px;">
-      <button class="logout-btn-yes" onclick="window.location.href='logout.php'">Yes</button>
-      <button class="logout-btn-no" onclick="document.getElementById('logoutPopup').style.display='none'">No</button>
-    </div>
-  </div>
-</div>
 
 <footer>
     <div class="footer-container">

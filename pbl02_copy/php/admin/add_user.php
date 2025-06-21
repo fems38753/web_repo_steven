@@ -1,27 +1,34 @@
 <?php
+session_start();
 include '../connect.php';
 
-// Handle delete
-if (isset($_GET['delete'])) {
-    $id = intval($_GET['delete']);
-    $conn->query("DELETE FROM users WHERE id = $id");
-    header('Location: pengguna.php');
-    exit();
+// Handle adding a new user
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $username = mysqli_real_escape_string($conn, $_POST['username']);
+    $email = mysqli_real_escape_string($conn, $_POST['email']);
+    $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+    $role = mysqli_real_escape_string($conn, $_POST['role']);
+
+    $sql = "INSERT INTO users (username, email, password, role) VALUES ('$username', '$email', '$password', '$role')";
+
+    if (mysqli_query($conn, $sql)) {
+        $_SESSION['message'] = "User added successfully!";
+        header('Location: pengguna.php');
+        exit();
+    } else {
+        $_SESSION['error'] = "Error adding user: " . mysqli_error($conn);
+    }
 }
-
-$result = $conn->query("SELECT * FROM users ORDER BY id ASC");
-
 ?>
 
 <!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <title>Management User</title>
+  <title>Add User</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
-    /* CSS code from your earlier shared version */
     :root {
       --sidebar-width: 250px;
       --primary-color: #2c3e50;
@@ -111,77 +118,50 @@ $result = $conn->query("SELECT * FROM users ORDER BY id ASC");
       margin-right: 6px;
     }
 
-    .table-responsive {
-      overflow-x: auto;
-      background: #fff;
-      border-radius: 8px;
-      box-shadow: 0 0 12px rgba(0,0,0,.04);
-      padding: 20px;
-      margin-top: 10px;
+    .form-group {
+      margin-bottom: 15px;
     }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
+    .form-group label {
       font-size: 14px;
+      font-weight: bold;
       color: #333;
     }
 
-    thead {
-      background: #2c3e50;
-      color: #fff;
-    }
-
-    th, td {
-      padding: 12px 16px;
-      border-bottom: 1px solid #e0e0e0;
-      text-align: left;
-    }
-
-    .actions {
-      display: flex;
-      gap: 10px;
-    }
-
-    .btn-edit,
-    .btn-delete {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 30px;
-      height: 30px;
-      border-radius: 4px;
-      color: white;
+    .form-group input, .form-group select {
+      width: 100%;
+      padding: 10px;
       font-size: 14px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+
+    .form-actions {
+      margin-top: 20px;
+    }
+
+    .form-actions button {
+      padding: 10px 20px;
+      background: var(--success-color);
+      color: white;
+      border: none;
+      border-radius: 5px;
       cursor: pointer;
+      font-weight: bold;
     }
 
-    .btn-edit {
-      background: #f39c12;
+    .form-actions button:hover {
+      background: #27ae60;
     }
 
-    .btn-edit:hover {
-      background: #e67e22;
-    }
-
-    .btn-delete {
-      background: #e74c3c;
-    }
-
-    .btn-delete:hover {
-      background: #c0392b;
-    }
-
-    /* Styling for Profile Picture */
-    .profile-picture {
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      object-fit: cover;
+    .alert-error {
+      color: red;
+      margin-bottom: 15px;
     }
   </style>
 </head>
 <body>
+  <!-- Sidebar -->
   <aside class="sidebar">
     <div class="sidebar-header">
       <h3>Admin Panel</h3>
@@ -193,48 +173,47 @@ $result = $conn->query("SELECT * FROM users ORDER BY id ASC");
       <li><a href="orders.php"><i class="fas fa-shopping-cart"></i> <span>Order</span></a></li>
       <li><a href="pengguna.php"><i class="fas fa-users"></i> <span>User</span></a></li>
       <li><a href="kategori.php"><i class="fas fa-tags"></i> <span>Category</span></a></li>
-      <li><a href="/prog_web/web_repo_steven/pbl02_copy/logout.php"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a></li>
+      <li><a href="/prog_web/web_repo_steven/pbl02_copy/logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
     </ul>
   </aside>
 
-   <div class="main-content">
-    <h2>Manage User</h2>
+  <!-- Main Content -->
+  <div class="main-content">
+    <h2>Add User</h2>
 
-    <a href="add_user.php" class="btn"><i class="fas fa-user-plus"></i> Add User</a>
+    <?php if (isset($_SESSION['error'])): ?>
+      <div class="alert alert-error"><?= $_SESSION['error']; unset($_SESSION['error']); ?></div>
+    <?php endif; ?>
 
-    <div class="table-responsive">
-      <table>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Username</th>
-            <th>Email</th>
-            <th>Registration Date</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          <?php while ($user = $result->fetch_assoc()): ?>
-            <tr>
-              <td><?= $user['id'] ?></td>
-              <td><?= htmlspecialchars($user['username']) ?></td>
-              <td><?= htmlspecialchars($user['email']) ?></td>
-              <td><?= $user['created_at'] ?></td>
-              
-              <td class="actions">
-                <a href="edit_user.php?id=<?= $user['id'] ?>" class="btn-edit" title="Edit">
-                  <i class="fas fa-edit"></i>
-                </a>
-                <a href="pengguna.php?delete=<?= $user['id'] ?>" class="btn-delete" title="Delete"
-                   onclick="return confirm('Are you sure you want to delete this user?')">
-                  <i class="fas fa-trash-alt"></i>
-                </a>
-              </td>
-            </tr>
-          <?php endwhile; ?>
-        </tbody>
-      </table>
-    </div>
+    <form method="POST">
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" required>
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" required>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" required>
+      </div>
+
+      <div class="form-group">
+        <label for="role">Role</label>
+        <select id="role" name="role" required>
+          <option value="admin">Admin</option>
+          <option value="user">User</option>
+        </select>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit">Add User</button>
+        <a href="pengguna.php" class="btn">Cancel</a>
+      </div>
+    </form>
   </div>
 </body>
 </html>
