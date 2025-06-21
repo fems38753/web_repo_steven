@@ -613,6 +613,7 @@ function showNotification(message) {
     }, 3000);
 }
 
+// Search
 function searchProducts() {
   const searchTerm = document.getElementById('searchInput').value.trim();
   if (searchTerm) {

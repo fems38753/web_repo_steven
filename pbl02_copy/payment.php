@@ -21,10 +21,11 @@ if (session_status() === PHP_SESSION_NONE) {
   <a href="index.php" class="logo">JACK<span>ARMY</span></a>
   
   <div class="right-navbar">
-    <div class="search-bar">
-      <input type="text" id="searchInput" placeholder="Search...">
-      <button onclick="searchProducts()"><i class="fas fa-search"></i></button>
-    </div>
+      <!-- ✅ Search Bar -->
+      <div class="search-bar">
+        <input type="text" id="searchInput" placeholder="Search...">
+        <button onclick="searchProducts()"><i class="fas fa-search"></i></button>
+      </div>
 
     <ul class="nav-links">
       <li><a href="index.php">Home</a></li>
@@ -167,6 +168,7 @@ if (session_status() === PHP_SESSION_NONE) {
   });
 });
 
+// Search
 function searchProducts() {
   const searchTerm = document.getElementById('searchInput').value.trim();
   if (searchTerm) {
