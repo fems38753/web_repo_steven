@@ -614,7 +614,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 9999;
+  z-index: 1000;
 }
 
 .popup {
@@ -1836,7 +1836,7 @@ textarea {
   justify-content: center;
   align-items: center;
   width: 100vw;
-  height: 80vh;
+  height: 100vh;
   background-color: rgba(0,0,0,0.6); /* Transparent dark background */
   z-index: 9999;
 }
@@ -1844,12 +1844,12 @@ textarea {
 .popup-content {
   background-color: white;
   border-radius: 10px;
-  max-width: 500px;  /* Maximum width of the popup */
+  max-width: 400px;  /* Maximum width of the popup */
   width: 90%;        /* Make it responsive */
   padding: 30px;
   text-align: center;
   position: relative;
-  max-height: 80vh; /* Limit the height */
+  max-height: 100vh; /* Limit the height */
   overflow-y: auto; /* Scroll if content is larger than the viewport */
   box-sizing: border-box;
 }
