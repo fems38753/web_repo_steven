@@ -217,7 +217,7 @@ body {
   left: 50%;
   transform: translateX(-50%);
   padding: 12px 24px;
-  background-color: #333;
+  background-color: crimson;
   color: white;
   border: none;
   font-size: 16px;
@@ -229,7 +229,7 @@ body {
 }
 
 .view-products-btn:hover {
-  background-color: #555;
+  background-color: rgb(255, 0, 51);
 }
 
 /* Categories */

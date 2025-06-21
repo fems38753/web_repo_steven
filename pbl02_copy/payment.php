@@ -35,7 +35,7 @@ if (session_status() === PHP_SESSION_NONE) {
           <li><a href="products.php">All Product</a></li>
           <li><a href="baju.php">T-Shirt</a></li>
           <li><a href="jaket.php">Jacket</a></li>
-          <li><a href="celana.php">Celana</a></li>
+          <li><a href="celana.php">Pants</a></li>
           <li><a href="topi.php">Hat</a></li>
         </ul>
       </li>
@@ -112,7 +112,7 @@ if (session_status() === PHP_SESSION_NONE) {
                     <li><a href="products.php">All Product</a></li>
                     <li><a href="baju.php">T-Shirt</a></li>
                     <li><a href="jaket.php">Jacket</a></li>
-                    <li><a href="celana.php">Celana</a></li>
+                    <li><a href="celana.php">Pants</a></li>
                     <li><a href="topi.php">Hat</a></li>
                 </ul>
         </div>
