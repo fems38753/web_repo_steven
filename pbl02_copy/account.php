@@ -321,6 +321,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_account'])) {
         <a href="account.php?page=settings">Account Settings</a>
         <a href="#" onclick="confirmLogout(event)">Logout</a>
     </div>
+
+    <!-- Popup for confirmation -->
+<div id="logoutPopup" class="logout-popup" style="display:none;">
+  <div class="logout-box">
+    <p>Are you sure you want to logout?</p>
+    <div style="display: flex; justify-content: center; gap: 15px;">
+      <button class="logout-btn-yes" onclick="logoutUser()">Yes</button>
+      <button class="logout-btn-no" onclick="cancelLogout()">No</button>
+    </div>
+  </div>
+</div>
+
     <div class="content">
         <?php if ($page === 'dashboard'): ?>
             <div class="profile-section">
@@ -462,10 +474,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_account'])) {
 
 <script>
 function confirmLogout(e) {
-  e.preventDefault();
-  document.getElementById('logoutPopup').style.display = 'flex';
+  e.preventDefault();  // Prevent default action of link
+  document.getElementById('logoutPopup').style.display = 'flex';  // Show the logout confirmation popup
 }
 
+// This function handles the 'Yes' button click
+function logoutUser() {
+  window.location.href = "logout.php";  // Redirect to the logout URL (replace with your logout URL)
+}
+
+// This function handles the 'No' button click
+function cancelLogout() {
+  document.getElementById('logoutPopup').style.display = 'none';  // Hide the logout popup
+}
 function searchProducts() {
   const searchTerm = document.getElementById('searchInput').value.trim();
   if (searchTerm) {
