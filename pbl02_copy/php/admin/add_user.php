@@ -2,7 +2,6 @@
 session_start();
 include '../connect.php';
 
-// Handle adding a new user
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = mysqli_real_escape_string($conn, $_POST['username']);
     $email = mysqli_real_escape_string($conn, $_POST['email']);
@@ -161,7 +160,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   </style>
 </head>
 <body>
-  <!-- Sidebar -->
   <aside class="sidebar">
     <div class="sidebar-header">
       <h3>Admin Panel</h3>
@@ -177,7 +175,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </ul>
   </aside>
 
-  <!-- Main Content -->
   <div class="main-content">
     <h2>Add User</h2>
 

@@ -1,5 +1,5 @@
 <?php
-require 'php/connect.php'; // pastikan file ini sesuai path kamu
+require 'php/connect.php'; 
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $email = trim($_POST['email'] ?? '');
@@ -9,7 +9,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         exit;
     }
 
-    // Cek apakah email sudah ada
     $stmt = $conn->prepare("SELECT id FROM newsletter WHERE email = ?");
     $stmt->bind_param("s", $email);
     $stmt->execute();

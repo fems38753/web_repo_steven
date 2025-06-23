@@ -2,7 +2,6 @@
 session_start();
 include 'php/connect.php';
 
-// Check if user is logged in
 $isLoggedIn = isset($_SESSION['user_id']);
 $userData = [];
 $orderStats = [
@@ -25,7 +24,6 @@ while ($row = $orderResult->fetch_assoc()) {
 }
 
 if ($isLoggedIn) {
-    // Fetch user data from database
     $userId = $_SESSION['user_id'];
     $stmt = $conn->prepare("SELECT * FROM users WHERE id = ?");
     $stmt->bind_param("i", $userId);
@@ -46,7 +44,6 @@ if ($isLoggedIn) {
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
-    /* Additional styles for account page */
     .account-container {
       max-width: 1200px;
       margin: 50px auto;
@@ -298,7 +295,6 @@ if (session_status() === PHP_SESSION_NONE) {
 
   <main class="account-container">
     <?php if ($isLoggedIn): ?>
-      <!-- User is logged in - show account dashboard -->
       <aside class="account-sidebar">
         <div class="user-profile">
           <div class="user-avatar">
@@ -329,7 +325,6 @@ if (session_status() === PHP_SESSION_NONE) {
       </section>
       
     <?php else: ?>
-      <!-- User is not logged in - show login prompt -->
       <div class="login-required" style="width: 100%;">
         <h2>Please Login to View Your Account</h2>
         <p>You need to be logged in to access your account dashboard, order history, and settings.</p>
@@ -394,7 +389,6 @@ if (session_status() === PHP_SESSION_NONE) {
   <script src="cart.js"></script>
   <script src="news.js"></script>
   <script>
-    // Popup functions
     function openPopup(popupId) {
       document.getElementById(popupId).style.display = 'block';
     }
@@ -404,11 +398,9 @@ if (session_status() === PHP_SESSION_NONE) {
     }
     
     function switchPopup(toPopupId) {
-      // Hide all popups first
       document.querySelectorAll('.overlay').forEach(popup => {
         popup.style.display = 'none';
       });
-      // Show the requested popup
       document.getElementById(toPopupId).style.display = 'block';
     }
     
@@ -424,17 +416,14 @@ if (session_status() === PHP_SESSION_NONE) {
         button.textContent = 'Show';
       }
     }
-    
-    // Handle form submissions
+
     document.getElementById('loginForm')?.addEventListener('submit', function(e) {
       e.preventDefault();
-      // Add your login AJAX here
       console.log('Login form submitted');
     });
     
     document.getElementById('registerForm')?.addEventListener('submit', function(e) {
       e.preventDefault();
-      // Add your registration AJAX here
       console.log('Register form submitted');
     });
 

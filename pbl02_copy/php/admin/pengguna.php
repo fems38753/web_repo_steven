@@ -1,7 +1,6 @@
 <?php
 include '../connect.php';
 
-// Handle delete
 if (isset($_GET['delete'])) {
     $id = intval($_GET['delete']);
     $conn->query("DELETE FROM users WHERE id = $id");
@@ -21,7 +20,6 @@ $result = $conn->query("SELECT * FROM users ORDER BY id ASC");
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
-    /* CSS code from your earlier shared version */
     :root {
       --sidebar-width: 250px;
       --primary-color: #2c3e50;
@@ -172,7 +170,6 @@ $result = $conn->query("SELECT * FROM users ORDER BY id ASC");
       background: #c0392b;
     }
 
-    /* Styling for Profile Picture */
     .profile-picture {
       width: 50px;
       height: 50px;

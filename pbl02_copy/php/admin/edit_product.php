@@ -2,7 +2,6 @@
 session_start();
 include '../connect.php';
 
-// If the product ID is not present in the URL, redirect
 if (!isset($_GET['id'])) {
     header('Location: products.php');
     exit();
@@ -27,22 +26,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stock = (int)$_POST['stock'];
     $size_available = $conn->real_escape_string($_POST['size_available']);
 
-    // Validate the size format (e.g., S:4,M:4,L:4,XL:4)
     if (!preg_match("/^[A-Za-z]+:\d+(,[A-Za-z]+:\d+)*$/", $size_available)) {
         $error = "Invalid size format. Use 'S:4,M:4,L:4' format.";
         exit();
     }
 
-    // Keep the existing image unless a new one is uploaded
     $image = $product['image'];
 
     if ($_FILES['image']['name']) {
         $target_dir = "C:/xampp/htdocs/prog_web/web_repo_steven/pbl02_copy/php/admin/images/";
         if (!is_dir($target_dir)) {
-            mkdir($target_dir, 0777, true);  // Create directory if it doesn't exist
+            mkdir($target_dir, 0777, true);  
         }
 
-        // Delete the old image if it exists
         if ($image && file_exists("../$image")) {
             unlink("../$image");
         }
@@ -56,7 +52,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    // Update the product in the database
     $stmt = $conn->prepare("UPDATE products SET 
                           name=?, category_id=?, price=?, discount=?, image=?, stock=?, size_available=? 
                           WHERE id=?");
@@ -91,7 +86,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     --dark-gray: #343a40;
 }
 
-/* Base */
 body {
     font-family: 'Inter', sans-serif;
     background-color: #f4f4f4;
@@ -102,7 +96,6 @@ body {
     color: #333;
 }
 
-/* Sidebar */
 .sidebar {
     width: var(--sidebar-width);
     background: var(--primary-color);
@@ -151,7 +144,6 @@ body {
 }
 
 
-/* Main Content */
 .main-content {
     flex: 1;
     margin-left: var(--sidebar-width);
@@ -161,7 +153,6 @@ body {
     box-shadow: 0 0 15px rgba(0,0,0,0.05);
 }
 
-/* Title */
 h2 {
     color: var(--primary-color);
     margin-bottom: 25px;
@@ -170,7 +161,6 @@ h2 {
     padding-bottom: 10px;
 }
 
-/* Alert */
 .alert {
     padding: 12px 15px;
     margin-bottom: 20px;
@@ -184,7 +174,6 @@ h2 {
     border: 1px solid #f5c6cb;
 }
 
-/* Form */
 .product-form {
     display: flex;
     flex-direction: column;
@@ -242,7 +231,6 @@ h2 {
     border-top: 1px solid #eee;
 }
 
-/* Buttons */
 .btn {
     display: inline-flex;
     align-items: center;
@@ -283,7 +271,6 @@ h2 {
     margin-top: 4px;
 }
 
-/* Image upload */
 .file-upload-wrapper {
     border: 1px dashed #ddd;
     padding: 15px;
@@ -343,7 +330,6 @@ h2 {
     background: #c0392b;
 }
 
-/* Responsive */
 @media (max-width: 768px) {
     .sidebar {
         width: 100%;
@@ -455,7 +441,6 @@ h2 {
 <script>
 function confirmRemoveImage() {
     if (confirm('Are you sure you want to remove the current image?')) {
-        // You can implement AJAX to remove the image or just clear the preview
         document.querySelector('.image-preview-container').style.display = 'none';
         document.querySelector('.file-upload-wrapper input').required = true;
     }
@@ -463,5 +448,3 @@ function confirmRemoveImage() {
 </script>
 </body>
 </html>
-
-<?php include 'footer_admin.php'; ?>

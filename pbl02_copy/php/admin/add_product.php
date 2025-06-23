@@ -2,7 +2,6 @@
 session_start();
 include '../connect.php';
 
-// Handle form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = $conn->real_escape_string($_POST['name']);
     $category_id = (int)$_POST['category_id'];
@@ -11,31 +10,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stock = (int)$_POST['stock'];
     $size_available = $conn->real_escape_string($_POST['size_available']);
 
-    // Validate the size format (e.g., S:4,M:4,L:4,XL:4)
     if (!preg_match("/^[A-Za-z]+:\d+(,[A-Za-z]+:\d+)*$/", $size_available)) {
         $error = "Invalid size format. Use 'S:4,M:4,L:4' format.";
         exit();
     }
 
-    // Handle image upload
     $image = '';
     if ($_FILES['image']['name']) {
-        $target_dir = "C:/xampp/htdocs/prog_web/web_repo_steven/pbl02_copy/php/admin/images/";  // Full path to the image folder
+        $target_dir = "C:/xampp/htdocs/prog_web/web_repo_steven/pbl02_copy/php/admin/images/";  
         if (!is_dir($target_dir)) {
-            mkdir($target_dir, 0777, true);  // Create directory if it doesn't exist (optional)
+            mkdir($target_dir, 0777, true);
         }
 
         $file_ext = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
         $filename = uniqid() . '.' . $file_ext;
         $target_file = $target_dir . $filename;
 
-        // Move the uploaded file to the target directory
         if (move_uploaded_file($_FILES['image']['tmp_name'], $target_file)) {
-            $image = "php/admin/images/" . $filename;  // Store relative path in the database
+            $image = "php/admin/images/" . $filename;
         }
     }
 
-    // Save the product into the database
     $stmt = $conn->prepare("INSERT INTO products 
                           (name, category_id, price, discount, image, stock, size_available) 
                           VALUES (?, ?, ?, ?, ?, ?, ?)");
@@ -50,7 +45,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Get categories from the database
 $categories = $conn->query("SELECT * FROM categories");
 ?>
 

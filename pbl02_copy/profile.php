@@ -28,7 +28,6 @@ $user = $result->fetch_assoc();
     <p><strong>Username:</strong> <?= htmlspecialchars($user['username']) ?></p>
     <p><strong>Email:</strong> <?= htmlspecialchars($user['email']) ?></p>
     <p><strong>Created At:</strong> <?= date("F j, Y", strtotime($user['created_at'])) ?></p>
-    <!-- Tambahkan opsi ubah password atau edit profil nanti -->
     <a href="account.php" style="display:inline-block; margin-top:20px;">⬅ Back to Dashboard</a>
   </main>
 </body>

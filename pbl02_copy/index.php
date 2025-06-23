@@ -4,9 +4,6 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 include 'php/connect.php';
 
-// ✅ Inilah bagian yang hilang sebelumnya:
-
-
 $stmt = $conn->prepare("SELECT * FROM products WHERE name LIKE CONCAT('%', ?, '%') OR category LIKE CONCAT('%', ?, '%')");
 $stmt->bind_param("ss", $query, $query);
 $stmt->execute();
@@ -21,44 +18,13 @@ $result = $stmt->get_result();
     <title>Jackarmyofficial</title>
     <link rel="stylesheet" href="pbl02.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-<style>
-    /* Updated notification style - smaller and more subtle */
-    .notification {
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        background-color: rgba(76, 175, 80, 0.9); /* Slightly transparent */
-        color: white;
-        padding: 8px 12px;
-        border-radius: 4px;
-        font-size: 14px;
-        z-index: 1000;
-        animation: slideIn 0.3s, fadeOut 0.3s 2s;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        width: 250px;
-        height: 50px;
-        border: 1px solid rgba(255,255,255,0.2);
-    }
-
-    @keyframes slideIn {
-        from {transform: translateX(100%); opacity: 0;}
-        to {transform: translateX(0); opacity: 1;}
-    }
-
-    @keyframes fadeOut {
-        from {opacity: 1;}
-        to {opacity: 0;}
-    }
-</style>
 </head>
 <body>
-
 <header>
     <nav class="navbar">
   <a href="index.php" class="logo">JACK<span>ARMY</span></a>
   
  <div class="right-navbar">
-      <!-- ✅ Search Bar -->
       <div class="search-bar">
         <input type="text" id="searchInput" placeholder="Search...">
         <button onclick="searchProducts()"><i class="fas fa-search"></i></button>
@@ -103,13 +69,10 @@ $result = $stmt->get_result();
 </nav>
 </header>
 
-<!-- Hero Section -->
 <section class="hero-carousel">
   <div class="carousel">
-    <!-- Navigation Buttons -->
     <button class="prev" onclick="moveSlide(-1)">&#10094;</button>
 
-    <!-- Carousel Slides -->
     <img src="Images/hero1.jpg" class="slide active">
     <img src="Images/hero2.jpg" class="slide">
     <img src="Images/hero3.jpg" class="slide">
@@ -117,7 +80,6 @@ $result = $stmt->get_result();
 
     <button class="next" onclick="moveSlide(1)">&#10095;</button>
 
-    <!-- View Products Button -->
     <button class="view-products-btn" onclick="scrollToProducts()">View Products</button>
   </div>
 </section>
@@ -157,7 +119,7 @@ $result = $stmt->get_result();
     <?php
     $products = $conn->query("SELECT * FROM products WHERE category_id = (SELECT id FROM categories WHERE name = 'Jacket') OR category = 'Jacket'");
     while ($p = $products->fetch_assoc()):
-      $hargaAwal = $p['price'] * 2; // estimasi harga awal sebelum diskon
+      $hargaAwal = $p['price'] * 2; 
       $discountPercent = round(($hargaAwal - $p['price']) / $hargaAwal * 100);
     ?>
       <div class="kaos-item" onclick="openPopup(
@@ -186,7 +148,7 @@ $result = $stmt->get_result();
     <?php
     $products = $conn->query("SELECT * FROM products WHERE category_id = (SELECT id FROM categories WHERE name = 'Pants') OR category = 'Pants'");
     while ($p = $products->fetch_assoc()):
-      $hargaAwal = $p['price'] * 2; // estimasi harga awal sebelum diskon
+      $hargaAwal = $p['price'] * 2; 
       $discountPercent = round(($hargaAwal - $p['price']) / $hargaAwal * 100);
     ?>
       <div class="kaos-item" onclick="openPopup(
@@ -211,7 +173,7 @@ $result = $stmt->get_result();
 <!-- TOPI --> 
 <section class="produk-topi">
   <h2>HAT COLLECTION</h2>
-  <div class="topi-container"> <!-- TAMBAHKAN INI -->
+  <div class="topi-container"> 
     <?php
       $products = $conn->query("SELECT * FROM products WHERE category_id = (SELECT id FROM categories WHERE name = 'Hat') OR category = 'Hat'");
       while ($p = $products->fetch_assoc()):
@@ -231,7 +193,7 @@ $result = $stmt->get_result();
         <p class="price"><del>Rp<?= number_format($hargaAwal, 0, ',', '.') ?></del> <strong>Rp<?= number_format($p['price'], 0, ',', '.') ?></strong></p>
       </div>
     <?php endwhile; ?>
-  </div> <!-- TUTUP .topi-container -->
+  </div> 
 </section>
 
 <!-- Popup Product Detail (T-Shirt / Jacket) -->
@@ -272,7 +234,7 @@ $result = $stmt->get_result();
   </div>
 </div>
 
-<!-- Popup Product Detail for Hat -->
+<!--/* Popup Product Detail for Hat -->
 <div class="popup-overlay" id="hatPopupOverlay" style="display: none;">
   <div class="popup-content">
     <span class="close-btn" onclick="closeHatPopup()">&times;</span>
@@ -396,7 +358,7 @@ let qty = 1;
 let size = '';
 let stockInfo = {};
 
-// === T-SHIRT / JACKET ===
+// T-SHIRT / JACKET
 function openPopup(img, title, price, id, size_available, stock) {
   document.getElementById('popupOverlay').style.display = 'flex';
   document.getElementById('popupImage').src = img;
@@ -416,24 +378,19 @@ function openPopup(img, title, price, id, size_available, stock) {
     stockInfo[sz] = parseInt(stok);
   });
 
-  // Calculate the total stock for the product
   let totalStock = 0;
   for (let size in stockInfo) {
     totalStock += stockInfo[size];
   }
 
-  // Display total stock in the popup
   document.getElementById('popupStock').innerText = 'Stok: ' + totalStock;
 
-  // Update buttons based on the stock
   ['S', 'M', 'L', 'XL'].forEach(updateSizeButton);
 }
 
 function updateSizeButton(sz) {
   const btn = document.getElementById('size' + sz);
-  // Display the stock available in parentheses
   btn.innerText = sz + ' (' + (stockInfo[sz] ?? 0) + ')';
-  // Disable the button if stock is 0
   btn.disabled = stockInfo[sz] <= 0;
 }
 
@@ -460,11 +417,9 @@ function selectSize(sz) {
   document.getElementById('popupQuantity').value = qty;
   document.getElementById('popupSelectedSize').value = sz;
 
-  // Remove 'size-selected' class from all buttons
   ['S', 'M', 'L', 'XL'].forEach(s => {
     document.getElementById('size' + s).classList.remove('size-selected');
   });
-  // Add 'size-selected' class to the selected button
   document.getElementById('size' + sz).classList.add('size-selected');
 }
 
@@ -504,7 +459,7 @@ function addToCart() {
   });
 }
 
-// === HAT ===
+// HAT 
 let hatQty = 1;
 let hatStock = 0;
 
@@ -577,7 +532,7 @@ window.addEventListener('click', function(e) {
 });
 
 document.getElementById('newsletterForm').addEventListener('submit', function(e) {
-  e.preventDefault(); // Mencegah form reload halaman
+  e.preventDefault(); 
   const email = document.getElementById('emailInput').value;
   const messageBox = document.getElementById('newsletterMessage');
 
@@ -600,20 +555,17 @@ document.getElementById('newsletterForm').addEventListener('submit', function(e)
   });
 });
 
-// Function to show notification
 function showNotification(message) {
     const notification = document.createElement('div');
     notification.className = 'notification';
     notification.textContent = message;
     document.body.appendChild(notification);
     
-    // Remove after 3 seconds
     setTimeout(() => {
         notification.remove();
     }, 3000);
 }
 
-// Search
 function searchProducts() {
   const searchTerm = document.getElementById('searchInput').value.trim();
   if (searchTerm) {
@@ -631,7 +583,7 @@ document.getElementById('searchInput').addEventListener('keypress', function (e)
 });
 
 document.getElementById('newsletterForm').addEventListener('submit', function(e) {
-  e.preventDefault(); // Mencegah form reload halaman
+  e.preventDefault(); 
   const email = document.getElementById('emailInput').value;
   const messageBox = document.getElementById('newsletterMessage');
 
@@ -654,6 +606,5 @@ document.getElementById('newsletterForm').addEventListener('submit', function(e)
   });
 });
 </script>
-
 </body>
 </html>

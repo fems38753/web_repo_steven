@@ -21,7 +21,6 @@ if (session_status() === PHP_SESSION_NONE) {
   <a href="index.php" class="logo">JACK<span>ARMY</span></a>
   
   <div class="right-navbar">
-      <!-- ✅ Search Bar -->
       <div class="search-bar">
         <input type="text" id="searchInput" placeholder="Search...">
         <button onclick="searchProducts()"><i class="fas fa-search"></i></button>
@@ -145,7 +144,7 @@ if (session_status() === PHP_SESSION_NONE) {
 </footer>
 <script>
     document.getElementById('newsletterForm').addEventListener('submit', function(e) {
-  e.preventDefault(); // Mencegah form reload halaman
+  e.preventDefault(); 
   const email = document.getElementById('emailInput').value;
   const messageBox = document.getElementById('newsletterMessage');
 
@@ -168,7 +167,6 @@ if (session_status() === PHP_SESSION_NONE) {
   });
 });
 
-// Search
 function searchProducts() {
   const searchTerm = document.getElementById('searchInput').value.trim();
   if (searchTerm) {

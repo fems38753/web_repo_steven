@@ -8,35 +8,6 @@
     <title>Jackarmyofficial</title>
     <link rel="stylesheet" href="pbl02.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <style>
-    /* Updated notification style - smaller and more subtle */
-    .notification {
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        background-color: rgba(76, 175, 80, 0.9); /* Slightly transparent */
-        color: white;
-        padding: 8px 12px;
-        border-radius: 4px;
-        font-size: 14px;
-        z-index: 1000;
-        animation: slideIn 0.3s, fadeOut 0.3s 2s;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        width: 250px;
-        height: 50px;
-        border: 1px solid rgba(255,255,255,0.2);
-    }
-
-    @keyframes slideIn {
-        from {transform: translateX(100%); opacity: 0;}
-        to {transform: translateX(0); opacity: 1;}
-    }
-
-    @keyframes fadeOut {
-        from {opacity: 1;}
-        to {opacity: 0;}
-    }
-    </style>
 </head>
 <?php
 if (session_status() === PHP_SESSION_NONE) {
@@ -92,14 +63,13 @@ if (session_status() === PHP_SESSION_NONE) {
 </nav>
 </header>
 
-<!-- CELANA -->   
 <section class="produk-jaket">
   <h2>PANTS COLLECTION</h2>
   <div class="jaket-container">
     <?php
     $products = $conn->query("SELECT * FROM products WHERE category_id = (SELECT id FROM categories WHERE name = 'Pants') OR category = 'Pants'");
     while ($p = $products->fetch_assoc()):
-      $hargaAwal = $p['price'] * 2; // estimasi harga awal sebelum diskon
+      $hargaAwal = $p['price'] * 2; 
       $discountPercent = round(($hargaAwal - $p['price']) / $hargaAwal * 100);
     ?>
       <div class="kaos-item" onclick="openPopup(
@@ -121,7 +91,6 @@ if (session_status() === PHP_SESSION_NONE) {
   </div>
 </section>
 
-<!-- Popup Product Detail (T-Shirt / Jacket) -->
 <div class="popup-overlay" id="popupOverlay" style="display: none;">
   <div class="popup-content">
     <span class="close-btn" onclick="closePopup()">&times;</span>
@@ -214,7 +183,7 @@ let qty = 1;
 let size = '';
 let stockInfo = {};
 
-// === T-SHIRT / JACKET ===
+// T-SHIRT / JACKET 
 function openPopup(img, title, price, id, size_available, stock) {
   document.getElementById('popupOverlay').style.display = 'flex';
   document.getElementById('popupImage').src = img;
@@ -234,24 +203,19 @@ function openPopup(img, title, price, id, size_available, stock) {
     stockInfo[sz] = parseInt(stok);
   });
 
-  // Calculate the total stock for the product
   let totalStock = 0;
   for (let size in stockInfo) {
     totalStock += stockInfo[size];
   }
 
-  // Display total stock in the popup
   document.getElementById('popupStock').innerText = 'Stok: ' + totalStock;
 
-  // Update buttons based on the stock
   ['S', 'M', 'L', 'XL'].forEach(updateSizeButton);
 }
 
 function updateSizeButton(sz) {
   const btn = document.getElementById('size' + sz);
-  // Display the stock available in parentheses
   btn.innerText = sz + ' (' + (stockInfo[sz] ?? 0) + ')';
-  // Disable the button if stock is 0
   btn.disabled = stockInfo[sz] <= 0;
 }
 
@@ -278,11 +242,9 @@ function selectSize(sz) {
   document.getElementById('popupQuantity').value = qty;
   document.getElementById('popupSelectedSize').value = sz;
 
-  // Remove 'size-selected' class from all buttons
   ['S', 'M', 'L', 'XL'].forEach(s => {
     document.getElementById('size' + s).classList.remove('size-selected');
   });
-  // Add 'size-selected' class to the selected button
   document.getElementById('size' + sz).classList.add('size-selected');
 }
 
@@ -339,7 +301,7 @@ document.getElementById('searchInput').addEventListener('keypress', function (e)
 });
 
 document.getElementById('newsletterForm').addEventListener('submit', function(e) {
-  e.preventDefault(); // Mencegah form reload halaman
+  e.preventDefault(); 
   const email = document.getElementById('emailInput').value;
   const messageBox = document.getElementById('newsletterMessage');
 

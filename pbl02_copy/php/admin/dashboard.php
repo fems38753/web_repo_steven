@@ -1,8 +1,5 @@
 <?php
-// Start session and check admin authentication
 session_start();
-
-// Redirect if not logged in or not admin
 if (!isset($_SESSION['user_id'])) {
     header("Location: ../account.php");
     exit();
@@ -15,7 +12,6 @@ if ($_SESSION['role'] !== 'admin') {
 
 include '../connect.php';
 
-// Get statistics from database
 $total_income = $conn->query("SELECT SUM(total_price) AS t FROM orders")->fetch_assoc()['t'] ?? 0;
 $total_orders = $conn->query("SELECT COUNT(*) AS o FROM orders")->fetch_assoc()['o'] ?? 0;
 $total_items = $conn->query("SELECT SUM(quantity) AS i FROM order_items")->fetch_assoc()['i'] ?? 0;

@@ -1,7 +1,6 @@
 <?php
 include '../connect.php';
 
-// Sort default
 $sort = $_GET['sort'] ?? 'DESC';
 $sortToggle = $sort === 'ASC' ? 'DESC' : 'ASC';
 
@@ -86,7 +85,7 @@ $result = $conn->query($sql);
     }
 
     th, td {
-      padding: 10px 16px;  /* Adjusted padding for better alignment */
+      padding: 10px 16px; 
       border-bottom: 1px solid #eee;
       text-align: left;
     }
@@ -94,7 +93,7 @@ $result = $conn->query($sql);
     th {
       background: #2c3e50;
       color: #fff;
-      width: 20%;  /* Set column width */
+      width: 20%;  
     }
 
     td {
@@ -139,7 +138,6 @@ $result = $conn->query($sql);
       background: #636e72;
     }
 
-    /* Styling for dropdown */
     select {
       padding: 5px 10px;
       font-size: 14px;
@@ -156,7 +154,6 @@ $result = $conn->query($sql);
       border-color: #3498db;
     }
 
-    /* Ensure table fills the available width */
     .main-content {
       margin-left: 240px;
       padding: 30px;
@@ -214,7 +211,6 @@ $result = $conn->query($sql);
           </td>
           <td>
             <a href="order_items2.php?id=<?= $order['id'] ?>" class="btn-view">View Details </a>
-            <!-- Admin update status form -->
             <form action="update_order_status.php" method="POST" style="display:inline;">
               <input type="hidden" name="order_id" value="<?= $order['id'] ?>">
               <select name="status" onchange="this.form.submit()">
@@ -228,6 +224,5 @@ $result = $conn->query($sql);
     </tbody>
     </table>
   </div>
-
 </body>
 </html>

@@ -100,7 +100,7 @@ if (session_status() === PHP_SESSION_NONE) {
     <?php
     $products = $conn->query("SELECT * FROM products WHERE category_id = (SELECT id FROM categories WHERE name = 'Jacket') OR category = 'Jacket'");
     while ($p = $products->fetch_assoc()):
-      $hargaAwal = $p['price'] * 2; // estimasi harga awal sebelum diskon
+      $hargaAwal = $p['price'] * 2; 
       $discountPercent = round(($hargaAwal - $p['price']) / $hargaAwal * 100);
     ?>
       <div class="kaos-item" onclick="openPopup(
@@ -129,7 +129,7 @@ if (session_status() === PHP_SESSION_NONE) {
     <?php
     $products = $conn->query("SELECT * FROM products WHERE category_id = (SELECT id FROM categories WHERE name = 'Pants') OR category = 'Pants'");
     while ($p = $products->fetch_assoc()):
-      $hargaAwal = $p['price'] * 2; // estimasi harga awal sebelum diskon
+      $hargaAwal = $p['price'] * 2; 
       $discountPercent = round(($hargaAwal - $p['price']) / $hargaAwal * 100);
     ?>
       <div class="kaos-item" onclick="openPopup(
@@ -154,7 +154,7 @@ if (session_status() === PHP_SESSION_NONE) {
 <!-- TOPI --> 
 <section class="produk-topi">
   <h2>HAT COLLECTION</h2>
-  <div class="topi-container"> <!-- TAMBAHKAN INI -->
+  <div class="topi-container">
     <?php
       $products = $conn->query("SELECT * FROM products WHERE category_id = (SELECT id FROM categories WHERE name = 'Hat') OR category = 'Hat'");
       while ($p = $products->fetch_assoc()):
@@ -174,7 +174,7 @@ if (session_status() === PHP_SESSION_NONE) {
         <p class="price"><del>Rp<?= number_format($hargaAwal, 0, ',', '.') ?></del> <strong>Rp<?= number_format($p['price'], 0, ',', '.') ?></strong></p>
       </div>
     <?php endwhile; ?>
-  </div> <!-- TUTUP .topi-container -->
+  </div> 
 </section>
 
 <!-- Popup Product Detail (T-Shirt / Jacket) -->
@@ -250,7 +250,6 @@ if (session_status() === PHP_SESSION_NONE) {
   </div>
 </div>
 
-<!-- Footer -->
 <footer>
     <div class="footer-container">
         <div class="footer-section">
@@ -327,24 +326,19 @@ function openPopup(img, title, price, id, size_available, stock) {
     stockInfo[sz] = parseInt(stok);
   });
 
-  // Calculate the total stock for the product
   let totalStock = 0;
   for (let size in stockInfo) {
     totalStock += stockInfo[size];
   }
 
-  // Display total stock in the popup
   document.getElementById('popupStock').innerText = 'Stok: ' + totalStock;
 
-  // Update buttons based on the stock
   ['S', 'M', 'L', 'XL'].forEach(updateSizeButton);
 }
 
 function updateSizeButton(sz) {
   const btn = document.getElementById('size' + sz);
-  // Display the stock available in parentheses
   btn.innerText = sz + ' (' + (stockInfo[sz] ?? 0) + ')';
-  // Disable the button if stock is 0
   btn.disabled = stockInfo[sz] <= 0;
 }
 
@@ -371,11 +365,9 @@ function selectSize(sz) {
   document.getElementById('popupQuantity').value = qty;
   document.getElementById('popupSelectedSize').value = sz;
 
-  // Remove 'size-selected' class from all buttons
   ['S', 'M', 'L', 'XL'].forEach(s => {
     document.getElementById('size' + s).classList.remove('size-selected');
   });
-  // Add 'size-selected' class to the selected button
   document.getElementById('size' + sz).classList.add('size-selected');
 }
 
@@ -488,7 +480,7 @@ window.addEventListener('click', function(e) {
 });
 
 document.getElementById('newsletterForm').addEventListener('submit', function(e) {
-  e.preventDefault(); // Mencegah form reload halaman
+  e.preventDefault(); 
   const email = document.getElementById('emailInput').value;
   const messageBox = document.getElementById('newsletterMessage');
 
@@ -527,6 +519,5 @@ document.getElementById('searchInput').addEventListener('keypress', function (e)
   }
 });
 </script>
-
 </body>
 </html>

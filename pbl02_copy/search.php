@@ -1,19 +1,18 @@
 <?php
 session_start();
-include 'php/connect.php';  // Include your database connection
+include 'php/connect.php';  
 
-$query = isset($_GET['query']) ? trim($_GET['query']) : '';  // Get the query from the URL
+$query = isset($_GET['query']) ? trim($_GET['query']) : '';  
 
 if (empty($query)) {
     echo "Please enter a search keyword.";
     exit;
 }
 
-// Prepare SQL statement to search for products by name or category
 $stmt = $conn->prepare("SELECT * FROM products WHERE name LIKE CONCAT('%', ?, '%') OR category LIKE CONCAT('%', ?, '%')");
-$stmt->bind_param("ss", $query, $query);  // Bind the query to the prepared statement
+$stmt->bind_param("ss", $query, $query);  
 $stmt->execute();
-$result = $stmt->get_result();  // Execute the statement and get the result
+$result = $stmt->get_result();  
 
 ?>
 
@@ -98,7 +97,6 @@ $result = $stmt->get_result();  // Execute the statement and get the result
   <?php endif; ?>
 </section>
 
-<!-- Popup Product Detail (T-Shirt / Jacket) -->
 <div class="popup-overlay" id="popupOverlay" style="display: none;">
   <div class="popup-content">
     <span class="close-btn" onclick="closePopup()">&times;</span>
@@ -136,7 +134,6 @@ $result = $stmt->get_result();  // Execute the statement and get the result
   </div>
 </div>
 
-<!-- Popup Product Detail for Hat -->
 <div class="popup-overlay" id="hatPopupOverlay" style="display: none;">
   <div class="popup-content">
     <span class="close-btn" onclick="closeHatPopup()">&times;</span>
@@ -270,24 +267,19 @@ function openPopup(img, title, price, id, size_available, stock) {
     stockInfo[sz] = parseInt(stok);
   });
 
-  // Calculate the total stock for the product
   let totalStock = 0;
   for (let size in stockInfo) {
     totalStock += stockInfo[size];
   }
 
-  // Display total stock in the popup
   document.getElementById('popupStock').innerText = 'Stok: ' + totalStock;
 
-  // Update buttons based on the stock
   ['S', 'M', 'L', 'XL'].forEach(updateSizeButton);
 }
 
 function updateSizeButton(sz) {
   const btn = document.getElementById('size' + sz);
-  // Display the stock available in parentheses
   btn.innerText = sz + ' (' + (stockInfo[sz] ?? 0) + ')';
-  // Disable the button if stock is 0
   btn.disabled = stockInfo[sz] <= 0;
 }
 
@@ -314,11 +306,9 @@ function selectSize(sz) {
   document.getElementById('popupQuantity').value = qty;
   document.getElementById('popupSelectedSize').value = sz;
 
-  // Remove 'size-selected' class from all buttons
   ['S', 'M', 'L', 'XL'].forEach(s => {
     document.getElementById('size' + s).classList.remove('size-selected');
   });
-  // Add 'size-selected' class to the selected button
   document.getElementById('size' + sz).classList.add('size-selected');
 }
 
@@ -426,7 +416,7 @@ function addHatToCart() {
 }
 
 document.getElementById('newsletterForm').addEventListener('submit', function(e) {
-  e.preventDefault(); // Mencegah form reload halaman
+  e.preventDefault(); 
   const email = document.getElementById('emailInput').value;
   const messageBox = document.getElementById('newsletterMessage');
 
@@ -449,6 +439,5 @@ document.getElementById('newsletterForm').addEventListener('submit', function(e)
   });
 });
 </script>
-
 </body>
 </html>

@@ -11,24 +11,20 @@ $user_id = $_SESSION['user_id'];
 $user = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM users WHERE id = $user_id"));
 $page = $_GET['page'] ?? 'dashboard';
 
-// Handling profile picture upload
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile'])) {
     if ($_FILES['profile_picture']['error'] == 0) {
         $target_dir = "uploads/profile_picture/";
         if (!is_dir($target_dir)) {
-            mkdir($target_dir, 0777, true); // Create directory if it doesn't exist
+            mkdir($target_dir, 0777, true);
         }
 
         $target_file = $target_dir . basename($_FILES["profile_picture"]["name"]);
         $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
 
-        // Check MIME type for image validation
         $fileMimeType = mime_content_type($_FILES["profile_picture"]["tmp_name"]);
 
-        // Allow only image types
         if (in_array($imageFileType, ['jpg', 'jpeg', 'png', 'gif']) && strpos($fileMimeType, 'image') !== false) {
             if (move_uploaded_file($_FILES["profile_picture"]["tmp_name"], $target_file)) {
-                // Update the user's profile picture in the database
                 $profile_picture = basename($_FILES["profile_picture"]["name"]);
                 $update_query = "UPDATE users SET profile_picture = '$profile_picture' WHERE id = $user_id";
                 
@@ -47,7 +43,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile'])) {
     }
 }
 
-// Handling account settings update
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_account'])) {
     $email   = mysqli_real_escape_string($conn, $_POST['email']);
     $no_telp = mysqli_real_escape_string($conn, $_POST['no_telp']);
@@ -353,11 +348,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_account'])) {
             <h3>My Orders</h3>
 
             <?php
-            // Toggle sort ASC/DESC
             $sortOrder = isset($_GET['sort']) && $_GET['sort'] === 'asc' ? 'ASC' : 'DESC';
             $toggleOrder = $sortOrder === 'ASC' ? 'desc' : 'asc';
 
-            // Query orders based on user and sort order
             $orders = mysqli_query($conn, "SELECT * FROM orders WHERE user_id = $user_id ORDER BY id $sortOrder");
             ?>
 
@@ -474,18 +467,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_account'])) {
 
 <script>
 function confirmLogout(e) {
-  e.preventDefault();  // Prevent default action of link
-  document.getElementById('logoutPopup').style.display = 'flex';  // Show the logout confirmation popup
+  e.preventDefault();  
+  document.getElementById('logoutPopup').style.display = 'flex';  
 }
 
-// This function handles the 'Yes' button click
 function logoutUser() {
-  window.location.href = "logout.php";  // Redirect to the logout URL (replace with your logout URL)
+  window.location.href = "logout.php";  
 }
 
-// This function handles the 'No' button click
 function cancelLogout() {
-  document.getElementById('logoutPopup').style.display = 'none';  // Hide the logout popup
+  document.getElementById('logoutPopup').style.display = 'none'; 
 }
 function searchProducts() {
   const searchTerm = document.getElementById('searchInput').value.trim();
@@ -504,7 +495,7 @@ document.getElementById('searchInput').addEventListener('keypress', function (e)
 });
 
 document.getElementById('newsletterForm').addEventListener('submit', function(e) {
-  e.preventDefault(); // Mencegah form reload halaman
+  e.preventDefault(); 
   const email = document.getElementById('emailInput').value;
   const messageBox = document.getElementById('newsletterMessage');
 

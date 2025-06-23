@@ -159,7 +159,6 @@ if (isset($_GET['status']) && $_GET['status'] === 'success') {
             alert("OVO number successfully copied!");
         }
 
-        // Countdown timer 2 minutes (120 detik)
         let time = 120;
         const countdownEl = document.getElementById("countdown");
 
@@ -173,7 +172,6 @@ if (isset($_GET['status']) && $_GET['status'] === 'success') {
                 clearInterval(timer);
                 countdownEl.textContent = "Time has run out!";
                 alert("Payment time has expired. Please re-order.");
-                // window.location.href = "cart.php"; // Aktifkan jika ingin redirect otomatis
             }
         }, 1000);
     </script>

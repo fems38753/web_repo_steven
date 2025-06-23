@@ -1,4 +1,6 @@
-<?php include 'php/connect.php'; ?>
+<?php include 'php/connect.php';
+
+?>
 
 <!DOCTYPE html>
 <html lang="id">
@@ -23,7 +25,6 @@ if (session_status() === PHP_SESSION_NONE) {
   <a href="index.php" class="logo">JACK<span>ARMY</span></a>
   
   <div class="right-navbar">
-      <!-- ✅ Search Bar -->
       <div class="search-bar">
         <input type="text" id="searchInput" placeholder="Search...">
         <button onclick="searchProducts()"><i class="fas fa-search"></i></button>
@@ -141,8 +142,15 @@ if (session_status() === PHP_SESSION_NONE) {
 
 <script src="news.js">
 
-// Search
-function searchProducts() {
+    document.addEventListener('DOMContentLoaded', function() {
+      const urlParams = new URLSearchParams(window.location.search);
+      
+      if(urlParams.has('register')) {
+        switchForm('registerForm');
+      }
+    });
+
+    function searchProducts() {
   const searchTerm = document.getElementById('searchInput').value.trim();
   if (searchTerm) {
     window.location.href = `search.php?query=${encodeURIComponent(searchTerm)}`;
@@ -159,7 +167,7 @@ document.getElementById('searchInput').addEventListener('keypress', function (e)
 });
 
 document.getElementById('newsletterForm').addEventListener('submit', function(e) {
-  e.preventDefault(); // Mencegah form reload halaman
+  e.preventDefault();
   const email = document.getElementById('emailInput').value;
   const messageBox = document.getElementById('newsletterMessage');
 

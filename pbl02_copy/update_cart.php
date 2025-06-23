@@ -6,7 +6,6 @@ if (!isset($_SESSION['cart'])) {
     $_SESSION['cart'] = [];
 }
 
-// Tambah ke session cart
 $_SESSION['cart'][] = [
     'id' => $data['id'],
     'name' => $data['name'],

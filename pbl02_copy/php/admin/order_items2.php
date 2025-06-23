@@ -7,7 +7,6 @@ if (!$order_id) {
   die("ID pesanan tidak valid.");
 }
 
-// Ambil data order dan user
 $order = mysqli_fetch_assoc(mysqli_query($conn, "
   SELECT o.*, u.username 
   FROM orders o
@@ -19,7 +18,6 @@ if (!$order) {
   die("Order not found.");
 }
 
-// Ambil item pesanan
 $items = mysqli_query($conn, "
   SELECT oi.*, p.name, p.image 
   FROM order_items oi

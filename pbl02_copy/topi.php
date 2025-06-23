@@ -9,12 +9,11 @@
     <link rel="stylesheet" href="pbl02.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
-    /* Updated notification style - smaller and more subtle */
     .notification {
         position: fixed;
         top: 20px;
         right: 20px;
-        background-color: rgba(76, 175, 80, 0.9); /* Slightly transparent */
+        background-color: rgba(76, 175, 80, 0.9); 
         color: white;
         padding: 8px 12px;
         border-radius: 4px;
@@ -93,10 +92,9 @@ if (session_status() === PHP_SESSION_NONE) {
 </nav>
 </header>
 
-<!-- TOPI --> 
 <section class="produk-topi">
   <h2>HAT COLLECTION</h2>
-  <div class="topi-container"> <!-- TAMBAHKAN INI -->
+  <div class="topi-container"> 
     <?php
       $products = $conn->query("SELECT * FROM products WHERE category_id = (SELECT id FROM categories WHERE name = 'Hat') OR category = 'Hat'");
       while ($p = $products->fetch_assoc()):
@@ -116,10 +114,9 @@ if (session_status() === PHP_SESSION_NONE) {
         <p class="price"><del>Rp<?= number_format($hargaAwal, 0, ',', '.') ?></del> <strong>Rp<?= number_format($p['price'], 0, ',', '.') ?></strong></p>
       </div>
     <?php endwhile; ?>
-  </div> <!-- TUTUP .topi-container -->
+  </div> 
 </section>
 
-<!-- Popup Product Detail for Hat -->
 <div class="popup-overlay" id="hatPopupOverlay" style="display: none;">
   <div class="popup-content">
     <span class="close-btn" onclick="closeHatPopup()">&times;</span>
@@ -290,7 +287,7 @@ document.getElementById('searchInput').addEventListener('keypress', function (e)
 });
 
 document.getElementById('newsletterForm').addEventListener('submit', function(e) {
-  e.preventDefault(); // Mencegah form reload halaman
+  e.preventDefault(); 
   const email = document.getElementById('emailInput').value;
   const messageBox = document.getElementById('newsletterMessage');
 

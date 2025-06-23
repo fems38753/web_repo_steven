@@ -4,7 +4,6 @@ include 'auth_check.php';
 
 $order_id = (int)$_GET['id'];
 
-// Process status update
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $newStatus = $conn->real_escape_string($_POST['status']);
     $stmt = $conn->prepare("UPDATE orders SET status = ? WHERE id = ?");
@@ -19,7 +18,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Get order details
 $order = $conn->query("
     SELECT o.*, u.username, u.email, u.phone 
     FROM orders o 
@@ -33,7 +31,6 @@ if (!$order) {
     exit();
 }
 
-// Get order items with product names
 $items = $conn->query("
     SELECT oi.*, p.name AS product_name 
     FROM order_items oi 
@@ -123,5 +120,4 @@ $items = $conn->query("
         <a href="orders.php" class="btn-back">← Back to Orders</a>
     </div>
 </div>
-
 <?php include 'footer_admin.php'; ?>

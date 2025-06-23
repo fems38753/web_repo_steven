@@ -12,7 +12,6 @@ $action = $_POST['action'] ?? '';
 $product_id = $_POST['product_id'] ?? null;
 $size = $_POST['size'] ?? null;
 
-// Jika tombol "Hapus Semua"
 if ($action === 'clear_all') {
     $stmt = $conn->prepare("DELETE FROM cart WHERE user_id = ?");
     $stmt->bind_param("i", $user_id);
@@ -21,13 +20,11 @@ if ($action === 'clear_all') {
     exit;
 }
 
-// Validasi input dasar
 if (!$product_id || !$size || !in_array($action, ['increase', 'decrease', 'delete'])) {
     header("Location: ../cart.php?error=invalid_input");
     exit;
 }
 
-// Cek apakah item ada di cart
 $stmt = $conn->prepare("SELECT quantity FROM cart WHERE user_id = ? AND product_id = ? AND size = ?");
 $stmt->bind_param("iis", $user_id, $product_id, $size);
 $stmt->execute();
@@ -41,7 +38,6 @@ if ($res->num_rows === 0) {
 $row = $res->fetch_assoc();
 $currentQty = $row['quantity'];
 
-// Handle aksi
 if ($action === 'increase') {
     $newQty = $currentQty + 1;
     $update = $conn->prepare("UPDATE cart SET quantity = ? WHERE user_id = ? AND product_id = ? AND size = ?");
@@ -51,7 +47,6 @@ if ($action === 'increase') {
 } elseif ($action === 'decrease') {
     $newQty = $currentQty - 1;
     if ($newQty < 1) {
-        // Hapus jika kuantitas jadi 0
         $delete = $conn->prepare("DELETE FROM cart WHERE user_id = ? AND product_id = ? AND size = ?");
         $delete->bind_param("iis", $user_id, $product_id, $size);
         $delete->execute();
@@ -67,7 +62,6 @@ if ($action === 'increase') {
     $delete->execute();
 }
 
-// Redirect balik ke cart
 header("Location: ../cart.php");
 exit;
 ?>

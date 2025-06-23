@@ -1,5 +1,4 @@
 <?php
-// layout_admin.php
 include 'auth_check.php';
 ?>
 
@@ -112,6 +111,4 @@ include 'auth_check.php';
       <a href="../logout.php">Logout</a>
     </div>
   </div>
-
   <div class="main-content">
-    <!-- Konten halaman akan di-include di bawah -->

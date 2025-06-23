@@ -139,7 +139,6 @@ Your transactions are processed securely through an encrypted payment system
             window.location.href = "payment_visa.php?status=success";
         }
 
-        // Timer 5 menit (300 detik)
         let time = 300;
         const countdownEl = document.getElementById("countdown");
 
@@ -158,4 +157,3 @@ Your transactions are processed securely through an encrypted payment system
     </script>
 </body>
 </html>
-                                                                 

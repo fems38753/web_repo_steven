@@ -14,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   $price = $_POST['price'];
   $discount = $_POST['discount'];
   $image = $_POST['image'];
-  $imagePath = $product['image']; // default pakai gambar lama
+  $imagePath = $product['image']; 
 
 if (!empty($_FILES['image_upload']['name'])) {
     $filename = basename($_FILES['image_upload']['name']);

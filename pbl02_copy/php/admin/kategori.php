@@ -1,7 +1,6 @@
 <?php
 include '../connect.php';
 
-// Tambah kategori
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = trim($_POST['name']);
     if ($name !== '') {
@@ -11,7 +10,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     exit();
 }
 
-// Hapus kategori
 if (isset($_GET['delete'])) {
     $id = $_GET['delete'];
     $conn->query("DELETE FROM categories WHERE id=$id");
@@ -50,20 +48,17 @@ $result = $conn->query("SELECT * FROM categories ORDER BY id ASC");
     .main-content{flex:1;margin-left:var(--sidebar-width);padding:25px;background:#fff;min-height:calc(100vh - 50px)}
     h2{color:#2c3e50;margin-bottom:20px}
 
-    /* form tambah */
     form{display:flex;gap:10px;margin-bottom:20px}
     input[type=text]{flex:1;padding:8px;border:1px solid #ccc;border-radius:4px}
     button{padding:8px 15px;background:var(--secondary-color);color:#fff;border:none;border-radius:4px;cursor:pointer}
     button:hover{background:#2980b9}
 
-    /* tabel */
     .table-responsive{overflow-x:auto;background:#fff;border-radius:8px;box-shadow:0 0 12px rgba(0,0,0,.04);padding:20px}
     table{width:100%;border-collapse:collapse;font-size:14px;color:#333}
     thead{background:#2c3e50;color:#fff}
     th,td{padding:12px 16px;border-bottom:1px solid #e0e0e0;text-align:left}
     tr:hover{background:rgba(255,255,255,.1)}
 
-    /* tombol hapus */
     .btn-delete{background:var(--danger-color);color:#fff;padding:6px 10px;border-radius:4px;text-decoration:none}
     .btn-delete:hover{background:#c0392b}
 

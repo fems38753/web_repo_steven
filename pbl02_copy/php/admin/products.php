@@ -2,7 +2,6 @@
 session_start();
 include '../connect.php';
 
-// Handle delete operation
 if (isset($_GET['delete'])) {
     $id = $_GET['delete'];
     $conn->query("DELETE FROM products WHERE id=$id");
@@ -11,7 +10,6 @@ if (isset($_GET['delete'])) {
     exit();
 }
 
-// Fetch all products with pagination
 $limit = 10;
 $page = isset($_GET['page']) ? $_GET['page'] : 1;
 $offset = ($page - 1) * $limit;
@@ -45,7 +43,6 @@ body {
     min-height: 100vh;
 }
 
-/* Sidebar fix di kiri */
 .sidebar {
     width: var(--sidebar-width);
     background: var(--primary-color);
@@ -58,7 +55,6 @@ body {
     top: 0;
 }
 
-/* Konten utama di kanan sidebar */
 .main-content {
     flex: 1;
     margin-left: var(--sidebar-width);
@@ -66,7 +62,7 @@ body {
     background: #fff;
     min-height: 100vh;
     box-shadow: inset 0 0 8px rgba(0,0,0,0.03);
-    width: 135%; /* Make sure it's full width */
+    width: 135%; 
 }
 
 h2 {
@@ -364,7 +360,6 @@ h2 {
                 </table>
             </div>
 
-            <!-- Pagination -->
             <div class="pagination">
                 <?php for ($i = 1; $i <= $total_pages; $i++): ?>
                     <a href="products.php?page=<?= $i ?>" class="<?= $i == $page ? 'active' : '' ?>">
@@ -384,6 +379,5 @@ h2 {
             return false;
         }
     </script>
-
 </body>
 </html>

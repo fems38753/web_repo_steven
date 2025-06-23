@@ -23,7 +23,6 @@ if (session_status() === PHP_SESSION_NONE) {
   <a href="index.php" class="logo">JACK<span>ARMY</span></a>
   
   <div class="right-navbar">
-      <!-- ✅ Search Bar -->
       <div class="search-bar">
         <input type="text" id="searchInput" placeholder="Search...">
         <button onclick="searchProducts()"><i class="fas fa-search"></i></button>
@@ -214,7 +213,6 @@ if (session_status() === PHP_SESSION_NONE) {
 
 <script src="news.js">
 
-// Search
 function searchProducts() {
   const searchTerm = document.getElementById('searchInput').value.trim();
   if (searchTerm) {

@@ -2,7 +2,6 @@
 session_start();
 include '../connect.php';
 
-// Fetch user details
 if (!isset($_GET['id'])) {
     header('Location: pengguna.php');
     exit();
@@ -17,7 +16,6 @@ if (!$user) {
     exit();
 }
 
-// Update user details
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = mysqli_real_escape_string($conn, $_POST['username']);
     $email = mysqli_real_escape_string($conn, $_POST['email']);
@@ -44,7 +42,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
-    /* General Styles (Sidebar, Navbar, Form etc.) */
     :root {
       --sidebar-width: 250px;
       --primary-color: #2c3e50;
@@ -110,7 +107,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       min-width: 20px;
     }
 
-    /* Main Content */
     .main-content {
       flex: 1;
       margin-left: var(--sidebar-width);
@@ -119,7 +115,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       min-height: 100vh;
     }
 
-    /* Button Styles */
     .btn {
       display: inline-flex;
       align-items: center;
@@ -132,7 +127,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       margin-bottom: 15px;
     }
 
-    /* Form Styles */
     .form-group {
       margin-bottom: 15px;
     }
@@ -176,7 +170,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   </style>
 </head>
 <body>
-  <!-- Sidebar -->
   <aside class="sidebar">
     <div class="sidebar-header">
       <h3>Admin Panel</h3>
@@ -192,7 +185,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </ul>
   </aside>
 
-  <!-- Main Content -->
   <div class="main-content">
     <h2>Edit User</h2>
 

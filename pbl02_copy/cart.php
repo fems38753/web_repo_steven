@@ -2,7 +2,6 @@
 session_start();
 include 'php/connect.php';
 
-// Ambil data user
 $user_id = $_SESSION['user_id'] ?? null;
 $userData = null;
 if ($user_id) {
@@ -10,7 +9,6 @@ if ($user_id) {
     $userData = mysqli_fetch_assoc($result);
 }
 
-// Handle checkout dan redirect
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['payment'])) {
     $shippingMethod = $_POST['shipping'];
     $shippingAddress = $_POST['shippingAddress'];
@@ -50,7 +48,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['payment'])) {
         mysqli_query($conn, "INSERT INTO order_items (order_id, product_id, quantity, size, price)
             VALUES ($order_id, $product_id, $qty, '$size', $price)");
 
-        // Update stok produk berdasarkan size
         $res = mysqli_query($conn, "SELECT size_available FROM products WHERE id = $product_id");
         $product = mysqli_fetch_assoc($res);
         $sizes = [];
@@ -69,7 +66,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['payment'])) {
 
     $conn->query("DELETE FROM cart WHERE user_id = $user_id");
 
-    // Redirect ke halaman pembayaran
     $redirects = [
         "bca" => "payment_bca.php",
         "mandiri" => "payment_mandiri.php",
@@ -96,170 +92,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['payment'])) {
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-<style>
-    /* Cart item styles */
-    .cart-item {
-        display: flex;
-        padding: 20px;
-        border-bottom: 1px solid #eee;
-        gap: 20px;
-    }
-
-    .cart-item img {
-        width: 100px;
-        height: 100px;
-        object-fit: cover;
-    }
-
-    .item-details {
-        flex-grow: 1;
-    }
-
-    .item-options {
-        display: flex;
-        flex-direction: column;
-        gap: 15px;
-        margin-top: 10px;
-    }
-
-    .size-option {
-        display: flex;
-        flex-direction: column;
-    }
-
-    .size-buttons {
-        display: flex;
-        gap: 5px;
-        margin-top: 5px;
-    }
-
-    .size-buttons button {
-        padding: 5px 10px;
-        border: 1px solid #ddd;
-        background-color: #f1f1f1;
-        cursor: pointer;
-    }
-
-    .size-buttons button.active {
-        background-color: #333;
-        color: white;
-    }
-
-    .quantity-option {
-        display: flex;
-        flex-direction: column;
-    }
-
-    .quantity-wrapper {
-        display: flex;
-        align-items: center;
-        gap: 5px;
-        margin-top: 5px;
-    }
-
-    .quantity-wrapper button {
-        padding: 2px 8px;
-        border: 1px solid #ddd;
-        background-color: #f1f1f1;
-        cursor: pointer;
-    }
-
-    .item-total {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-end;
-        min-width: 150px;
-    }
-
-    .remove-btn {
-        background-color: #ff4444;
-        color: white;
-        border: none;
-        padding: 5px 10px;
-        cursor: pointer;
-        margin-top: 10px;
-        border-radius: 3px;
-    }
-
-    .empty-cart {
-        text-align: center;
-        padding: 40px;
-        color: #666;
-    }
-
-    /* Summary styles */
-    .cart-summary {
-        margin-top: 20px;
-        padding: 20px;
-        background-color: #f9f9f9;
-        border-radius: 5px;
-    }
-
-    .summary-row {
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: 10px;
-    }
-
-    .summary-row.total {
-        font-weight: bold;
-        font-size: 1.1em;
-        border-top: 1px solid #ddd;
-        padding-top: 10px;
-    }
-
-    /* Hide radio buttons but keep functionality */
-    .shipping-options input[type="radio"],
-    .payment-options input[type="radio"] {
-        display: none;
-    }
-
-    /* Style for selected shipping/payment options */
-    .shipping-option img,
-    .payment-option img {
-        border: 2px solid transparent;
-        cursor: pointer;
-        transition: all 0.3s;
-    }
-
-    .shipping-options input[type="radio"]:checked + img,
-    .payment-options input[type="radio"]:checked + img {
-        border-color: #333;
-        transform: scale(1.05);
-    }
-    
-    /* Login required message */
-    .login-required {
-        background-color: #fff8e1;
-        padding: 15px;
-        border-radius: 5px;
-        margin-bottom: 20px;
-        text-align: center;
-    }
-    
-    .login-required a {
-        color: #ff6f00;
-        font-weight: bold;
-        text-decoration: none;
-    }
-    
-    .login-required a:hover {
-        text-decoration: underline;
-    }
-
-    .quantity-wrapper form button {
-    padding: 5px 10px;
-    background-color: #eee;
-    border: 1px solid #ccc;
-    cursor: pointer;
-    font-weight: bold;
-    }
-
-    .quantity-wrapper span {
-    padding: 0 10px;
-    line-height: 32px;
-    }
-  </style>
 </head>
 <body>
 <header>
@@ -315,7 +147,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['payment'])) {
   <div class="cart-container">
     <div class="cart-left">
       
-      <!-- Judul utama selalu tampil -->
       <h2 style="color: #d7235b; font-size: 28px; margin-bottom: 20px;">Your Shopping Cart</h2>
 
       <?php
@@ -343,7 +174,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['payment'])) {
               $subtotal = $item['price'] * $item['quantity'];
               $total += $subtotal;
       ?>
-              <!-- Single Item -->
               <div class="cart-item">
                 <img src="<?= htmlspecialchars($item['image']) ?>" alt="<?= htmlspecialchars($item['name']) ?>" class="cart-item-img">
                 <div class="item-details">
@@ -381,7 +211,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['payment'])) {
               </div>
       <?php
             endwhile;
-            echo '</div>'; // end cart-items-container
+            echo '</div>'; 
 
           else:
             echo "<p class='empty-cart'>Your cart is empty.</p>";
@@ -418,7 +248,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['payment'])) {
 
   <form id="checkoutForm" method="POST" action="cart.php" <?php if (!isset($_SESSION['user_id'])) echo 'style="display:none;"'; ?>>
     
-    <!-- Alamat -->
     <div class="form-group">
       <label for="shippingAddress">Shipping Address</label>
       <input type="text" id="shippingAddress" name="shippingAddress" placeholder="Masukkan Alamat"
@@ -526,7 +355,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['payment'])) {
 </footer>
 
 <script>
-// Ambil elemen shipping radio
 const shippingRadios = document.querySelectorAll('input[name="shipping"]');
 const shippingCosts = {
     'JNE': 10000,
@@ -534,26 +362,21 @@ const shippingCosts = {
     'SiCepat': 15000
 };
 
-// Ambil elemen harga ongkir & total
 const shippingCostElem = document.querySelector('.summary-row:nth-child(2) span:last-child');
 const totalPaymentElem = document.querySelector('.summary-row.total span:last-child');
 
-// Dapatkan total produk dari elemen
 let totalProduk = <?= $total ?>;
 
-// Fungsi format ke Rupiah
 function formatCurrency(amount) {
     return 'Rp' + amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 }
 
-// Event saat user pilih jasa pengiriman
 shippingRadios.forEach(radio => {
     radio.addEventListener('change', () => {
         const selectedShipping = radio.value;
         const newShippingCost = shippingCosts[selectedShipping];
         const newTotal = totalProduk + newShippingCost;
 
-        // Update elemen HTML
         if (shippingCostElem) {
             shippingCostElem.textContent = formatCurrency(newShippingCost);
         }
@@ -581,7 +404,7 @@ document.getElementById('searchInput').addEventListener('keypress', function (e)
 });
 
 document.getElementById('newsletterForm').addEventListener('submit', function(e) {
-  e.preventDefault(); // Mencegah form reload halaman
+  e.preventDefault(); 
   const email = document.getElementById('emailInput').value;
   const messageBox = document.getElementById('newsletterMessage');
 

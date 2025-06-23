@@ -1,5 +1,4 @@
 <?php
-// ===== FILE: insert_admin.php =====
 include 'layout_admin.php';
 include '../connect.php';
 

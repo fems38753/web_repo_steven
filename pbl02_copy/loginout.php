@@ -2,16 +2,14 @@
 session_start();
 require 'php/connect.php';
 
-// Redirect to home if already logged in
 if(isset($_SESSION['user_id'])) {
     header('Location: index.php');
     exit;
 }
 
-// Handle logout if requested
 if (isset($_GET['logout'])) {
     session_destroy();
-    header('Location: loginout.php'); // <- ganti ini ke halaman login sesungguhnya
+    header('Location: loginout.php'); 
     exit;
 }
 
@@ -19,7 +17,7 @@ $error = '';
 $success = '';
 $redirect = isset($_GET['redirect']) ? urldecode($_GET['redirect']) : 'index.php';
 
-// Process login form
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['login'])) {
     $username = trim($_POST['username']);
     $password = $_POST['password'];
@@ -94,14 +92,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['login'])) {
 }
 
 
-// Process registration form
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['register'])) {
     $username = trim($_POST['username']);
     $email = trim($_POST['email']);
     $password = $_POST['password'];
     $confirm_password = $_POST['confirm_password'] ?? '';
-    
-    // Validate input
+
     if(empty($username) || empty($email) || empty($password)) {
         $error = "Please fill in all fields";
     } elseif(!filter_var($email, FILTER_VALIDATE_EMAIL)) {
@@ -111,7 +107,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['register'])) {
     } elseif($password !== $confirm_password) {
         $error = "Passwords do not match";
     } else {
-        // Check if username or email already exists
         $stmt = $conn->prepare("SELECT id FROM users WHERE username = ? OR email = ?");
         $stmt->bind_param("ss", $username, $email);
         $stmt->execute();
@@ -120,19 +115,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['register'])) {
         if($result->num_rows > 0) {
             $error = "Username or email already exists";
         } else {
-            // Hash password
             $hashed_password = password_hash($password, PASSWORD_DEFAULT);
             
-            // Insert new user
             $stmt = $conn->prepare("INSERT INTO users (username, email, password, created_at) VALUES (?, ?, ?, NOW())");
             $stmt->bind_param("sss", $username, $email, $hashed_password);
             
             if($stmt->execute()) {
                 $success = "Registration successful! You can now login.";
-                // Optionally log the user in automatically
-                // $_SESSION['user_id'] = $stmt->insert_id;
-                // header("Location: $redirect");
-                // exit;
             } else {
                 $error = "Registration failed. Please try again.";
             }
@@ -152,7 +141,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['register'])) {
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <style>
-    /* Main container */
     .auth-container {
       max-width: 1200px;
       margin: 2rem auto;
@@ -162,8 +150,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['register'])) {
       gap: 2rem;
       justify-content: center;
     }
-    
-    /* Form boxes */
+
     .auth-box {
       flex: 1;
       min-width: 350px;
@@ -185,8 +172,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['register'])) {
       margin-bottom: 1.5rem;
       color: #333;
     }
-    
-    /* Form elements */
+
     .form-group {
       margin-bottom: 1.5rem;
     }
@@ -226,8 +212,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['register'])) {
       color: #666;
       font-size: 0.9rem;
     }
-    
-    /* Role selection */
+
     .role-selection {
       display: flex;
       margin-bottom: 1.5rem;
@@ -254,7 +239,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['register'])) {
       display: none;
     }
     
-    /* Remember me */
     .remember-me {
       display: flex;
       align-items: center;
@@ -265,7 +249,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['register'])) {
       margin-right: 8px;
     }
     
-    /* Buttons */
     .auth-btn {
       width: 100%;
       padding: 14px;
@@ -284,7 +267,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['register'])) {
       background-color: #555;
     }
     
-    /* Messages */
     .auth-message {
       padding: 12px;
       border-radius: 6px;
@@ -303,8 +285,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['register'])) {
       color: #2e7d32;
       border: 1px solid #a5d6a7;
     }
-    
-    /* Links */
+
     .auth-link {
       text-align: center;
       margin-top: 1.5rem;
@@ -322,8 +303,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['register'])) {
       color: #555;
       text-decoration: underline;
     }
-    
-    /* Admin note */
+
     .admin-note {
       font-size: 0.9rem;
       color: #666;
@@ -332,7 +312,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['register'])) {
       font-style: italic;
     }
     
-    /* Responsive adjustments */
     @media (max-width: 768px) {
       .auth-container {
         flex-direction: column;
@@ -396,7 +375,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['register'])) {
 </header>
 
   <main class="auth-container">
-    <!-- Login Box -->
     <div class="auth-box">
       <h2>Login to Your Account</h2>
       
@@ -432,7 +410,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['register'])) {
         </div>
         
         <div class="remember-me">
-          <br>
+
         </div>
         
         <button type="submit" class="auth-btn">Login</button>
@@ -443,7 +421,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['register'])) {
       </form>
     </div>
     
-    <!-- Register Box -->
     <div class="auth-box">
       <h2>Create New Account</h2>
       
@@ -541,21 +518,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['register'])) {
 </footer>
 
   <script>
-    // Role selection function
     function selectRole(element, role) {
-      // Remove active class from all options
       document.querySelectorAll('.role-option').forEach(opt => {
         opt.classList.remove('active');
       });
       
-      // Add active class to selected option
       element.classList.add('active');
-      
-      // Update the radio button
+
       document.querySelector(`input[name="role"][value="${role}"]`).checked = true;
     }
     
-    // Toggle password visibility
     function togglePassword(inputId) {
       const input = document.getElementById(inputId);
       const button = input.nextElementSibling;
@@ -568,8 +540,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['register'])) {
         button.textContent = 'Show';
       }
     }
-    
-    // Switch between forms (for mobile view)
+
     function switchForm(formId) {
       const loginForm = document.getElementById('loginForm');
       const registerForm = document.getElementById('registerForm');
@@ -580,8 +551,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['register'])) {
         registerForm.closest('.auth-box').scrollIntoView({ behavior: 'smooth' });
       }
     }
-    
-    // Form validation
+
     document.getElementById('registerForm')?.addEventListener('submit', function(e) {
       const password = document.getElementById('register-password').value;
       const confirmPassword = document.getElementById('confirm-password').value;
@@ -601,7 +571,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['register'])) {
       return true;
     });
     
-    // Check for URL parameters to show specific form
     document.addEventListener('DOMContentLoaded', function() {
       const urlParams = new URLSearchParams(window.location.search);
       
@@ -627,7 +596,7 @@ document.getElementById('searchInput').addEventListener('keypress', function (e)
 });
 
 document.getElementById('newsletterForm').addEventListener('submit', function(e) {
-  e.preventDefault(); // Mencegah form reload halaman
+  e.preventDefault(); 
   const email = document.getElementById('emailInput').value;
   const messageBox = document.getElementById('newsletterMessage');
 

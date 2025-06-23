@@ -34,7 +34,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     $total_price += $shipping_cost;
 
-    // Simpan order ke tabel orders
     $insert_order = mysqli_query($conn, "INSERT INTO orders (user_id, address, shipping_method, payment_method, notes, total_price)
         VALUES ($user_id, '$address', '$shipping_method', '$payment_method', '$notes', $total_price)");
 
@@ -44,7 +43,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $order_id = mysqli_insert_id($conn);
 
-    // Simpan setiap item ke order_items
     foreach ($cart as $item) {
         $pid = $item['id'];
         $qty = $item['quantity'];
@@ -57,7 +55,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     unset($_SESSION['cart']);
 
-    // Redirect ke halaman pembayaran sesuai metode
     $redirects = [
         'bca' => 'payment_bca.php',
         'mandiri' => 'payment_mandiri.php',
@@ -72,6 +69,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     exit;
 }
 
-// Jika bukan POST
 header("Location: cart.php");
 exit;

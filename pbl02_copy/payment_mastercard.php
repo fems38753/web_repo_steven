@@ -31,7 +31,7 @@ if (isset($_GET['status']) && $_GET['status'] === 'success') {
         }
 
         h2 {
-            color: #d1005b; /* warna khas MasterCard */
+            color: #d1005b; 
             text-align: center;
         }
 
@@ -67,7 +67,7 @@ if (isset($_GET['status']) && $_GET['status'] === 'success') {
         }
 
         .btn-primary {
-            background-color: #d1005b; /* warna khas MasterCard */
+            background-color: #d1005b; 
             color: white;
             transition: background-color 0.3s ease;
         }
